@@ -1,23 +1,7 @@
 <?php
 	require("session.php");
 	if($usr_IsSignedIn != True) {
-		?>
-			<!doctype html>
-			<title>Error | Lucy</title>
-			<link rel="stylesheet" href="img/loader.css">
-			<link href="img/styles.css" rel="stylesheet" type="text/css">
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-			<div id="wrapper">
-			<?php require("mdl_header.php"); ?>
-			<div id="content">
-			<div class="notice" id="red">
-				<strong>Authentication Error</strong><br/>
-				You do not have permission to view this page.
-			</div>
-			</div>
-			<?php require("mdl_footer.php"); ?>
-			</div>
-		<?php die();
+		require("error_auth.php");
 	}
 	$id = $usr_ID;
 	require("db_connect.php");

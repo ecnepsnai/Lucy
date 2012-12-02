@@ -12,7 +12,6 @@ if(isset($_POST['submit'])){
 	$inp_email = mysql_real_escape_string($raw_email);
     // Ask for user salt first, then verify, THEN get rest of data
     $pw_sql = "SELECT email, salt FROM userlist WHERE email = '". $inp_email . "'";
-    echo($pw_sql);
     $pw_req = mysql_query($pw_sql);
     if(!$pw_req) {
         require_once("error_db.php");
@@ -20,7 +19,6 @@ if(isset($_POST['submit'])){
     $pw_arr = mysql_fetch_array($pw_req);
     $pw_hash = md5($pw_arr['salt'] . md5(trim($_POST['pwd'])));
     $sql = "SELECT id, name, type, email FROM userlist WHERE email = '". $inp_email ."' AND password = '" . $pw_hash . "'";
-    echo($sql);
     $request = mysql_query($sql);
 	if(!$request){
 		require_once("error_db.php");

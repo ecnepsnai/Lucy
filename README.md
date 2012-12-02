@@ -1,0 +1,133 @@
+# Lucy
+Lucy is an easy to use and even easier to set up support system that just about anybody can use!
+
+## SQL Table Structure
+In the future, Lucy will automatically set up the SQL tables with just a push of a button.  However, until then the tables must be created manually (don't worry, there are only 2 to create).
+
+**userlist**
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Type</th>
+		<th>Length</th>
+		<th>Key</th>
+		<th>AI</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>int</td>
+		<td>11</td>
+		<td>Primary</td>
+		<td><strong>Yes</strong></td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>varchar</td>
+		<td>45</td>
+		<td></td>
+		<td>No</td>
+	</tr>
+	<tr>
+		<td>email</td>
+		<td>varchar</td>
+		<td>45</td>
+		<td>Unique</td>
+		<td>No</td>
+	</tr>
+	<tr>
+		<td>password</td>
+		<td>varchar</td>
+		<td>32</td>
+		<td></td>
+		<td>No</td>
+	</tr>
+	<tr>
+		<td>salt</td>
+		<td>varchar</td>
+		<td>2</td>
+		<td></td>
+		<td>No</td>
+	</tr>
+	<tr>
+		<td>type</td>
+		<td>enum</td>
+		<td>Admin, Client, Bot, Ban</td>
+		<td></td>
+		<td>No</td>
+	</tr>
+	<tr>
+		<td>date_registered</td>
+		<td>datetime</td>
+		<td></td>
+		<td></td>
+		<td>No</td>
+	</tr>
+</table>
+
+**ticketlist**
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Type</th>
+		<th>Length</th>
+		<th>Key</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>id</td>
+		<td>int</td>
+		<td>11</td>
+		<td>Primary</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>varchar</td>
+		<td>45</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>email</td>
+		<td>varchar</td>
+		<td>45</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>application</td>
+		<td>enum</td>
+		<td>myFire, iFX Tweet 2, Pickr, Lucy</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>version</td>
+		<td>varchar</td>
+		<td>10</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>os</td>
+		<td>varchar</td>
+		<td>20</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>status</td>
+		<td>enum</td>
+		<td>Open, Closed</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>subject</td>
+		<td>varchar</td>
+		<td>100</td>
+		<td></td>
+	</tr>
+		<tr>
+		<td>date</td>
+		<td>datetime</td>
+		<td></td>
+		<td></td>
+	</tr>
+</table>

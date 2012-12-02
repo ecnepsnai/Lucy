@@ -1,5 +1,8 @@
+<?php
+	require("session.php");
+?>
 <!doctype html>
-<title>Error<?php echo(TITLE_SEPERATOR . TITLE_MAIN); ?></title>
+<title>Error<?php echo(TITLE_SEPARATOR . TITLE_MAIN); ?></title>
 <link rel="stylesheet" href="img/loader.css">
 <link href="img/styles.css" rel="stylesheet" type="text/css">
 <script src="js/jquery.js"></script>
@@ -7,9 +10,9 @@
 <div id="wrapper">
 <?php require("mdl_header.php"); ?>
 <div id="content">
-	<div class="message" id="yellow">
-		<strong>Authentication Error</strong>
-		<p>Uh oh!  You need to be signed in to do that.</p>
+	<div class="notice" id="red">
+		<strong>Authentication Error</strong><br/>
+		Uh oh!  You need to be signed in to do that.
 	</div>
 </div>
 <?php require("mdl_footer.php"); ?>

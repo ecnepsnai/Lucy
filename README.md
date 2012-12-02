@@ -97,7 +97,7 @@ In the future, Lucy will automatically set up the SQL tables with just a push of
 	<tr>
 		<td>application</td>
 		<td>enum</td>
-		<td>myFire, iFX Tweet 2, Pickr, Lucy</td>
+		<td>Your application(s)!</td>
 		<td></td>
 	</tr>
 	<tr>

@@ -28,6 +28,11 @@
 			require("error_empty.php");
 		}
 		$message = mysql_real_escape_string($_POST['message']);
+
+		//Trims the message to the maximum length of MEDIUMTEXT.
+		//IE and Opera don't support the maxlength attribute for textarea, so this is the fallback.
+		$message = substr($message, 0, 16777216);
+
 		$isFile = False;
 		$filename = $_FILES['screenshot']['tmp_name'];
 		//get files - if any //
@@ -83,7 +88,7 @@
 <?php require("mdl_header.php"); ?>
 <div id="content">
 <h2>Ticket Status</h2>
-<table id="ticket_info">
+<table class="ticket_info">
 	<tr>
 		<td>
 			<strong>Application:</strong> <?php echo($ticket_info['application']); ?><br/>
@@ -140,7 +145,7 @@ function hideTools() {
 <div id="ticket_reply" style="display:none">
 	<form method="POST" enctype="multipart/form-data">
 		<input type="hidden" name="reply" value="ReplyToTicket"/>
-		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Type your reply here"></textarea><br/>
+		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Type your reply here" maxlength="16777216"></textarea><br/>
 		<p>Include a screenshot? (<em>Optional</em> - <a href="help_screenshots.php">Help</a>)<br/>
 		<input type="file" name="screenshot" /></p>
 		<input type="submit" name"reply" value="Add Reply" class="btn" id="blue"/>

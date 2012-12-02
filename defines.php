@@ -18,6 +18,7 @@ define("TITLE_TICKET", "Ticket Status");            // ticket.php
 define("TITLE_ERROR", "Error");                     // edit_user.php  TODO: Add dynamic error titles
 define("TITLE_EDIT_USER_EDIT", "Editing User:");    // edit_user.php
 define("TITLE_LOGIN", "Login");                     // login.php
+define("TITLE_DASH", "Dashboard");					// dash.php
 
 // Session expire time (will log user out when activity doesn't pass this)
 // This needs to be an integer.

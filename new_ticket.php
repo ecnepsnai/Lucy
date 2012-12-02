@@ -14,6 +14,10 @@
 		$isFile = False;
 		$filename = $_FILES['screenshot']['tmp_name'];
 
+		//Trims the message to the maximum length of MEDIUMTEXT.
+		//IE and Opera don't support the maxlength attribute for textarea, so this is the fallback.
+		$message = substr($message, 0, 16777216);
+
 		//get files - if any //
 		if($filename != "") {
 			$isFile = True;
@@ -145,7 +149,7 @@
 	<div id="osresult" class="message_client" style="display: none;"></div>
 	<p>
 		What is the problem?<br/>
-		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Include things like: What actions you took to cause the problem, what you expected to happene, what actually happened."></textarea>
+		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Include things like: What actions you took to cause the problem, what you expected to happene, what actually happened." maxlength="16777216"></textarea>
 	</p>
 	<p>
 		Include a screenshot? (<em>Optional</em> - <a href="help_screenshots.php">Help</a>)<br/>

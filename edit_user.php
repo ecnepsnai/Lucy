@@ -25,14 +25,13 @@
 	if(isset($_POST['submit'])){
 		$name = mysql_real_escape_string(trim($_POST['name']));
 		$email = mysql_real_escape_string(trim($_POST['email']));
-		$status = mysql_real_escape_string($_POST['status']);
-		$age = mysql_real_escape_string($_POST['age']);
-		$sql = "UPDATE userlist SET name = '" . $name . "', email = '" . $email . "' WHERE id = '" . $id . "';";
+		$specs = mysql_real_escape_string(trim($_POST['specs']));
+		$sql = "UPDATE userlist SET name = '" . $name . "', email = '" . $email . "', rig_specs = '" . $specs . "' WHERE id = '" . $id . "';";
 		$request = mysql_query($sql);
 		if(!$request){
 			require("error_db.php");
 		}
-		die("<meta http-equiv=\"REFRESH\" content=\"0;url=profile.php?id=" . $id . "&change=save\">Redirecting...");
+		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "profile.php?id=" . $id . "&change=save\">Redirecting...");
 	}
 	$sql = "SELECT * FROM userlist WHERE id ='" . $id . "';";
 	$request = mysql_query($sql);
@@ -90,6 +89,7 @@
 <form method="POST" name="fm_signup" onSubmit="return validateForm()">
 	<p>Name:<br/><input type="text" name="name" class="txtglow" size="45" value="<?php echo($user['name']); ?>"/></p>
 	<p>Email Address:<br/><input type="email" name="email" class="txtglow" size="45" value="<?php echo($user['email']); ?>"/></p>
+	<p>Your computers specifications: <a href="help_specs.php">Help</a><br/><textarea name="specs" class="txtglow" rows="10" cols="75" placeholder="Example: Windows 8 64bit.  AMD-FX8150, 16GB of Memory, 2TB of Hard-Drive space."><?php echo($user['rig_specs']); ?></textarea>
 	<p><input type="submit" name="submit" value="Save Changes" class="btn" id="blue"/></p>
 </form>
 </div>

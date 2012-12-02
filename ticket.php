@@ -16,7 +16,7 @@
 		if(!$request){
 			require("error_db.php");
 		}
-		$sql = "INSERT INTO " . $id . " (`From`, `Date`, `Message`) VALUES ('Client', '" . date("Y-m-d H:i:s")  . "', 'CLOSED');";
+		$sql = "INSERT INTO " . $id . " (`From`, `Email`, `Date`, `Message`) VALUES ('Client', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', 'CLOSED');";
 		$request = mysql_query($sql);
 		if(!$request){
 			require("error_db.php");
@@ -30,7 +30,6 @@
 		$message = mysql_real_escape_string($_POST['message']);
 		$isFile = False;
 		$filename = $_FILES['screenshot']['tmp_name'];
-
 		//get files - if any //
 		if($filename != "") {
 			$isFile = True;
@@ -51,7 +50,7 @@
 		} else {
 			$img_hash = "";
 		}
-		$sql = "INSERT INTO " . $id . " (`From`, `Date`, `Message`,`File`) VALUES ('Client', '" . date("Y-m-d H:i:s")  . "', '" . $message . "', '" . $img_hash . "');";
+		$sql = "INSERT INTO " . $id . " (`From`, `Email`, `Date`, `Message`,`File`) VALUES ('Client', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', '" . $message . "', '" . $img_hash . "');";
 		$request = mysql_query($sql);
 		if(!$request){
 			require("error_db.php");
@@ -139,7 +138,7 @@ function hideTools() {
 	You can <button onclick="parent.location='javascript:hideTools()'" value="Reply to this ticket" class="btn" id="gray">Reply to this ticket</button> or <form method="POST" style="display:inline"><input type="hidden" name="close" value="CloseTicket"/><input type="submit" name"submit" value="Close this ticket" class="btn" id="gray"/></form>
 </div>
 <div id="ticket_reply" style="display:none">
-	<form method="POST">
+	<form method="POST" enctype="multipart/form-data">
 		<input type="hidden" name="reply" value="ReplyToTicket"/>
 		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Type your reply here"></textarea><br/>
 		<p>Include a screenshot? (<em>Optional</em> - <a href="help_screenshots.php">Help</a>)<br/>

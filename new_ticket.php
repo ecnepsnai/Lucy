@@ -41,7 +41,6 @@
 		}
 		$sql = "CREATE  TABLE `" . $ticketid . "` (`UpdateID` INT NOT NULL AUTO_INCREMENT ,  `From` ENUM('Client','Agent') NULL ,  
 		`Email` VARCHAR(45) NULL ,  `Date` DATETIME NULL ,  `Message` MEDIUMTEXT NULL ,  `File` VARCHAR(25) NULL ,  PRIMARY KEY (`UpdateID`));";
-		echo($sql);
 		$result = mysql_query($sql);
 		if (!$result){
 			require("error_db.php");
@@ -54,7 +53,8 @@
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "ticket.php?id=" . $ticketid . "&notice=new\">Redirecting...");
 	}
 
-	//this command gets the application list.
+	//The list of applications is stored in the value type for the 'Application' field within ticketlist.
+	//This setting can be changed within Lucy's settings.
 	$sql = "DESCRIBE ticketlist application";
 	$request = mysql_query($sql);
 	if(!$request){
@@ -62,10 +62,10 @@
 	}
 	$response = mysql_fetch_array($request);
 	$apps = $response['Type'];
-	$apps = str_replace("enum(", "", $apps); //removes the enum( string.
+	$apps = str_replace("enum(", "", $apps); //removes the "enum(" string.
 	$apps = str_replace(")", "", $apps); //removes the closing enum bracket.
 	$apps = str_replace("'", "", $apps); //removes the literals.
-	$applist = explode(",", $apps);
+	$applist = explode(",", $apps); //explodes the string into an array.
 ?>
 <!doctype html>
 <title><?php echo(TITLE_NEW_TICKET . TITLE_SEPARATOR . TITLE_MAIN) ?></title>
@@ -97,7 +97,7 @@
 		return true;
 	}
 </script>
-<form method="POST" name="fm_ticket" onsubmit="return validateForm()">
+<form method="POST" name="fm_ticket" onsubmit="return validateForm()" enctype="multipart/form-data">
 	<p>
 		What is the application you are using?<br/>
 		<select name="app" class="txtglow">

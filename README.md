@@ -1,4 +1,7 @@
 # Lucy
+
+*NOTICE*: Lucy is in Pre-Alpha and is currently going through nightly (periodic) builds.
+
 Lucy is an easy to use and even easier to set up support system that just about anybody can use!
 
 ## Setup

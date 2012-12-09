@@ -70,14 +70,10 @@
 	$apps = str_replace(")", "", $apps); //removes the closing enum bracket.
 	$apps = str_replace("'", "", $apps); //removes the literals.
 	$applist = explode(",", $apps); //explodes the string into an array.
-?>
-<!doctype html>
-<title><?php echo(TITLE_NEW_TICKET . TITLE_SEPARATOR . TITLE_MAIN) ?></title>
-<link rel="stylesheet" href="img/loader.css">
-<link href="img/styles.css" rel="stylesheet" type="text/css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+documentCreate(TITLE_NEW_TICKET, True, False, null, null); ?>
 <div id="wrapper">
-<?php require("mdl_header.php"); ?>
+<?php writeHeader(); ?>
 <div id="content">
 <h2>Create a new ticket</h2>
 <script type="text/javascript">
@@ -158,5 +154,5 @@
 	<p><input type="submit" name="submit" value="Create Ticket" class="btn" id="blue"/></p>
 </form>
 </div>
-<?php require("mdl_footer.php"); ?>
+<?php writeFooter(); ?>
 </div>

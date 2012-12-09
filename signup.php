@@ -23,14 +23,9 @@ if(isset($_POST['submit'])){
 	}
 	echo("Welcome, " . $inp_name);
 }
-?>
-<!doctype html>
-<title><?php echo(TITLE_SIGNUP . TITLE_SEPARATOR . TITLE_MAIN) ?></title>
-<link rel="stylesheet" href="img/loader.css">
-<link href="img/styles.css" rel="stylesheet" type="text/css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+documentCreate(TITLE_SIGNUP, True, False, null, null); ?>
 <div id="wrapper">
-<?php require("mdl_header.php"); ?>
+<?php writeHeader(); ?>
 <div id="content">
 <h2>Signup</h2>
 <script type="text/javascript">
@@ -61,5 +56,5 @@ if(isset($_POST['submit'])){
 	<p><input type="submit" name="submit" value="Log in" class="btn" id="blue"/></p>
 </form>
 </div>
-<?php require("mdl_footer.php"); ?>
+<?php writeFooter(); ?>
 </div>

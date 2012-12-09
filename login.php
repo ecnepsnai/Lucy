@@ -1,5 +1,6 @@
 <?php
 require("session.php");
+$login_error = False;
 if($usr_IsSignedIn){
 	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "dash.php\">Redirecting...");
 }
@@ -25,45 +26,23 @@ if(isset($_POST['submit'])){
 	}
 	$row = mysql_fetch_array($request);
 	if(empty($row['id'])){
+		$login_error = True;
+	} elseif($row['type'] == "Ban"){
 		?>
-			<!doctype html>
-			<title>Error | Lucy</title>
-			<link rel="stylesheet" href="img/loader.css">
-			<link href="img/styles.css" rel="stylesheet" type="text/css">
-			<script src="js/jquery.js"></script>
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+			<?php documentCreate(TITLE_ERROR, False, False, null, null); ?>
 			<div id="wrapper">
-			<?php require("mdl_header.php"); ?>
-			<div id="content">
-			<h2>Incorrect Password</h2>
-			<p>Whoops, that password was not correct..</p>
-			</div>
-			<?php require("mdl_footer.php"); die(); ?>
-			</div>
-		<?php
-		die();
-	}
-	if($row['type'] == "Ban"){
-		?>
-			<!doctype html>
-			<title><?php echo(TITLE_ERROR . TITLE_SEPARATOR . TITLE_MAIN) ?></title>
-			<link rel="stylesheet" href="img/loader.css">
-			<link href="img/styles.css" rel="stylesheet" type="text/css">
-			<script src="js/jquery.js"></script>
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-			<div id="wrapper">
-			<?php require("mdl_header.php"); ?>
+			<?php writeHeader(); ?>
 			<div id="content">
 			<div class="notice" id="red">
 				<strong>Account Banned</strong><br/>
 				Your account has been banned.
 			</div>
 			</div>
-			<?php require("mdl_footer.php"); die(); ?>
+			<?php writeFooter(); ?>
 			</div>
 		<?php
 		die();
-	}
+	} else {
 		session_start();
 		echo session_id();
 		$_SESSION['id'] = $row['id'];
@@ -75,15 +54,12 @@ if(isset($_POST['submit'])){
 			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . $_GET['rdirect'] . "\">Redirecting...");
 		}
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "dash.php\">Redirecting...");
+	}
 }
 ?>
-<!doctype html>
-<title><?php echo(TITLE_LOGIN . TITLE_SEPARATOR . TITLE_MAIN) ?></title>
-<link rel="stylesheet" href="img/loader.css">
-<link href="img/styles.css" rel="stylesheet" type="text/css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<?php documentCreate(TITLE_LOGIN, False, False, null, null); ?>
 <div id="wrapper">
-<?php require("mdl_header.php"); ?>
+<?php writeHeader(); ?>
 <div id="content">
 	<?php
 		if($_GET['notice'] == "login"){
@@ -96,6 +72,15 @@ if(isset($_POST['submit'])){
 		}
 	?>
 <h2>Login</h2>
+<?php if($login_error) {
+	?>
+<div class="notice" id="red">
+	<strong>Incorrect Password</strong><br/>
+	Please try again...
+</div>
+	<?php
+}
+?>
 <script type="text/javascript">
 	function validateEmail(email) { 
 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -122,5 +107,5 @@ if(isset($_POST['submit'])){
 	<p><input type="submit" name="submit" value="Log in" class="btn" id="blue"/></p>
 </form>
 </div>
-<?php require("mdl_footer.php"); ?>
+<?php writeFooter(); ?>
 </div>

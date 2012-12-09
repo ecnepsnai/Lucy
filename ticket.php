@@ -78,14 +78,9 @@
 	if(mysql_num_rows($request) <= 0){
 		require("error_empty.php");
 	}
-?>
-<!doctype html>
-<title><?php echo(TITLE_TICKET . TITLE_SEPARATOR . TITLE_MAIN) ?></title>
-<link rel="stylesheet" href="img/loader.css">
-<link href="img/styles.css" rel="stylesheet" type="text/css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+documentCreate(TITLE_TICKET, True, False, null, null); ?>
 <div id="wrapper">
-<?php require("mdl_header.php"); ?>
+<?php writeHeader(); ?>
 <div id="content">
 <h2>Ticket Status</h2>
 <table class="ticket_info">
@@ -153,5 +148,5 @@ function hideTools() {
 </div>
 <?php } ?>
 </div>
-<?php require("mdl_footer.php"); ?>
+<?php writeFooter(); ?>
 </div>

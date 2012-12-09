@@ -12,6 +12,12 @@
 			if(!$request){
 				die("Uh oh.  Lucy wasn't able to create the user table!  The reason was: " . mysql_error());
 			}
+
+			$sql = "CREATE TABLE IF NOT EXISTS `applist` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(25) NOT NULL, `description` text NOT NULL, `version` varchar(20) NOT NULL, `platform` varchar(25) NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `name` (`name`) ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+			$request = mysql_query($sql);
+			if(!$request){
+				die("Uh oh.  Lucy wasn't able to create the app table!  The reason was: " . mysql_error());
+			}
 			$tables_Created = True;
 		}
 		if($_POST['user'] == "create"){

@@ -24,5 +24,9 @@ define("TITLE_DASH", "Dashboard");					// dash.php
 // This needs to be an integer.
 define("SESSION_EXPIRE", 1800);
 
-//Your imgur API key for Anonmyous API calls
-define("API_IMGUR", "");
+// Your imgur API key for Anonmyous API calls
+define("API_IMGUR", "41d5b4f978286511a8cff7cbad862f1d");
+
+
+// The copyright tag.  May include HTML
+define("FOOTER_COPYRIGHT", "Copyright &copy; Ian Spence 2012.");

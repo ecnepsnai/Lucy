@@ -63,7 +63,10 @@ if(empty($seo_tags)){$seo_tags = "web design, software development, web developm
 
 	// Writes the footer for the page.
 	function writeFooter(){ ?>
-<div id="footer">Copyright &copy; Ian Spence 2012.  Powered by the <a href="http://ianspence.com/lucy">Lucy Framework</a>.</div>
+<footer>
+	<p class="left"><?php echo(FOOTER_COPYRIGHT); ?></p>
+	<p class="right">Powered by the <a href="//ianspence.com/lucy">Lucy Framework</a>.</p>
+</footer>
 <?php }
 
 

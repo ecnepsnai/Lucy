@@ -90,7 +90,7 @@
 		require("error_db.php");
 	}
 
-documentCreate(TITLE_NEW_TICKET, True, False, null, null); ?>
+documentCreate(TITLE_NEW_TICKET, True); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">

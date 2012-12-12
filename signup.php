@@ -23,7 +23,7 @@ if(isset($_POST['submit'])){
 	}
 	echo("Welcome, " . $inp_name);
 }
-documentCreate(TITLE_SIGNUP, True, False, null, null); ?>
+documentCreate(TITLE_SIGNUP, True); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">

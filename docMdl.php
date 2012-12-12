@@ -3,10 +3,7 @@
 	// Writes the header tags for the document.
 	// $title 			= [string]			 The title of the page
 	// $include_jQ 		= [bool]			 If true, function will include jQuery in the head.
-	// $seo_write 		= [bool]			 If True, function will include the SEO tags.
-	// $seo_description = [optional /string] The description used for SEO.  Will use generic description if no value is provided.
-	// $seo_tags 		= [optional /string] The tags used for SEO.  Will use generic tags if no value is provided.
-	function documentCreate($title, $include_jQ, $seo_write, $seo_description, $seo_tags){ ?>
+	function documentCreate($title, $include_jQ){ ?>
 <!doctype html>
 <meta charset="utf-8">
 <!--[if lt IE 9]>
@@ -18,13 +15,8 @@
 <link rel="shortcut icon" type="image/x-icon" href="<?php echo(SERVER_DOMAIN); ?>img/favicon.ico">
 <?php if($include_jQ == True) { ?>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<?php } if($seo_write == True) {
-if(empty($seo_description)){$seo_description = "We are a small software development group run out on Vancouver, BC.";}
-if(empty($seo_tags)){$seo_tags = "web design, software development, web development, mobile development";}
-?>
-<meta name="description" content="<?php echo($seo_description); ?>"/>
-<meta name="keywords" content="<?php echo($seo_tags); ?>"/>
-<?php } }
+<?php }
+}
 
 
 

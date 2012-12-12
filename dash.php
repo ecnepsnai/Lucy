@@ -16,7 +16,7 @@
 		require("error_db.php");
 	}
 ?>
-<?php documentCreate(TITLE_DASH, False, False, null, null); ?>
+<?php documentCreate(TITLE_DASH, False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">

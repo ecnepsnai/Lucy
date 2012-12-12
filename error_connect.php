@@ -1,6 +1,6 @@
 <?php
 	require_once("session.php");
-	documentCreate(TITLE_ERROR, False, False, null, null); ?>
+	documentCreate(TITLE_ERROR, False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">

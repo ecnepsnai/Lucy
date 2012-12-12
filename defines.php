@@ -25,7 +25,7 @@ define("TITLE_DASH", "Dashboard");					// dash.php
 define("SESSION_EXPIRE", 1800);
 
 // Your imgur API key for Anonmyous API calls
-define("API_IMGUR", "41d5b4f978286511a8cff7cbad862f1d");
+define("API_IMGUR", "");
 
 
 // The copyright tag.  May include HTML

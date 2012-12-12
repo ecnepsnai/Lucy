@@ -7,7 +7,7 @@
 			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "dash.php\">Redirecting...");
 		}
 	}
-	documentCreate("Welcome", False, True, null, null);
+	documentCreate("Welcome", False);
 ?>
 <div id="wrapper">
 <?php writeHeader(); ?>

@@ -29,7 +29,7 @@ if(isset($_POST['submit'])){
 		$login_error = True;
 	} elseif($row['type'] == "Ban"){
 		?>
-			<?php documentCreate(TITLE_ERROR, False, False, null, null); ?>
+			<?php documentCreate(TITLE_ERROR, False); ?>
 			<div id="wrapper">
 			<?php writeHeader(); ?>
 			<div id="content">
@@ -57,7 +57,7 @@ if(isset($_POST['submit'])){
 	}
 }
 ?>
-<?php documentCreate(TITLE_LOGIN, False, False, null, null); ?>
+<?php documentCreate(TITLE_LOGIN, False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">

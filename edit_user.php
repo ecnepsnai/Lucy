@@ -20,7 +20,7 @@
 	$sql = "SELECT * FROM userlist WHERE id ='" . $id . "';";
 	$request = mysql_query($sql);
 	if(mysql_num_rows($request) == 0){
-		documentCreate(TITLE_ERROR, False, False, null, null); ?>
+		documentCreate(TITLE_ERROR, False); ?>
 		<div id="wrapper">
 		<?php writeHeader(); ?>
 		<div id="content">
@@ -33,7 +33,7 @@
 		die();
 	}
 	$user = mysql_fetch_array($request);
-documentCreate("Edit User", False, False, null, null); ?>
+documentCreate("Edit User", False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">

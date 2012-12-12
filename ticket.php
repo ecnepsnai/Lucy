@@ -104,7 +104,7 @@
 
 	// If no data was returned -- no ticket does not exist.
 	if(mysql_num_rows($request) != 1){ 
-	documentCreate(TITLE_ERROR, False, False, null, null); ?>
+	documentCreate(TITLE_ERROR, False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">
@@ -130,7 +130,7 @@
 		require("error_empty.php");
 	}
 
-documentCreate(TITLE_TICKET, True, False, null, null); ?>
+documentCreate(TITLE_TICKET, True); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">

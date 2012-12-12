@@ -1,5 +1,5 @@
 <?php
-	require("session.php");
+	require_once("session.php");
 	documentCreate(TITLE_ERROR, False, False, null, null); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>

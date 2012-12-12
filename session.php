@@ -11,6 +11,11 @@
 		$_SESSION['LAST_ACTIVITY'] = time();
 
 		// We need to define these variables so they are available on the global scope.
+		$usr_ID = $_SESSION['id'];
+		$usr_Name = $_SESSION['name'];
+		$usr_Email = $_SESSION['email'];
+		$usr_Type = $_SESSION['type'];
+
 		define(usr_ID, $_SESSION['id']);
 		define(usr_Name, $_SESSION['name']);
 		define(usr_email, $_SESSION['Email']);

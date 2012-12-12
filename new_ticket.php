@@ -1,10 +1,18 @@
 <?php
 	require("session.php");
+
+	// This page requires a user to be signed in.
 	if(!$usr_IsSignedIn){
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "login.php?rdirect=new_ticket.php&notice=login\">Redirecting...");
 	}
+
+
 	require("db_connect.php");
+
+	// User submitted a new ticket.
 	if(isset($_POST['submit'])){
+
+		// Getting & Setting the ticket information.
 		$ticketid = "HP_" . rand(0, 9) . chr(97 + mt_rand(0, 25)) . rand(1000, 9999);
 		$application = mysql_real_escape_string($_POST['app']);
 		$version = mysql_real_escape_string($_POST['version']);
@@ -14,62 +22,73 @@
 		$isFile = False;
 		$filename = $_FILES['screenshot']['tmp_name'];
 
-		//Trims the message to the maximum length of MEDIUMTEXT.
-		//IE and Opera don't support the maxlength attribute for textarea, so this is the fallback.
+		// Trims the message to the maximum length of MEDIUMTEXT.
+		// IE and Opera don't support the maxlength attribute for textarea, so this is the fallback.
 		$message = substr($message, 0, 16777216);
 
-		//get files - if any //
-		if($filename != "") {
+
+		// Tests to see if a screenshot was included.
+		if (empty($filename)) {
+			$img_hash = "";
+		} else {
+
+			// Getting the file information.
 			$isFile = True;
 			$handle = fopen($filename, "r");
 			$data = fread($handle, filesize($filename));
 			$pvars = array('image' => base64_encode($data), 'key' => API_IMGUR);
 			$timeout = 30;
+
+			// Setting up the cUrl uploader.
 			$curl = curl_init();
 			curl_setopt($curl, CURLOPT_URL, 'http://api.imgur.com/2/upload.json');
 			curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
 			curl_setopt($curl, CURLOPT_POST, 1);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $pvars);
+
+			// Uploading to Imgur.
 			$json = curl_exec($curl);
 			curl_close ($curl);
 			$data = json_decode($json,true);
+
+			// Getting the image hash from the response.
 			$img_hash = $data["upload"]["image"]["hash"];
-		} else {
-			$img_hash = "";
 		}
-		$sql = "INSERT INTO ticketlist (id, name, email, application, version, os, status, subject) VALUES ('" . $ticketid . "','" . $usr_Name . "','" . $usr_Email . "','" . $application . "', '" . $version . "', 'Open', " . $os . "', '" . substr($message, 0, 50) . "')";
+
+		// Inserting the ticket into the master ticket list.
+		$sql = "INSERT INTO ticketlist (id, name, email, application, version, os, status, subject, date, lastreply) ";
+		$sql.= "VALUES ('" . $ticketid . "','" . usr_Name . "','" . usr_Email . "','" . $application . "', '" . $version . "', '" . $os . "', 'Open', '" . substr($message, 0, 50) . "', '" . date("Y-m-d H:i:s") . "', 'Client')";
 		$request = mysql_query($sql);
 		if(!$request){
 			require("error_db.php");
 		}
+
+		// Creating the specific table for the ticket.
 		$sql = "CREATE  TABLE `" . $ticketid . "` (`UpdateID` INT NOT NULL AUTO_INCREMENT ,  `From` ENUM('Client','Agent') NULL ,  
 		`Email` VARCHAR(45) NULL ,  `Date` DATETIME NULL ,  `Message` MEDIUMTEXT NULL ,  `File` VARCHAR(25) NULL ,  PRIMARY KEY (`UpdateID`));";
 		$result = mysql_query($sql);
 		if (!$result){
 			require("error_db.php");
 		}
-		$sql = "INSERT INTO `" . $ticketid . "` (`From`, `Email`, `Date`, `Message`, `File`) VALUES ('Client', '" . $usr_Email . "', '" . $date . "', '" . $message . "', '" . $img_hash . "');";
+
+		// Inserting information into that table.
+		$sql = "INSERT INTO `" . $ticketid . "` (`From`, `Email`, `Date`, `Message`, `File`) VALUES ('Client', '" . usr_Email . "', '" . $date . "', '" . $message . "', '" . $img_hash . "');";
 		$result = mysql_query($sql);
 		if (!$result){
 			require("error_db.php");
 		}
+
+		// Dies when complete.
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "ticket.php?id=" . $ticketid . "&notice=new\">Redirecting...");
 	}
 
-	//The list of applications is stored in the value type for the 'Application' field within ticketlist.
-	//This setting can be changed within Lucy's settings.
-	$sql = "DESCRIBE ticketlist application";
+	//Get the list of applications from applist
+	$sql = "SELECT name FROM applist";
 	$request = mysql_query($sql);
 	if(!$request){
 		require("error_db.php");
 	}
-	$response = mysql_fetch_array($request);
-	$apps = $response['Type'];
-	$apps = str_replace("enum(", "", $apps); //removes the "enum(" string.
-	$apps = str_replace(")", "", $apps); //removes the closing enum bracket.
-	$apps = str_replace("'", "", $apps); //removes the literals.
-	$applist = explode(",", $apps); //explodes the string into an array.
 
 documentCreate(TITLE_NEW_TICKET, True, False, null, null); ?>
 <div id="wrapper">
@@ -103,8 +122,8 @@ documentCreate(TITLE_NEW_TICKET, True, False, null, null); ?>
 		<select name="app" class="txtglow">
 			<option value="">Select One..</option>
 			<?php
-				foreach($applist as $ap){
-					echo('<option value="' . $ap . '">' . $ap . '</option>');
+				while($ap = mysql_fetch_array($request)){
+					echo('<option value="' . $ap['name'] . '">' . $ap['name'] . '</option>');
 				}
 			?>
 		</select>

@@ -6,7 +6,7 @@
 <div id="content">
 	<div class="notice" id="red">
 		<strong>Database Error.  It was:</strong><br/>
-		<?php echo(mysql_error()); ?>
+		<?php echo($e); ?>
 	</div>
 </div>
 <?php writeFooter(); ?>

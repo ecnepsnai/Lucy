@@ -17,21 +17,22 @@
 		$sql = "SELECT * FROM ticketlist";
 	} else {
 		$hasFilters = True;
-		// We need an initial value that will always return true so that we can just concatenate "AND ...." to the query.
-		$sql = "SELECT * FROM ticketlist WHERE 1=1 AND";
+		// We need an initial value that will always return true so that we can just concatenate "AND ..." to the query.
+		$sql = "SELECT * FROM ticketlist WHERE 1=1";
 		if(isset($application)){
-			$sql.= "AND application = '" . mysql_real_escape_string($application) . "'";
+			$sql.= " AND application = '" . mysql_real_escape_string($application) . "'";
 		}
 		if(isset($version)){
-			$sql.= "AND version = '" . mysql_real_escape_string($version) . "'";
+			$sql.= " AND version = '" . mysql_real_escape_string($version) . "'";
 		}
 		if(isset($os)){
-			$sql.= "AND os = '" . mysql_real_escape_string($os) . "'";
+			$sql.= " AND os = '" . mysql_real_escape_string($os) . "'";
 		}
 		if(isset($status)){
-			$sql.= "AND status = '" . mysql_real_escape_string($status) . "'";
+			$sql.= " AND status = '" . mysql_real_escape_string($status) . "'";
 		}
 	}
+	echo($sql);
 	$ticket_request = mysql_query($sql);
 	if(!$ticket_request){
 		require("../error_db.php");
@@ -90,18 +91,18 @@
 			</form>
 		</div>
 	<?php 
-		if(mysql_num_rows($request) == 0){
+		if(mysql_num_rows($ticket_request) == 0){
 			echo('<h2>No tickets found.</h2>');
 		} else {
 			echo('<h2>Current Tickets</h2>');
-			while($ticket_info = mysql_fetch_array($request)) { ?>
+			while($ticket_info = mysql_fetch_array($ticket_request)) { ?>
 				<div class="ticket_info" onClick="parent.location='<?php echo(SERVER_DOMAIN . "ticket.php?id=" . $ticket_info['id']); ?>'" style="cursor:pointer">
 				<strong>Ticket ID:</strong> <?php echo($ticket_info['id']); ?><br/>
 				<strong>Application:</strong> <?php echo($ticket_info['application']); ?><br/>
 				<strong>Version:</strong> <?php echo($ticket_info['version']); ?><br/>
 				<strong>Operating System:</strong> <?php echo($ticket_info['os']); ?><br/>
 				<strong>Status:</strong> <?php echo($ticket_info['status']); ?><hr/>
-				<?php echo($ticket_info['subject']); ?>
+				<?php echo($ticket_info['subject'] . '...'); ?>
 				</div>
 	<?php } } ?>
 </div>

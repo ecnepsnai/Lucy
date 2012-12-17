@@ -13,8 +13,8 @@
 	}
 
 
-	require("db_connect.php");
-	$id = mysql_real_escape_string($id);
+	require("sql.php");
+	$id = addslashes($id);
 
 
 	// User chose to close the ticket.
@@ -22,15 +22,22 @@
 
 		// Updates the master ticketlist.
 		$sql = "UPDATE ticketlist SET status = 'Closed' WHERE  id = '" . $id . "';";
-		$request = mysql_query($sql);
-		if(!$request){
+		try {
+			sqlQuery($sql);
+		} catch (Exception $e) {
 			require("error_db.php");
 		}
 
 		// Inserts a CLOSED message into the ticket table.
-		$sql = "INSERT INTO " . $id . " (`From`, `Email`, `Date`, `Message`) VALUES ('Client', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', 'CLOSED');";
-		$request = mysql_query($sql);
-		if(!$request){
+		$sql = "INSERT INTO " . $id . " (`Email`, `Date`, `Message`, `From`) VALUES ('" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', 'CLOSED', '";
+		if($usr_Type == "Admin"){
+			$sql.= "Agent');";
+		} else {
+			$sql.= "Client');";
+		}
+		try {
+			sqlQuery($sql);
+		} catch (Exception $e) {
 			require("error_db.php");
 		}
 	}
@@ -42,7 +49,7 @@
 		if(empty($_POST['message'])){
 			require("error_empty.php");
 		}
-		$message = mysql_real_escape_string($_POST['message']);
+		$message = addslashes($_POST['message']);
 
 		//Trims the message to the maximum length of MEDIUMTEXT.
 		//IE and Opera don't support the maxlength attribute for textarea, so this is the fallback.
@@ -82,11 +89,30 @@
 		}
 
 		// Inserts the new entry into the ticket table.
-		$sql = "INSERT INTO " . $id . " (From, Email, Date, Message,File) VALUES ('Client', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', '" . $message . "', '" . $img_hash . "');";
-		$request = mysql_query($sql);
-		if(!$request){
+		$sql = "INSERT INTO " . $id . " (`Email`, `Date`, `Message`, `File`, `From`) VALUES ('" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', '" . $message . "', '" . $img_hash . "', '";
+		if($usr_Type == "Admin"){
+			$sql.= "Agent');";
+		} else {
+			$sql.= "Client');";
+		}
+		try {
+			sqlQuery($sql);
+		} catch (Exception $e) {
 			require("error_db.php");
 		}
+
+		if($usr_Type == "Admin"){
+			$sql = "UPDATE ticketlist SET lastreply = 'Agent' WHERE  id = '" . $id . "';";
+		} else {
+			$sql = "UPDATE ticketlist SET lastreply = 'Client' WHERE  id = '" . $id . "';";
+		}
+		try {
+			sqlQuery($sql);
+		} catch (Exception $e) {
+			require("error_db.php");
+		}
+
+		
 	}
 
 	// Getting the ticket information from the master ticketlist.
@@ -96,14 +122,14 @@
 	if($usr_Type != "Admin"){
 		$sql.= " AND email = '" . $usr_Email . "'";
 	}
-
-	$request = mysql_query($sql);
-	if(!$request){
+	try {
+		$ticket_info = sqlQuery($sql, True);
+	} catch (Exception $e) {
 		require("error_db.php");
 	}
 
 	// If no data was returned -- no ticket does not exist.
-	if(mysql_num_rows($request) != 1){ 
+	if(count($ticket_info) == 0){ 
 	documentCreate(TITLE_ERROR, False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
@@ -115,18 +141,20 @@
 </div>
 <?php writeFooter(); ?>
 </div><?php die();  }
-	$ticket_info = mysql_fetch_array($request);
+
+
 
 	// Getting everything from the ticket table.
 	$sql = "SELECT * FROM " . $id;
-	$request = mysql_query($sql);
-	if(!$request){
+	try {
+		$ticket_messages = sqlQuery($sql);
+	} catch (Exception $e) {
 		require("error_db.php");
 	}
 
 	// THIS SHOULD NOT RETURN TRUE
 	// If the ticket table has no data in it.
-	if(mysql_num_rows($request) <= 0){
+	if(count($ticket_messages) == 0){
 		require("error_empty.php");
 	}
 
@@ -150,16 +178,15 @@ documentCreate(TITLE_TICKET, True); ?>
 			<strong>Date Created:</strong> <?php echo(date_format(date_create($ticket_info['date']), 'l, F jS \a\t g:i a')); ?> 
 		</td>
 	</tr>
-</table>
+</table><br/>
 <?php
-	while($message = mysql_fetch_array($request)) {
-
+	foreach($ticket_messages as $message){
 		// If the message was from the Client.
 		if($message['From'] == "Client"){
 
 			// If the message is the word CLOSED, the ticket has been closed.
 			if($message['Message'] == "CLOSED") { ?>
-<div class="notice" id="yellow"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?>closed this ticket.</strong></div>
+<div class="notice" id="yellow"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
 					<?php }
 
 					// The message was not CLOSED, writing the message and screenshot (if any)
@@ -191,8 +218,7 @@ else {
 
 
 // If the ticket is open, we display the ticket options.
-	if($ticket_info['status'] == "Open") { 
-		if($usr_Type == "Admin") { ?>Go to the <a href="">Admin Dashboard</a> to manage this ticket.<?php } else { ?>
+	if($ticket_info['status'] == "Open") { ?>
 <script type="text/javascript">
 function hideTools() {
 	$('#ticket_options').hide();
@@ -211,7 +237,7 @@ function hideTools() {
 		<input type="submit" name"reply" value="Add Reply" class="btn" id="blue"/>
 	</form>
 </div>
-<?php } } ?>
+<?php } ?>
 </div>
 <?php writeFooter(); ?>
 </div>

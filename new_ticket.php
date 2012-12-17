@@ -7,17 +7,17 @@
 	}
 
 
-	require("db_connect.php");
+	require("sql.php");
 
 	// User submitted a new ticket.
 	if(isset($_POST['submit'])){
 
 		// Getting & Setting the ticket information.
 		$ticketid = "HP_" . rand(0, 9) . chr(97 + mt_rand(0, 25)) . rand(1000, 9999);
-		$application = mysql_real_escape_string($_POST['app']);
-		$version = mysql_real_escape_string($_POST['version']);
-		$os = mysql_real_escape_string($_POST['os']);
-		$message = mysql_real_escape_string($_POST['message']);
+		$application = addslashes($_POST['app']);
+		$version = addslashes($_POST['version']);
+		$os = addslashes($_POST['os']);
+		$message = addslashes($_POST['message']);
 		$date = date("Y-m-d H:i:s"); 
 		$isFile = False;
 		$filename = $_FILES['screenshot']['tmp_name'];
@@ -58,24 +58,27 @@
 
 		// Inserting the ticket into the master ticket list.
 		$sql = "INSERT INTO ticketlist (id, name, email, application, version, os, status, subject, date, lastreply) ";
-		$sql.= "VALUES ('" . $ticketid . "','" . usr_Name . "','" . usr_Email . "','" . $application . "', '" . $version . "', '" . $os . "', 'Open', '" . substr($message, 0, 50) . "', '" . date("Y-m-d H:i:s") . "', 'Client')";
-		$request = mysql_query($sql);
-		if(!$request){
+		$sql.= "VALUES ('" . $ticketid . "','" . $usr_Name . "','" . $usr_Email . "','" . $application . "', '" . $version . "', '" . $os . "', 'Open', '" . substr($message, 0, 50) . "', '" . date("Y-m-d H:i:s") . "', 'Client')";
+		try {
+			sqlQuery($sql);
+		} catch (Exception $e) {
 			require("error_db.php");
 		}
 
 		// Creating the specific table for the ticket.
 		$sql = "CREATE  TABLE `" . $ticketid . "` (`UpdateID` INT NOT NULL AUTO_INCREMENT ,  `From` ENUM('Client','Agent') NULL ,  
 		`Email` VARCHAR(45) NULL ,  `Date` DATETIME NULL ,  `Message` MEDIUMTEXT NULL ,  `File` VARCHAR(25) NULL ,  PRIMARY KEY (`UpdateID`));";
-		$result = mysql_query($sql);
-		if (!$result){
+		try {
+			sqlQuery($sql);
+		} catch (Exception $e) {
 			require("error_db.php");
 		}
 
 		// Inserting information into that table.
-		$sql = "INSERT INTO `" . $ticketid . "` (`From`, `Email`, `Date`, `Message`, `File`) VALUES ('Client', '" . usr_Email . "', '" . $date . "', '" . $message . "', '" . $img_hash . "');";
-		$result = mysql_query($sql);
-		if (!$result){
+		$sql = "INSERT INTO `" . $ticketid . "` (`From`, `Email`, `Date`, `Message`, `File`) VALUES ('Client', '" . $usr_Email . "', '" . $date . "', '" . $message . "', '" . $img_hash . "');";
+		try {
+			sqlQuery($sql);
+		} catch (Exception $e) {
 			require("error_db.php");
 		}
 
@@ -85,8 +88,9 @@
 
 	//Get the list of applications from applist
 	$sql = "SELECT name FROM applist";
-	$request = mysql_query($sql);
-	if(!$request){
+	try {
+		$apps = sqlQuery($sql);
+	} catch (Exception $e) {
 		require("error_db.php");
 	}
 
@@ -122,8 +126,8 @@ documentCreate(TITLE_NEW_TICKET, True); ?>
 		<select name="app" class="txtglow">
 			<option value="">Select One..</option>
 			<?php
-				while($ap = mysql_fetch_array($request)){
-					echo('<option value="' . $ap['name'] . '">' . $ap['name'] . '</option>');
+				foreach($apps as $app){
+					echo('<option value="' . $app['name'] . '">' . $app['name'] . '</option>');
 				}
 			?>
 		</select>
@@ -156,9 +160,10 @@ documentCreate(TITLE_NEW_TICKET, True); ?>
 			<option value="UBU12.04">Ubuntu: 12.04LTS - Precise Pangolin</option>
 			<option value="UBU12.10">Ubuntu: 12.10 - Quantal Quetzal</option>
 			<option disabled="disabled">Apple iOS</option>
-			<option value="iOS4">iOS 4</option>
-			<option value="iOS5">iOS 5</option>
-			<option value="iOS6">iOS 6</option>
+			<option value="iOS421">iOS 4.2.1</option>
+			<option value="iOS511">iOS 5.1.1</option>
+			<option value="iOS601">iOS 6.0.1</option>
+			<option value="iOS61B3">iOS 6.1 Beta 3</option>
 		</select>
 	</p>
 	<div id="osresult" class="message_client" style="display: none;"></div>

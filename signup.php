@@ -9,19 +9,20 @@ if(isset($_POST['submit'])){
 	if(empty($raw_name) || empty($raw_email) || empty($_POST['pwd'])){
 		require("error_empty.php");
 	}
-    $salt = mt_rand(10, 99);
+	$salt = mt_rand(10, 99);
 	$hashed_password = md5($salt . md5($_POST['pwd']));
 	require("db_connect.php");
 	$inp_name = mysql_real_escape_string($raw_name);
 	$inp_email = mysql_real_escape_string($raw_email);
 	$sql = "INSERT INTO  userlist (type, name, email, password, date_registered, salt)"; 
-    $sql.= " VALUES ('Client',  '" . $inp_name . "',  '" . $inp_email . "',  '";
-    $sql.= $hashed_password . "',  '" . date("Y-m-d") . "', '". $salt ."');";
-    $request = mysql_query($sql);
-	if(!$request){
+	$sql.= " VALUES ('Client',  '" . $inp_name . "',  '" . $inp_email . "',  '";
+	$sql.= $hashed_password . "',  '" . date("Y-m-d") . "', '". $salt ."');";
+	try {
+		sqlQuery($sql, True);
+	} catch (Exception $e) {
 		require("error_db.php");
 	}
-	echo("Welcome, " . $inp_name);
+	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "new_ticket.php\">Redirecting...");
 }
 documentCreate(TITLE_SIGNUP, True); ?>
 <div id="wrapper">

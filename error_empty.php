@@ -4,7 +4,7 @@
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">
-	<div class="notice" id="red">
+	<div class="notice" id="yellow">
 		<strong>Missing Information</strong><br/>
 		Uh oh!  It looks like something was left out on that last page.
 	</div>

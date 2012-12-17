@@ -18,7 +18,7 @@
 
 		define(usr_ID, $_SESSION['id']);
 		define(usr_Name, $_SESSION['name']);
-		define(usr_email, $_SESSION['Email']);
+		define(usr_Email, $_SESSION['Email']);
 		$usr_IsSignedIn = True;
 		define(usr_Type, $_SESSION['type']);
 	}

@@ -32,7 +32,7 @@ define("API_IMGUR", "");
 
 // reCAPTCHA
 // If you want to use reCAPTCHA for user creation and ticket submission enable this setting.
-define("reCAP_enable", True);
+define("reCAP_enable", False);
 
 // Your reCAPTCHA public key.
 define("reCAP_public", "");

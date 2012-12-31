@@ -1,5 +1,6 @@
 <?php
-require("session.php");
+require("assets/lib/session.php");
+require("assets/lib/sql.php");
 $login_error = False;
 
 // Obviously if the user is already signed in, we don't let them log in again.
@@ -16,7 +17,6 @@ if(isset($_POST['submit'])){
 	}
 
 	// Preparing the first sql request.
-	require("sql.php");
 	$inp_email = addslashes($raw_email);
 	// Ask for user salt first, then verify, THEN get rest of data
 	$sql = "SELECT email, salt FROM userlist WHERE email = '". $inp_email . "'";
@@ -52,15 +52,21 @@ if(isset($_POST['submit'])){
 		<?php
 		die();
 	} else {
+
+		// Creating the session data for the user.
 		session_start();
 		$_SESSION['id'] = $user['id'];
 		$_SESSION['name'] = $user['name'];
 		$_SESSION['type'] = $user['type'];
 		$_SESSION['email'] = $user['email'];
 		$_SESSION['LAST_ACTIVITY'] = time();
+
+		// If there was a redirect parameter set, navigate to that url.  Will only work for local urls.
 		if($_GET['rdirect']){
 			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . $_GET['rdirect'] . "\">Redirecting...");
 		}
+
+		// Moves the user to the dash.
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "dash.php\">Redirecting...");
 	}
 }
@@ -114,6 +120,10 @@ if(isset($_POST['submit'])){
 	<p>Password:<br/><input type="password" name="pwd" class="txtglow" size="45"/></p>
 	<p><input type="submit" name="submit" value="Log in" class="btn" id="blue"/></p>
 </form>
+<a href="signup.php">Need an account?</a> | <a href="forgot.php">Forgot your password?</a>
+<div id="SPACE">
+	<!-- Space space wanna go to space yes please space. Space space. Go to space. -->
+</div>
 </div>
 <?php writeFooter(); ?>
 </div>

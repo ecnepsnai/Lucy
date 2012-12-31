@@ -1,12 +1,12 @@
 <?php
-	require("session.php");
+	require("assets/lib/session.php");
 
 	// This page requires a user to be signed in.
 	if(!$usr_IsSignedIn){
 		require("error_auth.php");
 	}
 
-	require("sql.php");
+	require("assets/lib/sql.php");
 
 	$sql = "SELECT * FROM userlist WHERE id = '" . $usr_ID . "'";
 
@@ -29,21 +29,23 @@
 		<?php writeFooter(); ?></div><?php die();  
 	}
 
-	documentCreate("Your Profile", False); ?>
+	documentCreate("Your Profile", True); ?>
 	<div id="wrapper">
 		<?php writeHeader(); ?>
 	<div id="content">
 		<?php
 
-		$grav_url = "http://www.gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?d=" . "&s=200";
+		$grav_url = "http://www.gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?d=" . "&s=148";
 
 		?>
-		<img src="<?php echo $grav_url; ?>" alt="Cover photo." class="profileimg"/>
-			<strong>Name:</strong> <?php echo($user['name']); ?><br/>
-			<strong>Email:</strong> <?php echo($user['email']); ?><br/>
-			<strong>Registered:</strong> <?php echo(date_format(date_create($user['date_created']), 'F j, Y')); ?>
-					<hr/>
-					<a href="admin/edit_user.php?id=<?php echo($user['id']); ?>">Edit User</a> | <a href="admin/del_user.php?id=<?php echo($user['id']); ?>">Delete User</a>
+		<div id="usr_img" style="background:url(<?php echo $grav_url; ?>);"></div>
+		<strong>Name:</strong> <?php echo($user['name']); ?><br/>
+		<strong>Email:</strong> <?php echo($user['email']); ?><br/>
+		<strong>Registered:</strong> <?php echo(date_format(date_create($user['date_registered']), 'F j, Y')); ?><br/>
+		<strong>Your Computers Specs:</strong> <?php echo($user['rig_specs']); ?>
+		<hr/>
+		<a href="edit_user.php?id=<?php echo($user['id']); ?>">Edit User</a> | <a href="admin_del_user.php?id=<?php echo($user['id']); ?>">Delete User</a>
 	</div>
+	<div id="SPACE"></div>
 	<?php writeFooter(); ?>
 </div>

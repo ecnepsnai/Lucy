@@ -1,5 +1,5 @@
 <?php
-	require_once("session.php");
+	require_once("assets/lib/session.php");
 	documentCreate(TITLE_ERROR, False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>

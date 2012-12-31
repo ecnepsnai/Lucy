@@ -1,17 +1,17 @@
 <?php
-	require("session.php");
+	require("assets/lib/session.php");
 	if(!$usr_IsSignedIn){
 		//redirects a anonymous user.
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "login.php?notice=login\">Redirecting...");
 	}
-	require("sql.php");
+	require("assets/lib/sql.php");
 	if($usr_Type == "Admin"){
 		$sql = "SELECT * FROM ticketlist";
 	} else {
 		$sql = "SELECT * FROM ticketlist WHERE name = '" . $usr_Name . "' AND email ='" . $usr_Email . "'";
 	}
 	try {
-		$tickets = sqlQuery($sql);
+		$tickets = sqlQuery($sql, False);
 	} catch (Exception $e) {
 		require("error_db.php");
 	}

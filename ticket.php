@@ -1,5 +1,5 @@
 <?php
-	require("session.php");
+	require("assets/lib/session.php");
 
 	// This page requires a user to be signed in.
 	if(!$usr_IsSignedIn){
@@ -13,7 +13,7 @@
 	}
 
 
-	require("sql.php");
+	require("assets/lib/sql.php");
 	$id = addslashes($id);
 
 

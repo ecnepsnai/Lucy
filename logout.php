@@ -1,5 +1,5 @@
 <?php
-require("defines.php");
+require("assets/lib/defines.php");
 	session_start();
 	session_unset();
 	session_destroy();

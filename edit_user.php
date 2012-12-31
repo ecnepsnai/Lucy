@@ -1,43 +1,48 @@
 <?php
-	require("session.php");
+	require("assets/lib/session.php");
+
+	// This page requires a user to be signed in.
 	if($usr_IsSignedIn != True) {
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "login.php?notice=login\">Redirecting...");
 	}
-	$id = $usr_ID;
-	require("db_connect.php");
-	$id = mysql_real_escape_string($id);
+
+	// Getting the ID.
+	if($usr_Type == "Admin"){
+		if(isset($_GET['id'])){
+			$id = $_GET['id'];
+		} else {
+			$id = $usr_ID;
+		}
+	} else {
+		$id = $usr_ID;
+	}
+	require("assets/lib/sql.php");
+	$id = addslashes($id);
+
+	// User chose to edit the user.
 	if(isset($_POST['submit'])){
-		$name = mysql_real_escape_string(trim($_POST['name']));
-		$email = mysql_real_escape_string(trim($_POST['email']));
-		$specs = mysql_real_escape_string(trim($_POST['specs']));
+		$name = addslashes(trim($_POST['name']));
+		$email = addslashes(trim($_POST['email']));
+		$specs = addslashes(trim($_POST['specs']));
 		$sql = "UPDATE userlist SET name = '" . $name . "', email = '" . $email . "', rig_specs = '" . $specs . "' WHERE id = '" . $id . "';";
-		$request = mysql_query($sql);
-		if(!$request){
+		try{
+			sqlQuery($sql, False);
+		} catch (Exception $e){
 			require("error_db.php");
 		}
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "profile.php?id=" . $id . "&change=save\">Redirecting...");
 	}
 	$sql = "SELECT * FROM userlist WHERE id ='" . $id . "';";
-	$request = mysql_query($sql);
-	if(mysql_num_rows($request) == 0){
-		documentCreate(TITLE_ERROR, False); ?>
-		<div id="wrapper">
-		<?php writeHeader(); ?>
-		<div id="content">
-		<h2>User Not Found</h2>
-		<p>The UserID you specified does not exist.</p>
-		</div>
-		<?php writeFooter(); ?>
-		</div>
-		<?php
-		die();
+	try{
+		$user = sqlQuery($sql, True);
+	} catch (Exception $e){
+		require("error-db.php");
 	}
-	$user = mysql_fetch_array($request);
 documentCreate("Edit User", False); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">
-<h2>Edit User: <?php echo($user['name']); ?></h2>
+<h1>Edit User: <?php echo($user['name']); ?></h1>
 <script type="text/javascript">
 	function validateEmail(email) { 
 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

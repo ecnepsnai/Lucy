@@ -1,5 +1,12 @@
 <?php
-	require("session.php");
+	require("assets/lib/session.php");
+	$val_error = null;
+
+	// Requires the captcha library if reCAP is enabled.
+	if(reCAP_enable){
+		require("assets/lib/recaptchalib.php");
+	}
+
 
 	// This page requires a user to be signed in.
 	if(!$usr_IsSignedIn){
@@ -7,10 +14,24 @@
 	}
 
 
-	require("sql.php");
+	require("assets/lib/sql.php");
 
 	// User submitted a new ticket.
 	if(isset($_POST['submit'])){
+		// Validate the form if Javascript failed
+		if(empty($_POST['app']) || empty($_POST['version']) || empty($_POST['os']) || empty($_POST['message'])){
+			$val_error = True;
+			goto writeDOC;
+		}
+
+		// Validates the reCAPTICHA challenge if enabled.
+		if(reCAP_enable){
+			$resp = recaptcha_check_answer (reCAP_private, $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
+			if (!$resp->is_valid) {
+				$cap_error = True;
+				goto writeDOC;
+			}
+		}
 
 		// Getting & Setting the ticket information.
 		$ticketid = "HP_" . rand(0, 9) . chr(97 + mt_rand(0, 25)) . rand(1000, 9999);
@@ -60,7 +81,7 @@
 		$sql = "INSERT INTO ticketlist (id, name, email, application, version, os, status, subject, date, lastreply) ";
 		$sql.= "VALUES ('" . $ticketid . "','" . $usr_Name . "','" . $usr_Email . "','" . $application . "', '" . $version . "', '" . $os . "', 'Open', '" . substr($message, 0, 50) . "', '" . date("Y-m-d H:i:s") . "', 'Client')";
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, False);
 		} catch (Exception $e) {
 			require("error_db.php");
 		}
@@ -69,7 +90,7 @@
 		$sql = "CREATE  TABLE `" . $ticketid . "` (`UpdateID` INT NOT NULL AUTO_INCREMENT ,  `From` ENUM('Client','Agent') NULL ,  
 		`Email` VARCHAR(45) NULL ,  `Date` DATETIME NULL ,  `Message` MEDIUMTEXT NULL ,  `File` VARCHAR(25) NULL ,  PRIMARY KEY (`UpdateID`));";
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, False);
 		} catch (Exception $e) {
 			require("error_db.php");
 		}
@@ -77,7 +98,7 @@
 		// Inserting information into that table.
 		$sql = "INSERT INTO `" . $ticketid . "` (`From`, `Email`, `Date`, `Message`, `File`) VALUES ('Client', '" . $usr_Email . "', '" . $date . "', '" . $message . "', '" . $img_hash . "');";
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, False);
 		} catch (Exception $e) {
 			require("error_db.php");
 		}
@@ -85,11 +106,11 @@
 		// Dies when complete.
 		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "ticket.php?id=" . $ticketid . "&notice=new\">Redirecting...");
 	}
-
+writeDOC:
 	//Get the list of applications from applist
 	$sql = "SELECT name FROM applist";
 	try {
-		$apps = sqlQuery($sql);
+		$apps = sqlQuery($sql, False);
 	} catch (Exception $e) {
 		require("error_db.php");
 	}
@@ -98,7 +119,12 @@ documentCreate(TITLE_NEW_TICKET, True); ?>
 <div id="wrapper">
 <?php writeHeader(); ?>
 <div id="content">
-<h2>Create a new ticket</h2>
+<h1>Submit a New Ticket</h1>
+<?php if($val_error){ ?>
+<div class="notice" id="yellow">
+	<strong>Missing Value(s)</strong> Try Again.
+</div>
+<?php } ?>
 <script type="text/javascript">
 	function validateEmail(email) { 
 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -169,12 +195,22 @@ documentCreate(TITLE_NEW_TICKET, True); ?>
 	<div id="osresult" class="message_client" style="display: none;"></div>
 	<p>
 		What is the problem?<br/>
-		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Include things like: What actions you took to cause the problem, what you expected to happene, what actually happened." maxlength="16777216"></textarea>
+		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Include things like: What actions you took to cause the problem, what you expected to happen, what actually happened." maxlength="16777216"></textarea>
 	</p>
 	<p>
 		Include a screenshot? (<em>Optional</em> - <a href="help_screenshots.php">Help</a>)<br/>
 		<input type="file" name="screenshot" />
 	</p>
+	<?php if(reCAP_enable){
+		if($cap_error){ ?>
+		<div class="notice" id="yellow">
+			<strong>Incorrect Captcha</strong> Try Again.
+		</div>
+		<?php }
+		echo("<p>");
+		echo recaptcha_get_html(reCAP_public);
+		echo("</p>");
+	} ?>
 	<p><input type="submit" name="submit" value="Create Ticket" class="btn" id="blue"/></p>
 </form>
 </div>

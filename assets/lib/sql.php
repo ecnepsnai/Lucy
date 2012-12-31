@@ -41,9 +41,7 @@
 
 	// Check to see if Lucy was properly set up.
 	if(DATABASE_TYPE == '' || DATABASE_LOCATION == '' || DATABASE_USERNAME == '' || DATABASE_PASSWORD == 'aaa' || DATABASE_NAME == ''){
-																				 // If you don't have a password
-																				 // Enter a random value between
-																				 // These literals.
+	// If you don't have a password Enter a random value between These literals.
 		define('DATABASE_SETUP', False);
 	} else {
 		define('DATABASE_SETUP', True);

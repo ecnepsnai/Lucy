@@ -26,7 +26,7 @@ define("SESSION_EXPIRE", 1800);
 
 
 // Your imgur API key for Anonmyous API calls
-define("API_IMGUR", "41d5b4f978286511a8cff7cbad862f1d");
+define("API_IMGUR", "");
 
 
 
@@ -35,10 +35,10 @@ define("API_IMGUR", "41d5b4f978286511a8cff7cbad862f1d");
 define("reCAP_enable", True);
 
 // Your reCAPTCHA public key.
-define("reCAP_public", "6Lel69oSAAAAAMdmJzOrQt9jicIZwZggmtVAErCb");
+define("reCAP_public", "");
 
 // Your reCAPTCHA private key.
-define("reCAP_private", "6Lel69oSAAAAAMfg8xRSO_4E0X9QZazUgpe95sgL");
+define("reCAP_private", "");
 
 
 // The copyright tag.  May include HTML

@@ -1,26 +1,27 @@
 <?php
-require("assets/lib/session.php");
-require("assets/lib/sql.php");
+require("lucy-admin/session.php");
+require("lucy-admin/sql.php");
+$signup_error = "";
 
 // Requires the captcha library if reCAP is enabled.
-if(reCAP_enable){
-	require("assets/lib/recaptchalib.php");
+if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Ticket']){
+	require("lucy-admin/recaptchalib.php");
 }
 
-// If there is already a user signed in, redirect them away from this page.
+// Obviously if the user is already signed in, we don't let them log in again.
 if($usr_IsSignedIn){
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "dash.php\">Redirecting...");
+	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "dash.php\">Redirecting...");
 }
 
 // If the user chose to signup.
 if(isset($_POST['submit'])){
 
 	// Validates the reCAPTICHA challenge if enabled.
-	if(reCAP_enable){
-		$resp = recaptcha_check_answer (reCAP_private, $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
+	if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Signup']){
+		$resp = recaptcha_check_answer ($GLOBALS['config']['ReCaptcha']['Private'], $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
 		if (!$resp->is_valid) {
 			$cap_error = True;
-			goto writeDOC;
+			goto writeDoc;
 		}
 	}
 
@@ -30,14 +31,14 @@ if(isset($_POST['submit'])){
 
 	// Validating the inputs.
 	if(empty($raw_name) || empty($raw_email) || empty($_POST['pwd'])){
-		$error = "<strong>Missing Information</strong><br/>All of the fields are required.";
-		goto writeDOC;
+		$signup_error = "<strong>Missing Information</strong><br/>All of the fields are required.";
+		goto writeDoc;
 	}
 
-	require("assets/lib/validEmail.php");
+	require("lucy-admin/validEmail.php");
 	if(!validEmail($raw_email)){
-		$error = "<strong>Invalid Email</strong><br/>The email address you provided was not valid.";
-		goto writeDOC;
+		$signup_error = "<strong>Invalid Email</strong><br/>The email address you provided was not valid.";
+		goto writeDoc;
 	}
 
 	// Generating a random salt used for encryption.
@@ -54,7 +55,8 @@ if(isset($_POST['submit'])){
 	try{
 		sqlQuery($sql, True);
 	} catch (Exception $e){
-		require("error_db.php");
+		$signup_error = "<strong>Error</strong> " . $e;
+		goto writeDoc;
 	}
 
 	// Gets the id from the database.
@@ -62,7 +64,8 @@ if(isset($_POST['submit'])){
 	try{
 		$user = sqlQuery($sql, True);
 	} catch (Exception $e){
-		require("error_db.php");
+		$signup_error = "<strong>Error</strong> " . $e;
+		goto writeDoc;
 	}
 
 	// Opens the session for the user.
@@ -74,56 +77,11 @@ if(isset($_POST['submit'])){
 	$_SESSION['email'] = $inp_email;
 	$_SESSION['LAST_ACTIVITY'] = time();
 
-
+	// Sends welcome message.
+	mailer_welcomeMessage($inp_name, $inp_email);
 	// Dies is successful.
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "new_ticket.php\">Redirecting...");
+	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "new_ticket.php\">Redirecting...");
 }
-writeDOC:
-documentCreate(TITLE_SIGNUP, True); ?>
-<div id="wrapper">
-<?php writeHeader(); ?>
-<div id="content">
-<?php if(isset($error)){
-echo('<div class="notice" id="red">' . $error . '</div>');
-} ?>
-<h1>Create a new account</h1>
-<script type="text/javascript">
-	function validateEmail(email) { 
-		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		return re.test(email);
-	}
-	function validateForm() {
-		var x_name=document.forms["fm_signup"]["name"].value;
-		var x_email=document.forms["fm_signup"]["email"].value;
-		var x_password=document.forms["fm_signup"]["pwd"].value;
 
-		if(x_name = "" || x_email == "" || x_password == "") {
-			alert("A required field is blank.");
-			return false;
-		}
-		if(!validateEmail(x_email)) {
-			alert("The email address you provided was not valid.");
-			return false;
-		}
-		return true;
-	}
-</script>
-<form method="POST" name="fm_signup" onSubmit="return validateForm()">
-	<p>Name:<br/><input type="text" name="name" class="txtglow" size="45"/> <em>This one should be easy.</em></p>
-	<p>Email Address:<br/><input type="email" name="email" class="txtglow" size="45"/> <em>This is never sold or shared.</em></p>
-	<p>Password:<br/><input type="password" name="pwd" class="txtglow" size="45"/> <em>Choose something easy to remember, but hard to guess.</em></p>
-	<?php if(reCAP_enable){
-		if($cap_error){ ?>
-		<div class="notice" id="yellow">
-			<strong>Incorrect Captcha</strong> Try Again.
-		</div>
-		<?php }
-		echo("<p>");
-		echo recaptcha_get_html(reCAP_public);
-		echo("</p>");
-	} ?>
-	<p><input type="submit" name="submit" value="Sign up for Lucy" class="btn" id="blue"/></p>
-</form>
-</div>
-<?php writeFooter(); ?>
-</div>
+writeDoc:
+require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/signup.php');

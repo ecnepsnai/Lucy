@@ -1,10 +1,5 @@
 <?php
-	require("assets/lib/session.php");
-
-	// This page requires a user to be signed in.
-	if(!$usr_IsSignedIn){
-		die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "login.php?rdirect=ticket.php?id=" . $_GET['id'] . "&notice=login\">Redirecting...");
-	}
+	require("lucy-admin/session.php");
 
 	// If no id was supplied.
 	$id = $_GET['id'];
@@ -13,7 +8,7 @@
 	}
 
 
-	require("assets/lib/sql.php");
+	require("lucy-admin/sql.php");
 	$id = addslashes($id);
 
 
@@ -23,20 +18,20 @@
 		// Updates the master ticketlist.
 		$sql = "UPDATE ticketlist SET status = 'Closed' WHERE  id = '" . $id . "';";
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, True);
 		} catch (Exception $e) {
 			require("error_db.php");
 		}
 
 		// Inserts a CLOSED message into the ticket table.
-		$sql = "INSERT INTO " . $id . " (`Email`, `Date`, `Message`, `From`) VALUES ('" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', 'CLOSED', '";
+		$sql = "INSERT INTO " . $id . " (`Name`, `Email`, `Date`, `Message`, `From`) VALUES ('" . $usr_Name . "', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', 'CLOSED', '";
 		if($usr_Type == "Admin"){
 			$sql.= "Agent');";
 		} else {
 			$sql.= "Client');";
 		}
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, True);
 		} catch (Exception $e) {
 			require("error_db.php");
 		}
@@ -62,13 +57,13 @@
 		// Tests to see if a screenshot was included.
 		if (empty($filename)) {
 			$img_hash = "";
-		} else {
+		} elseif (isset($filename) && $GLOBALS['config']['Imgur']['Enable']) {
 
 			// Getting the file information.
 			$isFile = True;
 			$handle = fopen($filename, "r");
 			$data = fread($handle, filesize($filename));
-			$pvars = array('image' => base64_encode($data), 'key' => API_IMGUR);
+			$pvars = array('image' => base64_encode($data), 'key' => $GLOBALS['config']['Imgur']['Key']);
 			$timeout = 30;
 
 			// Setting up the cUrl uploader.
@@ -89,14 +84,14 @@
 		}
 
 		// Inserts the new entry into the ticket table.
-		$sql = "INSERT INTO " . $id . " (`Email`, `Date`, `Message`, `File`, `From`) VALUES ('" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', '" . $message . "', '" . $img_hash . "', '";
+		$sql = "INSERT INTO " . $id . " (`Name`, `Email`, `Date`, `Message`, `File`, `From`) VALUES ('" . $usr_Name . "', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', '" . $message . "', '" . $img_hash . "', '";
 		if($usr_Type == "Admin"){
 			$sql.= "Agent');";
 		} else {
 			$sql.= "Client');";
 		}
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, True);
 		} catch (Exception $e) {
 			require("error_db.php");
 		}
@@ -107,7 +102,7 @@
 			$sql = "UPDATE ticketlist SET lastreply = 'Client' WHERE  id = '" . $id . "';";
 		}
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, True);
 		} catch (Exception $e) {
 			require("error_db.php");
 		}
@@ -120,7 +115,7 @@
 
 	// Administrator users can see all tickets.
 	if($usr_Type != "Admin"){
-		$sql.= " AND email = '" . $usr_Email . "'";
+		// $sql.= " AND email = '" . $usr_Email . "'";
 	}
 	try {
 		$ticket_info = sqlQuery($sql, True);
@@ -129,25 +124,16 @@
 	}
 
 	// If no data was returned -- no ticket does not exist.
-	if(count($ticket_info) == 0){ 
-	documentCreate(TITLE_ERROR, False); ?>
-<div id="wrapper">
-<?php writeHeader(); ?>
-<div id="content">
-	<div class="notice" id="yellow">
-		<strong>Ticket not found!</strong><br/>
-		Uh oh!  That ticket ID does not exist or you don't have permission to view it.
-	</div>
-</div>
-<?php writeFooter(); ?>
-</div><?php die();  }
+	if(count($ticket_info) == 0){
+		die();
+	}
 
 
 
 	// Getting everything from the ticket table.
 	$sql = "SELECT * FROM " . $id;
 	try {
-		$ticket_messages = sqlQuery($sql);
+		$ticket_messages = sqlQuery($sql, False);
 	} catch (Exception $e) {
 		require("error_db.php");
 	}
@@ -158,86 +144,4 @@
 		require("error_empty.php");
 	}
 
-documentCreate(TITLE_TICKET, True); ?>
-<div id="wrapper">
-<?php writeHeader(); ?>
-<div id="content">
-<h2>Ticket Status</h2>
-<table class="ticket_info">
-	<tr>
-		<td>
-			<strong>Application:</strong> <?php echo($ticket_info['application']); ?><br/>
-			<strong>Version:</strong> <?php echo($ticket_info['version']); ?><br/>
-			<strong>Operating System:</strong> <?php echo($ticket_info['os']); ?><br/>
-			<strong>Status:</strong> <?php echo($ticket_info['status']); ?>
-		</td>
-		<td>
-			<strong>Ticket ID:</strong> <?php echo($ticket_info['id']); ?><br/>
-			<strong>Name:</strong> <?php echo($ticket_info['name']); ?><br/>
-			<strong>Email:</strong> <?php echo($ticket_info['email']); ?><br/>
-			<strong>Date Created:</strong> <?php echo(date_format(date_create($ticket_info['date']), 'l, F jS \a\t g:i a')); ?> 
-		</td>
-	</tr>
-</table><br/>
-<?php
-	foreach($ticket_messages as $message){
-		// If the message was from the Client.
-		if($message['From'] == "Client"){
-
-			// If the message is the word CLOSED, the ticket has been closed.
-			if($message['Message'] == "CLOSED") { ?>
-<div class="notice" id="yellow"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
-					<?php }
-
-					// The message was not CLOSED, writing the message and screenshot (if any)
-					else { ?>
-<div class="msgc">
-	<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> said:</strong><br/><?php echo($message['Message']); ?>
-	<?php if($message['File'] != ""){ ?>
-	<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
-		<?php } ?>
-</div><?php } }
-
-
-// The message was from an agent.
-else { 
-
-	// In the message if the word CLOSED, the ticket has been closed.
-	if($message['Message'] == "CLOSED") { ?>
-		<div class="notice" id="yellow"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> Lucy closed this ticket.</strong></div>
-					<?php }
-
-					// The message was not CLOSED, writing the message and screenshot (if any)
-					else { ?>
-<div class="msga">
-	<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> Lucy said:</strong><br/><?php echo($message['Message']); ?>
-	<?php if($message['File'] != ""){ ?>
-	<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
-		<?php } ?>
-</div><?php } } }
-
-
-// If the ticket is open, we display the ticket options.
-	if($ticket_info['status'] == "Open") { ?>
-<script type="text/javascript">
-function hideTools() {
-	$('#ticket_options').hide();
-	$('#ticket_reply').show();
-}
-</script>
-<div id="ticket_options">
-	You can <button onclick="parent.location='javascript:hideTools()'" value="Reply to this ticket" class="btn" id="gray">Reply to this ticket</button> or <form method="POST" style="display:inline"><input type="hidden" name="close" value="CloseTicket"/><input type="submit" name"submit" value="Close this ticket" class="btn" id="gray"/></form>
-</div>
-<div id="ticket_reply" style="display:none">
-	<form method="POST" enctype="multipart/form-data">
-		<input type="hidden" name="reply" value="ReplyToTicket"/>
-		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Type your reply here" maxlength="16777216"></textarea><br/>
-		<p>Include a screenshot? (<em>Optional</em> - <a href="help_screenshots.php">Help</a>)<br/>
-		<input type="file" name="screenshot" /></p>
-		<input type="submit" name"reply" value="Add Reply" class="btn" id="blue"/>
-	</form>
-</div>
-<?php } ?>
-</div>
-<?php writeFooter(); ?>
-</div>
+require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/ticket.php');

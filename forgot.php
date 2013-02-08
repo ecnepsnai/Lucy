@@ -1,60 +1,49 @@
 <?php
-require("assets/lib/session.php");
-$reset_error = False;
+error_reporting(E_ALL);
+require("lucy-admin/session.php");
+require("lucy-admin/sql.php");
 
 // Obviously if the user is already signed in, we don't let them log in again.
 if($usr_IsSignedIn){
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . SERVER_DOMAIN . "dash.php\">Redirecting...");
+	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "dash.php\">Redirecting...");
 }
 
 // User requested a password reset.
 if(isset($_POST['submit'])){
 	$inp_email = addslashes(trim($_POST['email']));
-	require("assets/lib/sql.php");
 
 	// Check to see if that email even exists in the database.
 	$sql = "SELECT id, email FROM userlist WHERE email = '". $inp_email ."'";
-	echo($sql);
 	try {
 		$user = sqlQuery($sql, True);
 	} catch (Exception $e) {
-		require("error_db.php");
+		die($e);
 	}
 	if(isset($user['id']) && isset($user['email'])) {
 		$salt1 = md5(rand(10,99));
 		$salt2 = md5(rand(10,99) . $salt1);
 		$sql = "INSERT INTO pwd_reset (`email`, `salt1`, `salt2`) VALUES ('" . $user['email'] . "', '" . $salt1 . "', '" . $salt2 . "')";
-		echo($sql);
 		try {
-			sqlQuery($sql);
+			sqlQuery($sql, False);
 		} catch (Exception $e) {
-			require("error_db.php");
+			die($e);
 		}
-		documentCreate("Password Reset", False); ?>
-		<div id="wrapper">
-		<?php writeHeader(); ?>
-		<div id="content">
-			<div class="notice" id="blue">
-			<strong>Password Reset</strong><br/>
-			Check your email!  It might be in your spam folder, too.
-			</div>
-		</div>
-		<?php writeFooter(); ?>
-		</div>
-		<?php die();
+
+		// Emails password reset link.
+		mailer_passwordReset($usr_Name, $usr_Email, $GLOBALS['config']['Domain'] . "forgot.php?a=" . $salt1 . "&b=" . $salt2);
+		die("Please check your email for a validation link to change your password.");
 	}
 }
 
 // User clicked the request new password link emailed to them.
 if(isset($_GET['a']) && isset($_GET['b'])){
-	require("assets/lib/sql.php");
 	$salt1 = addslashes($_GET['a']);
 	$salt2 = addslashes($_GET['b']);
 	$sql = "SELECT email FROM pwd_reset WHERE salt1 = '" . $salt1 . "' AND salt2 = '" . $salt2 . "'";
 	try {
 		$reset = sqlQuery($sql, True);
 	} catch (Exception $e) {
-		require("error_db.php");
+		die($e);
 	}
 
 	// Checking for a returned email address.
@@ -69,78 +58,24 @@ if(isset($_GET['a']) && isset($_GET['b'])){
 		try {
 			sqlQuery($sql);
 		} catch (Exception $e) {
-			require("error_db.php");
+			die($e);
 		}
 
 		// Deletes this set of password reset tokens.
 		try {
 			sqlQuery("DELETE FROM pwd_reset WHERE salt1 = '" . $salt1 . "' AND salt2 = '" . $salt2 . "'");
 		} catch (Exception $e) {
-			require("error_db.php");
+			die($e);
 		}
-		documentCreate("Password Reset", False); ?>
-<div id="wrapper">
-<?php writeHeader(); ?>
-<div id="content">
-	<div class="notice" id="blue">
-		<strong>Password Reset</strong><br/>Check your email, a new password has been emailed to you.
-	</div>
-</div>
-<?php writeFooter(); ?>
-</div> <?php die();
+
+		// Emails new password.
+		mailer_generalMessage("You", $reset['email'], "Lucy Password", "Your new password is <b>" . $hashed_password . "</b> you probably should change it after signing in again...");
+		die("A new password has been mailed to you");
 	}
 
 	// If no email address was returned = Invalid tokens.
-	else { documentCreate("Password Reset", False); ?>
-<div id="wrapper">
-<?php writeHeader(); ?>
-<div id="content">
-	<div class="notice" id="red">
-		<strong>Invalid Reset Tokens</strong><br/>The reset tokens you provided were either incorrect or have expired.
-	</div>
-</div>
-<?php writeFooter(); ?>
-</div> <?php die();
-	}
+	else { die("Invalid reset tokens."); }
 }
-?>
-<?php documentCreate("Password Reset", False); ?>
-<div id="wrapper">
-<?php writeHeader(); ?>
-<div id="content">
-<h2>Need to reset your password?</h2>
-<?php if($reset_error) {
-	?>
-<div class="notice" id="red">
-	<strong>Incorrect Password</strong><br/>
-	Please try again...
-</div>
-	<?php
-}
-?>
-<script type="text/javascript">
-	function validateEmail(email) { 
-		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		return re.test(email);
-	}
-	function validateForm() {
-		var x_email=document.forms["fm_reset"]["email"].value;
 
-		if(x_email == "") {
-			alert("You have to enter an email address!");
-			return false;
-		}
-		if(!validateEmail(x_email)) {
-			alert("The email address you provided was not valid.");
-			return false;
-		}
-		return true;
-	}
-</script>
-<form method="POST" name="fm_reset" onSubmit="return validateForm()">
-	<p>Email Address:<br/><input type="email" name="email" class="txtglow" size="45"/></p>
-	<p><input type="submit" name="submit" value="Reset your password" class="btn" id="blue"/></p>
-</form>
-</div>
-<?php writeFooter(); ?>
-</div>
+writeDOC:
+require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/forgot.php');

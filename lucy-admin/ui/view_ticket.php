@@ -151,8 +151,8 @@
 	}
 
 
-	getHeader("Tickets");
-	getSidebar(1);
+	getHeader("View Ticket");
+	getSidebar(2);
 ?>
 		<div id="content">
 			<h2>Ticket Information</h2>

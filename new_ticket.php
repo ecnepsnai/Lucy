@@ -78,7 +78,7 @@ if(isset($_POST['submit'])){
 
 	// Inserting the ticket into the master ticket list.
 	$sql = "INSERT INTO ticketlist (id, name, email, application, version, os, status, subject, date, lastreply) ";
-	$sql.= "VALUES ('" . $ticketid . "','" . $inp_name . "','" . $inp_email . "','" . $application . "', '" . $version . "', '" . $os . "', 'Open', '" . substr($message, 0, 50) . "', '" . date("Y-m-d H:i:s") . "', 'Client')";
+	$sql.= "VALUES ('" . $ticketid . "','" . $inp_name . "','" . $inp_email . "','" . $application . "', '" . $version . "', '" . $os . "', 'Pending', '" . substr($message, 0, 50) . "', '" . date("Y-m-d H:i:s") . "', 'Client')";
 	try {
 		sqlQuery($sql, False);
 	} catch (Exception $e) {

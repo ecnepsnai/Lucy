@@ -15,7 +15,7 @@
 		die($e);
 	}
 	getHeader("Users");
-	getSidebar(2);
+	getSidebar(3);
 ?>
 		<div id="content">
 			<h2>All Users</h2>

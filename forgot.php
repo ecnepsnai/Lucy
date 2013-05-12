@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL);
 require("lucy-admin/session.php");
 require("lucy-admin/sql.php");
 
@@ -69,8 +68,8 @@ if(isset($_GET['a']) && isset($_GET['b'])){
 		}
 
 		// Emails new password.
-		mailer_generalMessage("You", $reset['email'], "Lucy Password", "Your new password is <b>" . $hashed_password . "</b> you probably should change it after signing in again...");
-		die("A new password has been mailed to you");
+		mailer_generalMessage("You", $reset['email'], "Lucy Password", "Your new password is <b>" . $password . "</b> you probably should change it after signing in again...");
+		die("A new password has been mailed to you.  $password");
 	}
 
 	// If no email address was returned = Invalid tokens.

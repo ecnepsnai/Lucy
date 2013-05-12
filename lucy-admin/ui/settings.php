@@ -55,7 +55,7 @@
 	}
 
 	getHeader("Settings");
-	getSidebar(3);
+	getSidebar(4);
 ?>
 		<div id="content">
 			<script>

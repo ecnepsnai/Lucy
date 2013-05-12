@@ -1,4 +1,5 @@
 <?php
+	error_reporting(E_ERROR | E_PARSE);
 	require_once("defines.php");
 	require_once("mailer.php");
 	$usr_IsSignedIn = False;

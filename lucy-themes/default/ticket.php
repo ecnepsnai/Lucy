@@ -29,7 +29,7 @@ getHeader('Ticket Status'); ?>
 
 			// If the message is the word CLOSED, the ticket has been closed.
 			if($message['Message'] == "CLOSED") { ?>
-<div class="notice" id="yellow"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
+				<div class="ticket_message client"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
 					<?php }
 
 					// The message was not CLOSED, writing the message and screenshot (if any)
@@ -47,7 +47,7 @@ else {
 
 	// In the message if the word CLOSED, the ticket has been closed.
 	if($message['Message'] == "CLOSED") { ?>
-		<div class="notice" id="yellow"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
+		<div class="ticket_message agent"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
 					<?php }
 
 					// The message was not CLOSED, writing the message and screenshot (if any)
@@ -61,7 +61,7 @@ else {
 
 
 // If the ticket is open, we display the ticket options.
-	if($ticket_info['status'] == "Open") { ?>
+	if($ticket_info['status'] == "Pending" || $ticket_info['status'] == "Active") { ?>
 <hr/>
 <h2>Ticket Options</h2>
 <script type="text/javascript">

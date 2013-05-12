@@ -8,17 +8,18 @@
 		die("Forbidden.");
 	}
 
-	$sql = "SELECT * FROM ticketlist";
+	$sql = "SELECT * FROM ticketlist WHERE assignedto = '" . $GLOBALS['usr_ID'] . "'";
 	try {
 		$tickets = sqlQuery($sql, False);
 	} catch (Exception $e) {
 		die($e);
 	}
-	getHeader("Tickets");
+
+	getHeader("My Tickets");
 	getSidebar(1);
 ?>
 		<div id="content">
-			<h2>All Tickets</h2>
+			<h2>My Tickets</h2>
 			<table>
 				<tr>
 					<td><strong>Name</strong></td>

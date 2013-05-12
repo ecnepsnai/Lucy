@@ -6,6 +6,13 @@ Lucy is a conversation based online support system built in PHP that's easy to u
 
 Lucy is now in Beta!  Currently there is no support for Microsoft SQL Server or SQLite.
 
+- Added automatic setup script.
+- Updated admin back-end to make way for assignments.
+
+## Alpha Release
+
+Lucy is now in Alpha!  Currently there is no support for Microsoft SQL Server or SQLite.
+
 - Added full theming support
 - Added administrator control panel for the site
 - Added mailing functionality with full theming support
@@ -14,13 +21,13 @@ Lucy is now in Beta!  Currently there is no support for Microsoft SQL Server or 
 
 ## Setup
 
-Installing lucy is easy!  Upload all of the files to your website and goto login.php.  Login using the email `foo@bar.com` and the password `admin`.  Go to the Settings tab and finish the setup.  Create a new user if you want.
+Installing lucy is easy!  Just upload all of the files and open it in your web browser.  You will be automatically brought to the setup page.
 
 ## Todo
 
 - [ ] Add MSSQL support
 - [ ] Add SQLite support
-- [ ] Add automated setup page
+- [x] Add automated setup page
 - [ ] Write full documentation
 - [ ] Add dynamic error pages
 - [ ] Execute function-control-shift-kill

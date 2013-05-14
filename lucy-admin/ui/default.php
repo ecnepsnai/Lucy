@@ -26,7 +26,8 @@
 		<li <?php if($pageIndex == 1){ echo('id="current"'); } ?>><a href="mytickets.php">My Tickets</a></li>
 		<li <?php if($pageIndex == 2){ echo('id="current"'); } ?>><a href="alltickets.php">All Tickets</a></li>
 		<li <?php if($pageIndex == 3){ echo('id="current"'); } ?>><a href="users.php">Users</a></li>
-		<li <?php if($pageIndex == 4){ echo('id="current"'); } ?>><a href="settings.php">Settings</a></li>
+		<li <?php if($pageIndex == 4){ echo('id="current"'); } ?>><a href="apps.php">Apps</a></li>
+		<li <?php if($pageIndex == 5){ echo('id="current"'); } ?>><a href="settings.php">Settings</a></li>
 	</ul>
 </aside>
 	<?php }

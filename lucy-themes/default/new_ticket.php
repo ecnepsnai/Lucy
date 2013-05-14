@@ -27,8 +27,11 @@ function popitup(url) {
 		What is the application you are using?<br/>
 		<select name="app">
 			<option value="">Select One..</option>
-			<option value="Test App 1">Test App 1</option>
-			<option value="Test App 2">Test App 2</option>
+			<?php
+				foreach($GLOBALS['config']['Apps'] as $app){
+					echo('<option value="' . $app . '">' . $app . '</option>');
+				}
+			?>
 		</select>
 	 </p>
 	<p>

@@ -55,7 +55,7 @@
 	}
 
 	getHeader("Settings");
-	getSidebar(4);
+	getSidebar(5);
 ?>
 		<div id="content">
 			<script>
@@ -68,11 +68,12 @@
 					<ul>
 						<li><a href="#general">General</a></li>
 						<li><a href="#database">Database</a></li>
+						<li><a href="#themes">Themes</a></li>
 						<li><a href="#reCAP">reCAPTCHA</a></li>
 						<li><a href="#imgur">Imgur</a></li>
 						<li><a href="#akismet">Akismet</a></li>
 					</ul>
-					<div id="general">
+					<div id="general" class="page">
 						<h2>General Settings:</h2>
 						<table>
 							<tr>
@@ -125,7 +126,7 @@
 							</tr>
 						</table>
 					</div>
-					<div id="database">
+					<div id="database" class="page">
 						<h2>Database Settings:</h2>
 						<table>
 							<tr>
@@ -170,7 +171,16 @@
 							</tr>
 						</table>
 					</div>
-					<div id="reCAP">
+					<div id="themes" class="page">
+						<h2>Theme settings:</h2>
+						<div id="themeswrapper">
+							<div class="theme">
+								<img src="../../lucy-themes/default/preview.jpg" alt="" />
+								<span>Lucy Default</span>
+							</div>
+						</div>
+					</div>
+					<div id="reCAP" class="page">
 						<h2>reCAPTCHA Settings:</h2>
 						<table>
 							<tr>
@@ -207,7 +217,7 @@
 							</tr>
 						</table>
 					</div>
-					<div id="imgur">
+					<div id="imgur" class="page">
 						<h2>Imgur Settings:</h2>
 						<table>
 							<tr>
@@ -223,7 +233,7 @@
 							</tr>
 						</table>
 					</div>
-					<div id="akismet">
+					<div id="akismet" class="page">
 						<h2>Akismet Settings:</h2>
 						<table>
 							<tr>

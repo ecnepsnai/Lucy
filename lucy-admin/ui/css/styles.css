@@ -104,10 +104,23 @@ aside li#current{
 	padding:5px;
 	border: 1px solid #ddd;
 }
-#tabs div{
+#tabs .page{
 	border: 1px solid #ddd;
 	padding: 5px;
 	width: 875px;
+}
+#themeswrapper{
+	overflow: hidden;
+	margin: 25px;
+}
+#themeswrapper .theme{
+	width: 200px;
+	border: 1px solid #ccc;
+	padding: 5px;
+	display: inline-block;
+}
+#themeswrapper .theme span{
+	font-weight: bold;
 }
 input,button{
 	line-height: 20px;
@@ -129,6 +142,9 @@ input[type="text"],input[type="email"],input[type="password"],input[type="url"],
 	outline: 0;
 	box-shadow: inset 1px 1px 2px rgba(200,200,200,0.2);
 	font-family: "Ubuntu", sans-serif;
+	transition:.1s linear;
+	-webkit-transition:.1s linear;
+	-moz-transition:.1s linear;
 }
 select{
 	color:#000;

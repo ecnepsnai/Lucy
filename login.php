@@ -82,7 +82,7 @@ if(isset($_POST['submit'])){
 		}
 
 		// Moves the user to the administrator dashboard if they are an admin
-		if($user['type'] == 'Admin'){
+		if($user['type'] == 'Admin' || $user['type'] == "Agent"){
 			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "lucy-admin/ui\">Redirecting...");
 		} else {
 			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "dash.php\">Redirecting...");

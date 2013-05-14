@@ -17,6 +17,10 @@
 		$GLOBALS['config']['Email']['Name'] = $_POST['em_name'];
 		$GLOBALS['config']['Email']['Address'] = $_POST['em_address'];
 
+		// Getting the Support settings:
+		$GLOBALS['config']['Apps'] = explode(",", $_POST['aph']);
+		$GLOBALS['config']['OS'] = explode(",", $_POST['osh']);
+
 		// Getting the Database Settings:
 		$GLOBALS['config']['Database']['Type'] = $_POST['db_type'];
 		$GLOBALS['config']['Database']['Location'] = $_POST['db_location'];
@@ -55,7 +59,7 @@
 	}
 
 	getHeader("Settings");
-	getSidebar(5);
+	getSidebar(4);
 ?>
 		<div id="content">
 			<script>
@@ -67,6 +71,7 @@
 				<div id="tabs">
 					<ul>
 						<li><a href="#general">General</a></li>
+						<li><a href="#support">Support Settings</a></li>
 						<li><a href="#database">Database</a></li>
 						<li><a href="#themes">Themes</a></li>
 						<li><a href="#reCAP">reCAPTCHA</a></li>
@@ -125,6 +130,57 @@
 								</td>
 							</tr>
 						</table>
+					</div>
+					<div id="support" class="page">
+						<script type="text/javascript">
+							function addapp(){
+								var appName = prompt("Application name: (Protip: use # to create a separator)");
+								if(appName == null){
+									return;
+								}
+								$("#apps").append('<option value=' + appName + '>' + appName + '</option>');
+								$("#aph").val(function( index, value ) {
+									if(value == null || value == ""){
+										return value + appName;
+									} else {
+										return value + "," + appName;
+									}
+								});
+							}
+							function addos(){
+								var osName = prompt("Operating System: (Protip: use # to create a separator)");
+								if(osName == null){
+									return;
+								}
+								$("#oss").append('<option value=' + osName + '>' + osName + '</option>');
+								$("#osh").val(function( index, value ) {
+									if(value == null || value == ""){
+										return value + osName;
+									} else {
+										return value + "," + osName;
+									}
+								});
+							}
+						</script>
+						<h2>Support Settings:</h2>
+						<h3>Supported Apps:</h3>
+							<select name="apps" id="apps" multiple>
+								<?php
+									foreach ($GLOBALS['config']['Apps'] as $app) {
+										echo('<option>' . $app . '</option>');
+									}
+								?>
+							</select><br/>
+							<button type="button" onClick="addapp()">App New App</button><input type="hidden" name="aph" id="aph" value="<?php echo(implode(",", $GLOBALS['config']['Apps'])); ?>"/>
+						<h3>Supported Operating Systems:</h3>
+							<select name="oss" id="oss" multiple>
+								<?php
+									foreach ($GLOBALS['config']['OS'] as $oss) {
+										echo('<option>' . $oss . '</option>');
+									}
+								?>
+							</select><br/>
+							<button type="button" onClick="addos()">App New Operating System</button><input type="hidden" name="osh" id="osh" value="<?php echo(implode(",", $GLOBALS['config']['OS'])); ?>"/>
 					</div>
 					<div id="database" class="page">
 						<h2>Database Settings:</h2>

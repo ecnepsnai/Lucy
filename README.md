@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://raw.github.com/ecnepsnai/Lucy/master/lucy-themes/default/assets/img/logo.png"/>
+</p>
+
+
 # Lucy
 
 Lucy is a conversation based online support system built in PHP that's easy to use, set-up, theme, and edit.  Lucy is the foundation for a really powerful CMS system that focuses more on theme developers rather than plugins, letting you make themes however you want.

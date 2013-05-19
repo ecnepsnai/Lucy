@@ -17,7 +17,7 @@
 		die("The configuration file is not valid and could not be parsed.");
 	}
 	$GLOBALS['config'] = $data['config'];
-	$GLOBALS['readonly']['version'] = 'Beta 1';
+	$GLOBALS['readonly']['version'] = 'Beta 2';
 
 
 	// If the page is directly accessed and debug mode is enabled we output some debug information.

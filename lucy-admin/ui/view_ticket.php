@@ -150,13 +150,20 @@
 		mailer_ticketUpdate($ticket_info['name'], $ticket_info['email'], $ticket_info['id']);
 	}
 
+	// Getting the "Assinged To" options
+	$sql = "SELECT name FROM userlist WHERE type = 'Admin' OR type = 'Agent'";
+	try {
+		$assigned_options = sqlQuery($sql, False);
+	} catch (Exception $e) {
+		die($e);
+	}
+
 
 	getHeader("View Ticket");
-	getSidebar(2);
+	getNav(3);
 ?>
-		<div id="content">
 			<h2>Ticket Information</h2>
-			<table class="ticket_info">
+			<table class="table">
 				<tr>
 					<td>
 						<strong>Application:</strong> <?php echo($ticket_info['application']); ?><br/>
@@ -181,12 +188,12 @@
 
 						// If the message is the word CLOSED, the ticket has been closed.
 						if($message['Message'] == "CLOSED") { ?>
-			<div class="ticket_message client"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
+			<div class="alert alert-info"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
 								<?php }
 
 								// The message was not CLOSED, writing the message and screenshot (if any)
 								else { ?>
-			<div class="ticket_message client">
+			<div class="alert alert-info">
 				<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> said:</strong><br/><?php echo($message['Message']); ?>
 				<?php if($message['File'] != ""){ ?>
 				<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
@@ -199,12 +206,12 @@
 
 				// In the message if the word CLOSED, the ticket has been closed.
 				if($message['Message'] == "CLOSED") { ?>
-					<div class="ticket_message agent"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
+					<div class="alert alert-success"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
 								<?php }
 
 								// The message was not CLOSED, writing the message and screenshot (if any)
 								else { ?>
-			<div class="ticket_message agent">
+			<div class="alert alert-success">
 				<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> said:</strong><br/><?php echo($message['Message']); ?>
 				<?php if($message['File'] != ""){ ?>
 				<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
@@ -219,7 +226,11 @@
 			</script>
 				<div id="buttons">
 				<div id="ticket_options">
-					You can <button onclick="parent.location='javascript:hideTools()'" value="Reply to this ticket" class="btn" id="gray">Reply to this ticket</button> or <form method="POST" style="display:inline"><input type="hidden" name="close" value="CloseTicket"/><input type="submit" name"submit" value="Close this ticket" class="btn" id="gray"/></form>
+					<button onclick="parent.location='javascript:hideTools()'" value="Reply to this ticket" class="btn" id="gray">Reply to this ticket</button>
+
+					<form method="POST" class="form-horizontal">
+						<input type="hidden" name="close" value="CloseTicket"/><input type="submit" name"submit" value="Close this ticket" class="btn" id="gray"/> Assign To: <select name="assignto"><?php foreach ($assigned_options as $user) { echo('<option value="' . $user['name'] . '">' . $user['name'] . '</option>'); } ?></select> <input type="submit" name="assign" value="Assign Ticket" class="btn" />
+					</form>
 				</div>
 				<div id="ticket_reply" style="display:none">
 					<form method="POST" enctype="multipart/form-data">
@@ -231,7 +242,4 @@
 					</form>
 				</div>
 			</div>
-		</div>
-	</div>
 	<?php getFooter(); ?>
-</div>

@@ -1,39 +1,53 @@
 <?php
-	function getHeader($pageTitle){ ?>
-<!doctype html>
+
+	function getHeader($title) { ?>
+
+<!DOCTYPE html>
 <meta charset="utf-8">
-<!--[if lt IE 9]>
-<script src="assets/js/html5shiv.js"></script>
-<![endif]-->
-<title><?php echo($pageTitle); ?> — Lucy</title>
-<link rel="stylesheet" href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/img/loader.css">
-<link rel="stylesheet" href="css/styles.css">
-<script src="//code.jquery.com/jquery-1.9.0.js"></script>
-<script src="//code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
-<link rel="shortcut icon" href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/img/icon.png">
-<div id="wrapper">
-	<header>
-		<p id="left">Lucy Administration</p>
-		<p id="right">Hey there, <?php echo($GLOBALS['usr_Name']); ?>.</p>
-	</header>
-	<div id="container">
+<title><?php echo($title); ?></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<style type="text/css">
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+</style>
+<link rel="shortcut icon" href="assets/img/favicon.png">
+	<?php } 
+
+	function getNav($pageIndex) { ?>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="brand" href="#">Lucy Administration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li <?php if($pageIndex == 0){ echo('class="active"'); } ?>><a href="index.php">Dashboard</a></li>
+						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="mytickets.php">My Tickets</a></li>
+						<li <?php if($pageIndex == 2){ echo('class="active"'); } ?>><a href="alltickets.php">All Tickets</a></li>
+						<li <?php if($pageIndex == 3){ echo('class="active"'); } ?>><a href="users.php">Users</a></li>
+						<li <?php if($pageIndex == 4){ echo('class="active"'); } ?>><a href="settings.php">Settings</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
 	<?php }
 
-	function getSidebar($pageIndex){ ?>
-<aside>
-	<ul>
-		<li <?php if($pageIndex == 0){ echo('id="current"'); } ?>><a href="index.php">Dashboard</a></li>
-		<li <?php if($pageIndex == 1){ echo('id="current"'); } ?>><a href="mytickets.php">My Tickets</a></li>
-		<li <?php if($pageIndex == 2){ echo('id="current"'); } ?>><a href="alltickets.php">All Tickets</a></li>
-		<li <?php if($pageIndex == 3){ echo('id="current"'); } ?>><a href="users.php">Users</a></li>
-		<li <?php if($pageIndex == 4){ echo('id="current"'); } ?>><a href="apps.php">Apps</a></li>
-		<li <?php if($pageIndex == 5){ echo('id="current"'); } ?>><a href="settings.php">Settings</a></li>
-	</ul>
-</aside>
-	<?php }
-
-	function getFooter(){ ?>
+	function getFooter() {?>
 <footer>
-	Lucy was created by Ian Spence.  Version: <?php echo($GLOBALS['readonly']['version']); ?>
+	<hr/>
+	<p>Lucy was created by Ian Spence.  Version: <?php echo($GLOBALS['readonly']['version']); ?></p>
 </footer>
+
+</div>
 	<?php }

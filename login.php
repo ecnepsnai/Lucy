@@ -5,7 +5,7 @@ $login_error = False;
 
 // Obviously if the user is already signed in, we don't let them log in again.
 if($usr_IsSignedIn){
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['Config']['domain'] . "dash.php\">Redirecting...");
+	header("Location: " . $GLOBALS['Config']['domain'] . "dash.php");
 }
 
 // Requires the captcha library if reCAP is enabled.
@@ -78,14 +78,14 @@ if(isset($_POST['submit'])){
 
 		// If there was a redirect parameter set, navigate to that url.  Will only work for local urls.
 		if($_GET['rdirect']){
-			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . $_GET['rdirect'] . "\">Redirecting...");
+			header("Location: " . $GLOBALS['Config']['domain'] . $_GET['rdirect']);
 		}
 
 		// Moves the user to the administrator dashboard if they are an admin
 		if($user['type'] == 'Admin' || $user['type'] == "Agent"){
-			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "lucy-admin/ui\">Redirecting...");
+			header("Location: " . $GLOBALS['Config']['domain'] . "lucy-admin/ui/");
 		} else {
-			die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "dash.php\">Redirecting...");
+			header("Location: " . $GLOBALS['Config']['domain'] . "dash.php");
 		}
 	}
 }

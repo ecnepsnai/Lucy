@@ -29,11 +29,6 @@
 		$changes_Saved = True;
 	}
 
-	// User chose to delete the user.
-	if(isset($_POST['reset'])){
-
-	}
-
 	$sql = "SELECT name, email, type FROM userlist WHERE id = '" . addslashes($_GET['id']) . "'";
 	try {
 		$user = sqlQuery($sql, True);
@@ -42,51 +37,37 @@
 	}
 
 	getHeader("Edit User");
-	getSidebar(2);
+	getNav(3);
 ?>
-		<div id="content">
-			<?php if($changes_Saved) { ?>
-			<div id="notice">
-				Values Saved
-			</div>
-			<?php } ?>
-			<form name="usrsetngs" method="post">
-				<div id="tabs">
-					<h2>Edit User</h2>
-					<div>
-						<table>
-							<tr>
-								<td>
-									User Name:<br/>
-									<input type="text" name="name" size="45" value="<?php echo($user['name']); ?>" title="The name of the user."/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									User Email:<br/>
-									<input type="email" name="email" size="45" value="<?php echo($user['email']); ?>" title="The email of the user."/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									User Type:<br/>
-									<input type="radio" name="type" value="Admin"<?php if($user['type'] == 'Admin'){echo('checked="checked"');} ?> title="Administrator"/>Administrator<br/>
-									<input type="radio" name="type" value="Client"<?php if($user['type'] == 'Client'){echo('checked="checked"');} ?> title="Client"/>Client
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox" name="pwd_reset" /> User Must Change Password
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div id="buttons">
-					<input type="submit" name="submit" value="Save Changes"/> <input type="reset" name="reset" value="Delete User"/>
-				</div>
-			</form>
+<?php if($changes_Saved) { ?>
+<div id="notice">
+	Values Saved
+</div>
+<?php } ?>
+<form class="form-horizontal" method="post">
+	<h2>Edit User</h2>
+	<div class="control-group">
+		<label class="control-label">User Name:</label>
+		<div class="controls">
+			<input type="text" name="name" size="45" value="<?php echo($user['name']); ?>" title="The name of the user."/>
 		</div>
 	</div>
-	<?php getFooter(); ?>
-</div>
+	<div class="control-group">
+		<label class="control-label">User Email:</label>
+		<div class="controls">
+			<input type="email" name="email" size="45" value="<?php echo($user['email']); ?>" title="The email of the user."/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">User Type:</label>
+		<div class="controls">
+			<select name="type">
+				<option value="Admin">Admin</option>
+				<option value="Agent">Agent</option>
+				<option value="Client">Client</option>
+			</select>
+		</div>
+	</div>
+	<input type="submit" name="submit" value="Save Changes" class="btn btn-primary"/>
+</form>
+<?php getFooter(); ?>

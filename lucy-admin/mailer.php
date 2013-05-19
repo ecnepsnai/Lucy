@@ -1,5 +1,5 @@
 <?php
-	include_once('lucy-themes/' . $GLOBALS['config']['Theme'] . '/mailer.php');
+	//include_once('lucy-themes/' . $GLOBALS['config']['Theme'] . '/mailer.php');
 	function mailer_welcomeMessage($name, $email){
 		$subject = 'Welcome to Lucy!';
 		$message = get_welcomeMessage($name, $email);

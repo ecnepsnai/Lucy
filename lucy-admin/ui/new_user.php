@@ -30,52 +30,43 @@
 		$changes_Saved = True;
 	}
 	getHeader("New User");
-	getSidebar(2);
+	getNav(3);
 ?>
-		<div id="content">
-			<?php if($changes_Saved) { ?>
-			<div id="notice">
-				Values Saved
-			</div>
-			<?php } ?>
-			<form name="usrsetngs" method="post">
-				<div id="tabs">
-					<h2>New User</h2>
-					<div>
-						<table>
-							<tr>
-								<td>
-									User Name:<br/>
-									<input type="text" name="name" size="45" title="The name of the user."/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									User Email:<br/>
-									<input type="email" name="email" size="45" title="The email of the user."/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									User Password:<br/>
-									<input type="password" name="password" size="45" title="The password of the user."/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									User Type:<br/>
-									<input type="radio" name="type" value="Admin" title="Administrator"/>Administrator<br/>
-									<input type="radio" name="type" value="Client" title="Client"/>Client
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div id="buttons">
-					<input type="submit" name="submit" value="Save Changes"/>
-				</div>
-			</form>
+<?php if($changes_Saved) { ?>
+<div id="notice">
+	Values Saved
+</div>
+<?php } ?>
+<form class="form-horizontal" method="post">
+	<h2>Create a New User</h2>
+	<div class="control-group">
+		<label class="control-label">User Name:</label>
+		<div class="controls">
+			<input type="text" name="name" size="45" title="The name of the user."/>
 		</div>
 	</div>
-	<?php getFooter(); ?>
-</div>
+	<div class="control-group">
+		<label class="control-label">User Email:</label>
+		<div class="controls">
+			<input type="email" name="email" size="45" title="The email of the user."/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">User Password:</label>
+		<div class="controls">
+			<input type="password" name="password" size="45" title="The password of the user."/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">User Type:</label>
+		<div class="controls">
+			<select name="type">
+				<option value="Admin">Admin</option>
+				<option value="Agent">Agent</option>
+				<option value="Client">Client</option>
+			</select>
+		</div>
+	</div>
+	<input type="submit" name="submit" class="btn btn-primary" value="Create User" />
+</form>
+<?php getFooter(); ?>

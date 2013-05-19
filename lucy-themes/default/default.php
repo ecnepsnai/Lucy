@@ -22,6 +22,7 @@
 				<?php if($GLOBALS['usr_IsSignedIn']) { ?>
 				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>profile.php">My Profile</a></li>
 				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>dash.php">Checkup on your Tickets</a></li>
+				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>logout.php">Logout</a></li>
 				<?php } else {?> 
 				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>login.php">Login</a></li>
 				<?php } ?>
@@ -33,7 +34,7 @@
 	function getFooter(){ ?>
 	<footer>
 		<p class="left">Copyright &copy; Ian Spence 2013.</p>
-		<p class="right">Powered by the <a href="//ianspence.com/lucy">Lucy Framework</a>.</p>
+		<p class="right">Powered by the <a href="//ianspence.com/Lucy.php">Lucy Framework</a>.</p>
 	</footer>
 </div>
 <?php }

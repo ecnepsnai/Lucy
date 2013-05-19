@@ -2,9 +2,9 @@
 require("lucy-admin/session.php");
 require("lucy-admin/sql.php");
 
-// Obviously if the user is already signed in, we don't let them log in again.
+// Obviously if the user is already signed in, we don't let them reset their own password.
 if($usr_IsSignedIn){
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "dash.php\">Redirecting...");
+	header("Location: " . $GLOBALS['Config']['domain'] . "dash.php");
 }
 
 // User requested a password reset.

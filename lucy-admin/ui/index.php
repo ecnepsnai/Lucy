@@ -47,16 +47,10 @@
 		$usercount = 0;
 	}
 	getHeader("Dashboard");
-	getSidebar(0);
+	getNav(0);
 ?>
-		<div id="content">
-			<h2>Welcome back, <?php echo($usr_Name); ?>.  Here's what's happening right now.</h2>
-			<ul>
-				<li><strong><?php echo($ticketcount); ?></strong> Tickets.</li>
-				<li><strong><?php echo($replycount); ?></strong> Tickets awaiting response.</li>
-				<li><strong><?php echo($usercount); ?></strong> Users.</li>
-			</ul>
-		</div>
-	</div>
-	<?php getFooter(); ?>
+<div class="hero-unit">
+	<h1>Hello, <?php echo($usr_Name); ?>.</h1>
+	<p>Currently there are: <strong><?php echo($ticketcount); ?></strong> Tickets, <strong><?php echo($replycount); ?></strong> Tickets awaiting response, and <strong><?php echo($usercount); ?></strong> Users.</p>
 </div>
+<?php getFooter(); ?>

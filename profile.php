@@ -2,8 +2,9 @@
 require("lucy-admin/session.php");
 require("lucy-admin/sql.php");
 
+// Obviously if the user is not signed in, we don't let them see a profile.
 if(!$usr_IsSignedIn){
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['Config']['domain'] . "login.php\">Redirecting...");
+	header("Location: " . $GLOBALS['Config']['domain'] . "login.php?notice=login");
 }
 
 if(isset($_POST['submit'])){

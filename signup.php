@@ -4,13 +4,13 @@ require("lucy-admin/sql.php");
 $signup_error = "";
 
 // Requires the captcha library if reCAP is enabled.
-if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Ticket']){
+if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Signup']){
 	require("lucy-admin/recaptchalib.php");
 }
 
-// Obviously if the user is already signed in, we don't let them log in again.
+// Obviously if the user is already signed in, we don't let them sign in again.
 if($usr_IsSignedIn){
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "dash.php\">Redirecting...");
+	header("Location: " . $GLOBALS['Config']['domain'] . "dash.php");
 }
 
 // If the user chose to signup.
@@ -80,7 +80,7 @@ if(isset($_POST['submit'])){
 	// Sends welcome message.
 	mailer_welcomeMessage($inp_name, $inp_email);
 	// Dies is successful.
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "new_ticket.php\">Redirecting...");
+	header("Location: " . $GLOBALS['Config']['domain'] . "new_ticket.php");
 }
 
 writeDoc:

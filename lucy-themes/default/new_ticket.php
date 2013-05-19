@@ -14,14 +14,19 @@ function popitup(url) {
 </script>
 <form method="POST" name="fm_ticket" onsubmit="return validateForm()" enctype="multipart/form-data">
 	<?php if(!$usr_IsSignedIn){ ?>
-	<p>
-		What is your name?<br/>
-		<input type="text" name="name" maxlength="45" size="35"/>
-	</p>
-	<p>
-		What is your email?<br/>
-		<input type="email" name="email" maxlength="45" size="35"/>
-	</p>
+		<p>
+			What is your Name?<br/>
+			<input type="text" name="name" maxlength="45" size="35" value="<?php echo($_GET['n']); ?>"/>
+		</p>
+		<p>
+			What is your Email?<br/>
+			<input type="email" name="email" maxlength="45" size="35" value="<?php echo($_GET['e']); ?>"/>
+		</p>
+		<p>
+			Chose a password:<br/>
+			<input type="password" name="password" maxlength="45" value="<?php echo($_GET['p']); ?>"/>
+		</p>
+		<hr/>
 	<?php } ?>
 	<p>
 		What is the application you are using?<br/>

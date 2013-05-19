@@ -4,13 +4,14 @@ set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/
 include('default.php');
 
 getHeader('Welcome'); ?>
-<h1>Sometimes you just need a little help.</h1>
+<h1 style="text-align:center">Sometimes you just need a little help.</h1>
 <div id="index-wrapper">
 <div id="index-ticket">
 <h2>First time here?</h2>
 <form action="new_ticket.php" method="GET" name="fm_ticket" onSubmit="return validateTicket()">
-	<p>What's your name?:<br/><input type="text" name="text"/></p>
-	<p>And your Email Address:<br/><input type="email" name="email"/></p>
+	<p>What's your name?:<br/><input type="text" name="n"/></p>
+	<p>And your Email Address:<br/><input type="email" name="e"/></p>
+	<p>And chose a password:<br/><input type="password" name="p"/></p>
 	<p><input type="submit" name="submit" value="Next"/> We'll finish this on the next page.</p>
 </form>
 </div>

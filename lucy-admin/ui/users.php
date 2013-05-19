@@ -15,32 +15,32 @@
 		die($e);
 	}
 	getHeader("Users");
-	getSidebar(3);
+	getNav(3);
 ?>
-		<div id="content">
-			<h2>All Users</h2>
-			<table>
-				<tr>
-					<td><strong>Name</strong></td>
-					<td><strong>Email</strong></td>
-					<td><strong>Type</strong></td>
-					<td><strong>Actions</strong></td>
-				</tr>
-			<?php foreach ($users as $user) { ?>
-				<tr>
-					<td><?php echo($user['name']); ?></td>
-					<td><?php echo($user['email']); ?></td>
-					<td><?php echo($user['type']); ?></td>
-					<td><a href="edit_user.php?id=<?php echo($user['id']); ?>">Edit</a> | <a href="del_user.php?id=<?php echo($user['id']); ?>">Delete</a></td>
-				</tr>
-			<?php } ?>
-			</table>
+<h1>All Users</h1>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th><strong>Name</strong></th>
+			<th><strong>Email</strong></th>
+			<th><strong>Type</strong></th>
+			<th><strong>Actions</strong></th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php foreach ($users as $user) { ?>
+		<tr>
+			<td><?php echo($user['name']); ?></td>
+			<td><?php echo($user['email']); ?></td>
+			<td><?php echo($user['type']); ?></td>
+			<td><a href="edit_user.php?id=<?php echo($user['id']); ?>">Edit</a> | <a href="del_user.php?id=<?php echo($user['id']); ?>">Delete</a></td>
+		</tr>
+	<?php } ?>
+</tbody>
+</table>
 			<div id="buttons">
 				<form action="new_user.php" method="post">
-					<input type="submit" value="Create New User" />
+					<input type="submit" value="Create New User" class="btn btn-primary"/>
 				</form>
 			</div>
-		</div>
-	</div>
-	<?php getFooter(); ?>
-</div>
+<?php getFooter(); ?>

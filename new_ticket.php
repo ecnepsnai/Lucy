@@ -29,8 +29,39 @@ if(isset($_POST['submit'])){
 		$inp_name = $usr_Name;
 		$inp_email = $usr_Email;
 	} else {
-		$inp_name = $_POST['name'];
-		$inp_email = $_POST['email'];
+		// Gathering the Email and Name.
+		$inp_name = addslashes($_POST['name']);
+		$inp_email = addslashes($_POST['email']);
+
+		// Generating a random salt used for encryption.
+		$salt = mt_rand(10, 99);
+
+		// Encrypting the password.
+		$hashed_password = md5($salt . md5($_POST['password']));
+
+		$sql = "INSERT INTO  userlist (type, name, email, password, date_registered, salt) VALUES ('Client',  '" . $inp_name . "',  '" . $inp_email . "',  '" . $hashed_password . "',  '" . date("Y-m-d") . "', '". $salt ."');";
+		try{
+			sqlQuery($sql, True);
+		} catch (Exception $e){
+			die($e);
+		}
+
+		// Gets the id from the database.
+		$sql = "SELECT id FROM userlist WHERE email = '" . $inp_email . "'";
+		try{
+			$user = sqlQuery($sql, True);
+		} catch (Exception $e){
+			die($e);
+		}
+
+		// Opens the session for the user.
+		session_start();
+		$_SESSION['id'] = $user['id'];
+		$_SESSION['name'] = $inp_name;
+		// Like before, we hard-code all users as Clients when signing up.
+		$_SESSION['type'] = 'Client';
+		$_SESSION['email'] = $inp_email;
+		$_SESSION['LAST_ACTIVITY'] = time();
 	}
 
 	$ticketid = "HP_" . rand(0, 9) . chr(97 + mt_rand(0, 25)) . rand(1000, 9999);
@@ -102,8 +133,7 @@ if(isset($_POST['submit'])){
 		require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/error-db.php');
 	}
 
-	// Dies when complete.
-	die("<meta http-equiv=\"REFRESH\" content=\"0;url=" . $GLOBALS['config']['Domain'] . "ticket.php?id=" . $ticketid . "&notice=new\">Redirecting...");
+	header("Location: " . $GLOBALS['Config']['domain'] . "ticket.php?id=" . $ticketid . "&notice=new");
 }
 writeDOC:
 require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/new_ticket.php');

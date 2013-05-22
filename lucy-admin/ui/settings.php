@@ -3,9 +3,9 @@
 	require("../sql.php");
 	require("default.php");
 
-	// Administrator access only.
-	if(!$usr_Type == "Admin"){
-		die("Forbidden.");
+	// Administrator access only
+	if($usr_Type != "Admin"){
+		lucy_die(0);
 	}
 
 	// User chose to save the settings.
@@ -18,8 +18,9 @@
 		$GLOBALS['config']['Email']['Address'] = $_POST['em_address'];
 
 		// Getting the Support settings:
-		$GLOBALS['config']['Apps'] = explode(",", $_POST['aph']);
-		$GLOBALS['config']['OS'] = explode(",", $_POST['osh']);
+		$GLOBALS['config']['Support']['Apps'] = explode(",", $_POST['sup_app']);
+		$GLOBALS['config']['Support']['OS'] = explode(",", $_POST['sup_os']);
+		$GLOBALS['config']['Support']['ID'] = $_POST['sup_id'];
 
 		// Getting the Database Settings:
 		$GLOBALS['config']['Database']['Type'] = $_POST['db_type'];
@@ -130,7 +131,7 @@
 							return;
 						}
 						$("#apps").append('<option value=' + appName + '>' + appName + '</option>');
-						$("#aph").val(function( index, value ) {
+						$("#sup_app").val(function( index, value ) {
 							if(value == null || value == ""){
 								return value + appName;
 							} else {
@@ -144,7 +145,7 @@
 							return;
 						}
 						$("#oss").append('<option value=' + osName + '>' + osName + '</option>');
-						$("#osh").val(function( index, value ) {
+						$("#sup_os").val(function( index, value ) {
 							if(value == null || value == ""){
 								return value + osName;
 							} else {
@@ -157,15 +158,22 @@
 				<div class="control-group">
 					<label class="control-label">Applications:</label>
 					<div class="controls">
-						<select name="apps" id="apps" multiple><?php foreach ($GLOBALS['config']['Apps'] as $app) { echo('<option>' . $app . '</option>'); } ?></select><br/>
-						<button type="button" onClick="addapp()">App New App</button><input type="hidden" name="aph" id="aph" value="<?php echo(implode(",", $GLOBALS['config']['Apps'])); ?>"/>
+						<select name="apps" id="apps" multiple><?php foreach ($GLOBALS['config']['Support']['Apps'] as $app) { echo('<option>' . $app . '</option>'); } ?></select><br/>
+						<button type="button" onClick="addapp()" class="btn">App New App</button><input type="hidden" name="sup_app" id="sup_app" value="<?php echo(implode(",", $GLOBALS['config']['Support']['Apps'])); ?>"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label">Operating Systems:</label>
 					<div class="controls">
-						<select name="oss" id="oss" multiple><?php foreach ($GLOBALS['config']['OS'] as $oss) { echo('<option>' . $oss . '</option>'); } ?> </select><br/>
-						<button type="button" onClick="addos()">App New Operating System</button><input type="hidden" name="osh" id="osh" value="<?php echo(implode(",", $GLOBALS['config']['OS'])); ?>"/>
+						<select name="oss" id="oss" multiple><?php foreach ($GLOBALS['config']['Support']['OS'] as $oss) { echo('<option>' . $oss . '</option>'); } ?> </select><br/>
+						<button type="button" onClick="addos()" class="btn">App New Operating System</button><input type="hidden" name="sup_os" id="sup_os" value="<?php echo(implode(",", $GLOBALS['config']['Support']['OS'])); ?>"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Ticket ID format:</label>
+					<div class="controls">
+						<input type="text" name="sup_id" value="<?php echo($GLOBALS['config']['Support']['ID']); ?>" class="input-xlarge"/><br/>
+						<strong>Syntax:</strong> Use <em>"#"</em> for random number <em>"%"</em> for random letter.
 					</div>
 				</div>
 			</div>
@@ -227,13 +235,13 @@
 				<div class="control-group">
 					<label class="control-label">Public Key:</label>
 					<div class="controls">
-						<input type="text" name="cap_public" size="75" value="<?php echo($GLOBALS['config']['ReCaptcha']['Public']); ?>" title="Your reCAPTCHA public key."/> <a href="http://www.google.com/recaptcha">Get Key</a>
+						<input type="text" name="cap_public" size="75" value="<?php echo($GLOBALS['config']['ReCaptcha']['Public']); ?>" title="Your reCAPTCHA public key."/> <a href="http://www.google.com/recaptcha" target="_blank">Get Key</a>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label">Private Key:</label>
 					<div class="controls">
-						<input type="text" name="cap_private" size="75" value="<?php echo($GLOBALS['config']['ReCaptcha']['Private']); ?>" title="Your reCAPTCHA private key."/> <a href="http://www.google.com/recaptcha">Get Key</a>
+						<input type="text" name="cap_private" size="75" value="<?php echo($GLOBALS['config']['ReCaptcha']['Private']); ?>" title="Your reCAPTCHA private key."/> <a href="http://www.google.com/recaptcha" target="_blank">Get Key</a>
 					</div>
 				</div>
 				<div class="control-group">
@@ -266,7 +274,7 @@
 				<div class="control-group">
 					<label class="control-label">Imgur API key:</label>
 					<div class="controls">
-						<input type="text" name="img_key" size="75" value="<?php echo($GLOBALS['config']['Imgur']['Key']); ?>" title="Your Imgur API key."/> <a href="http://api.imgur.com/#register">Get Key</a>
+						<input type="text" name="img_key" size="75" value="<?php echo($GLOBALS['config']['Imgur']['Key']); ?>" title="Your Imgur API key."/> <a href="http://api.imgur.com/#register" target="_blank">Get Key</a>
 					</div>
 				</div>
 			</div>
@@ -281,7 +289,7 @@
 				<div class="control-group">
 					<label class="control-label">Akismet API Key:</label>
 					<div class="controls">
-						<input type="text" name="aki_key" size="75" value="<?php echo($GLOBALS['config']['Akismet']['Key']); ?>" title="Your Akismet API key."/> <a href="https://akismet.com/signup/">Get Key</a>
+						<input type="text" name="aki_key" size="75" value="<?php echo($GLOBALS['config']['Akismet']['Key']); ?>" title="Your Akismet API key."/> <a href="https://akismet.com/signup/" target="_blank">Get Key</a>
 					</div>
 				</div>
 			</div>

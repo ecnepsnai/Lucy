@@ -6,9 +6,9 @@
 	require("../sql.php");
 	require("default.php");
 
-	// Administrator access only.
-	if(!$usr_Type == "Admin"){
-		die("Forbidden.");
+	// Administrator access only
+	if($usr_Type != "Admin"){
+		lucy_die(0);
 	}
 
 	// User chose to save the settings.
@@ -62,9 +62,10 @@
 		<label class="control-label">User Type:</label>
 		<div class="controls">
 			<select name="type">
-				<option value="Admin">Admin</option>
-				<option value="Agent">Agent</option>
-				<option value="Client">Client</option>
+				<option <?php if($user['type'] == "Bot") { echo('selected="selected"'); } ?>value="Bot">Bot</option>
+				<option <?php if($user['type'] == "Admin") { echo('selected="selected"'); } ?>value="Admin">Admin</option>
+				<option <?php if($user['type'] == "Agent") { echo('selected="selected"'); } ?>value="Agent">Agent</option>
+				<option <?php if($user['type'] == "Client") { echo('selected="selected"'); } ?>value="Client">Client</option>
 			</select>
 		</div>
 	</div>

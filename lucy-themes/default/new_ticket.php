@@ -33,7 +33,7 @@ function popitup(url) {
 		<select name="app">
 			<option value="">Select One..</option>
 			<?php
-				foreach($GLOBALS['config']['Apps'] as $app){
+				foreach($GLOBALS['config']['Support']['Apps'] as $app){
 					if(strncmp($app, "#", strlen("#"))){
 						echo('<option value="' . $app . '">' . $app . '</option>');
 					} else {
@@ -52,7 +52,7 @@ function popitup(url) {
 		<select name="os" onchange="validateOS(value)">
 			<option value="">Select One...</option>
 			<?php
-				foreach($GLOBALS['config']['OS'] as $os){
+				foreach($GLOBALS['config']['Support']['OS'] as $os){
 					if(strncmp($os, "#", strlen("#"))){
 						echo('<option value="' . $os . '">' . $os . '</option>');
 					} else {

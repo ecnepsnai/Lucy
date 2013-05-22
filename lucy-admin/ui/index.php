@@ -3,9 +3,9 @@
 	require("../sql.php");
 	require("default.php");
 
-	// Administrator access only.
-	if(!$usr_Type == "Admin"){
-		die("Forbidden.");
+	// Administrator or Agent access only.
+	if($usr_Type != "Admin" && $usr_Type != "Agent"){
+		lucy_die(0);
 	}
 
 	// Get the total count of tickets.

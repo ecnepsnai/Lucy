@@ -1,5 +1,5 @@
 <?php
-	error_reporting(E_ERROR | E_PARSE);
+	error_reporting(E_ERROR);
 	require_once("defines.php");
 	require_once("mailer.php");
 	$usr_IsSignedIn = False;
@@ -17,6 +17,7 @@
 		$usr_Type = $_SESSION['type'];
 		$usr_IsSignedIn = True;
 		$GLOBALS['usr_IsSignedIn'] = True;
+		$GLOBALS['usr_Type'] = $_SESSION['type'];
 	}
 	if(isset($_GET['t'])){
 		echo("User is signed in: " . $usr_IsSignedIn);

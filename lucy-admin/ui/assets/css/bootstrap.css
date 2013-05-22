@@ -4253,6 +4253,11 @@ a.thumbnail:focus {
 .alert-info h4 {
   color: #3a87ad;
 }
+.alert-notice {
+  background-color: #e6e6e6;
+  border-color: #d3d3d3;
+  color: #6f6f6f;
+}
 .alert-block {
   padding-top: 14px;
   padding-bottom: 14px;

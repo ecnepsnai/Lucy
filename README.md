@@ -26,7 +26,7 @@ Lucy is now in Alpha!  Currently there is no support for Microsoft SQL Server or
 
 ## Setup
 
-Installing lucy is easy!  Just upload all of the files and open it in your web browser.  You will be automatically brought to the setup page.
+Installing lucy is easy! Make a database for Lucy to use, upload all of the files and open it in your web browser.  You will be automatically brought to the setup page.
 
 ## Todo
 

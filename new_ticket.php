@@ -64,7 +64,17 @@ if(isset($_POST['submit'])){
 		$_SESSION['LAST_ACTIVITY'] = time();
 	}
 
-	$ticketid = "HP_" . rand(0, 9) . chr(97 + mt_rand(0, 25)) . rand(1000, 9999);
+	// Creating the Ticket ID based off on the setting
+	$ticketid = "";
+	foreach (str_split($GLOBALS['config']['Support']['ID']) as $char) {
+		if($char == "#"){
+			$ticketid.= rand(0, 9);
+		} elseif($char == "%"){
+			$ticketid.= chr(97 + mt_rand(0, 25));
+		} else {
+			$ticketid.= $char;
+		}
+	}
 	$application = addslashes($_POST['app']);
 	$version = addslashes($_POST['version']);
 	$os = addslashes($_POST['os']);

@@ -3,9 +3,9 @@
 	require("../sql.php");
 	require("default.php");
 
-	// Administrator access only.
-	if(!$usr_Type == "Admin"){
-		die("Forbidden.");
+	// Administrator access only
+	if($usr_Type != "Admin"){
+		lucy_die(0);
 	}
 
 	// User chose to save the settings.

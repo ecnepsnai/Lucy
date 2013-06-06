@@ -3,7 +3,7 @@
 	require("lucy-admin/sql.php");
 
 	if(!$usr_IsSignedIn){
-		header("Location: " . $GLOBALS['Config']['domain'] . "login.php");
+		header("Location: login.php");
 	}
 
 	$sql = "SELECT * FROM ticketlist WHERE email = '" . $usr_Email . "'";

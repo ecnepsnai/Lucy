@@ -135,13 +135,18 @@
 	try {
 		$ticket_messages = sqlQuery($sql, False);
 	} catch (Exception $e) {
-		require("error_db.php");
+		die($e);
+	}
+
+	// If somebody is trying to view the ticket without being signed in it will deny the request
+	if($usr_Email == "" || $usr_Email == null){
+		header("Location: login.php?notice=login");
 	}
 
 	// THIS SHOULD NOT RETURN TRUE
 	// If the ticket table has no data in it.
 	if(count($ticket_messages) == 0){
-		require("error_empty.php");
+		die("No ticket information returned.");
 	}
 
 require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/ticket.php');

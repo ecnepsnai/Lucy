@@ -143,7 +143,7 @@ if(isset($_POST['submit'])){
 		require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/error-db.php');
 	}
 
-	header("Location: " . $GLOBALS['Config']['domain'] . "ticket.php?id=" . $ticketid . "&notice=new");
+	header("Location: " . dirname(__FILE__) . "ticket.php?id=" . $ticketid . "&notice=new");
 }
 writeDOC:
 require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/new_ticket.php');

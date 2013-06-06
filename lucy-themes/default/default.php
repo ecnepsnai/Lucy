@@ -1,40 +1,65 @@
 <?php
 	function getHeader($pageTitle){ ?>
-<!doctype html>
+<!DOCTYPE html>
 <meta charset="utf-8">
-<!--[if lt IE 9]>
-<script src="assets/js/html5shiv.js"></script>
-<![endif]-->
-<title><?php echo($pageTitle . ' — Lucy'); ?></title>
-<link rel="stylesheet" href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/img/loader.css">
-<link rel="stylesheet" href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/img/styles.css">
-<script src="//code.jquery.com/jquery-1.9.0.js"></script>
-<script src="//code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
-<link rel="shortcut icon" href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/img/icon.png">
-<div id="wrapper">
-	<header>
-		<div id="title">
-			<a href="<?php echo($GLOBALS['config']['Domain']); ?>"><img src="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/img/logo.png" alt="Lucy"/></a>
+<title><?php echo($pageTitle . $GLOBALS['config']['Strings']['Separator'] . $GLOBALS['config']['Strings']['Main']); ?></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="lucy-themes\default\assets\css\bootstrap.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="lucy-themes\default\assets\js\bootstrap.min.js"></script>
+<style type="text/css">
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+</style>
+<link rel="shortcut icon" href="lucy-themes\default\assets\img\favicon.png">
+	<?php } 
+
+	function getNav($pageIndex) { ?>
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="brand" href="index.php">Lucy</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+					<?php if($GLOBALS['usr_IsSignedIn']) { ?>
+						<li <?php if($pageIndex == 0){ echo('class="active"'); } ?>><a href="index.php">My Tickets</a></li>
+						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="new_ticket.php">New Ticket</a></li>
+					<?php } else { ?>
+						<li <?php if($pageIndex == 3){ echo('class="active"'); } ?>><a href="signup.php">Sign Up</a></li>
+						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="new_ticket.php">New Ticket</a></li>
+					<?php } ?>
+					</ul>
+					<?php if($GLOBALS['usr_IsSignedIn']) { ?>
+					<ul class="nav pull-right">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Hey, <?php echo($GLOBALS['usr_Name']); ?> <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="profile.php">My Profile</a></li>
+								<?php if($GLOBALS['usr_Type'] == "Admin" || $GLOBALS['usr_Type'] == "Agent") { ?><li><a href="lucy-admin/ui/">Lucy Administration</a></li><?php } ?>
+								<li class="divider"></li>
+								<li><a href="logout.php">Log out</a></li>
+							</ul>
+						</li>
+					</ul>
+					<?php } ?>
+				</div>
+			</div>
 		</div>
-		<nav>
-			<ul>
-				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>new_ticket.php">Create a Ticket</a></li>
-				<?php if($GLOBALS['usr_IsSignedIn']) { ?>
-				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>profile.php">My Profile</a></li>
-				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>dash.php">Checkup on your Tickets</a></li>
-				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>logout.php">Logout</a></li>
-				<?php } else {?> 
-				<li><a href="<?php echo($GLOBALS['config']['Domain']); ?>login.php">Login</a></li>
-				<?php } ?>
-			</ul>
-		</nav>
-	</header>
+	</div>
+	<div class="container">
 <?php }
 
 	function getFooter(){ ?>
-	<footer>
-		<p class="left">Copyright &copy; Ian Spence 2013.</p>
-		<p class="right">Powered by the <a href="//ianspence.com/Lucy.php">Lucy Framework</a>.</p>
-	</footer>
+<footer style="text-align:center">
+	<hr/>
+	<p><?php echo($GLOBALS['config']['Strings']['Footer']); ?></p>
+</footer>
 </div>
 <?php }

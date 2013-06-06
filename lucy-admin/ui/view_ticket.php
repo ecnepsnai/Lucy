@@ -233,6 +233,8 @@
 				<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
 					<?php } ?>
 			</div><?php } } } ?>
+
+			
 			<h2>Ticket Options</h2>
 			<script type="text/javascript">
 			function hideTools() {

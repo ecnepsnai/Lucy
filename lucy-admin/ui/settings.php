@@ -11,11 +11,21 @@
 	// User chose to save the settings.
 	if(isset($_POST['submit'])){
 		// Getting the general settings:
-		$GLOBALS['config']['Domain'] = $_POST['domain'];
 		$GLOBALS['config']['SessionExpire'] = $_POST['expire'];
 		$GLOBALS['config']['Debug'] = $_POST['debug'];
+
+
+		// Getting the Email settings:
 		$GLOBALS['config']['Email']['Name'] = $_POST['em_name'];
 		$GLOBALS['config']['Email']['Address'] = $_POST['em_address'];
+		$GLOBALS['config']['Email']['Advance'] = $_POST['em_advance'];
+		$GLOBALS['config']['Email']['Host'] = $_POST['em_host'];
+		$GLOBALS['config']['Email']['Auth'] = $_POST['em_auth'];
+		$GLOBALS['config']['Email']['Port'] = $_POST['em_port'];
+		$GLOBALS['config']['Email']['Username'] = $_POST['em_username'];
+		$GLOBALS['config']['Email']['Password'] = $_POST['em_password'];
+		$GLOBALS['config']['Email']['Type'] = $_POST['em_type'];
+
 
 		// Getting the Support settings:
 		$GLOBALS['config']['Support']['Apps'] = explode(",", $_POST['sup_app']);
@@ -61,8 +71,9 @@
 	getNav(4);
 ?>
 <div class="tabbable">
-	<ul class="nav nav-tabs">
+	<ul class="nav nav-pills">
 		<li class="active"><a href="#general" data-toggle="tab">General</a></li>
+		<li><a href="#email" data-toggle="tab">Email</a></li>
 		<li><a href="#support" data-toggle="tab">Support</a></li>
 		<li><a href="#database" data-toggle="tab">Database</a></li>
 		<li><a href="#themes" data-toggle="tab">Themes</a></li>
@@ -74,12 +85,6 @@
 		<div class="tab-content">
 			<div id="general" class="tab-pane active">
 				<h2>General Settings:</h2>
-				<div class="control-group">
-					<label class="control-label">Domain Address:</label>
-					<div class="controls">
-						<input type="url" name="domain" size="45" value="<?php echo($GLOBALS['config']['Domain']); ?>" title="This is the URL that Lucy is located in.  Used for linking resources."/>
-					</div>
-				</div>
 				<div class="control-group">	
 					<label class="control-label">Session Expiration Time:</label>
 					<div class="controls">
@@ -101,7 +106,7 @@
 				<div class="control-group">	
 					<label class="control-label">Title Separator:</label>
 					<div class="controls">
-						<input type="text" name="txt_sep" size="5" maxlength="5" value="<?php echo($GLOBALS['config']['Strings']['Separator']); ?>" title="This appears in the title.  Trailing and Leading whitespace is automatically added."/>
+						<input type="text" name="txt_sep" size="5" maxlength="5" value="<?php echo($GLOBALS['config']['Strings']['Separator']); ?>" title="This appears in the title. Don't forget Trailing and Leading whitespace."/>
 					</div>
 				</div>
 				<div class="control-group">	
@@ -110,6 +115,9 @@
 						<input type="text" name="txt_ftr" size="30" value="<?php echo($GLOBALS['config']['Strings']['Footer']); ?>" title="The text that appears on the bottom left of the page."/>
 					</div>
 				</div>
+			</div>
+			<div id="email" class="tab-pane">
+				<h2>Email Settings</h2>
 				<div class="control-group">	
 					<label class="control-label">Email Name:</label>
 					<div class="controls">
@@ -120,6 +128,52 @@
 					<label class="control-label">Email Address:</label>
 					<div class="controls">
 						<input type="email" name="em_address" size="30" value="<?php echo($GLOBALS['config']['Email']['Address']); ?>" title="The email address used when Lucy sends out automatic emails to users."/>
+					</div>
+				</div>
+				<div class="control-group">	
+					<label class="control-label">Advance Mail Settings:</label>
+					<div class="controls">
+						<input type="checkbox" name="em_advance" <?php if($GLOBALS['config']['Email']['Advance']) { echo('checked="checked"'); } ?>/> (Check if your email requires SSL)
+					</div>
+				</div>
+				<div id="email_advance" <?php if(!$GLOBALS['config']['Email']['Advance']) { echo('style="display:none"'); } ?>>
+					<hr/>
+					<div class="control-group">	
+						<label class="control-label">Email Host:</label>
+						<div class="controls">
+							<input type="text" name="em_host" size="30" value="<?php echo($GLOBALS['config']['Email']['Host']); ?>" title="The SMPT host."/>
+						</div>
+					</div>
+					<div class="control-group">	
+						<label class="control-label">Require Authentication:</label>
+						<div class="controls">
+							<input type="checkbox" name="em_auth" <?php if($GLOBALS['config']['Email']['Auth']) { echo('checked="checked"'); } ?>/>
+						</div>
+					</div>
+					<div class="control-group">	
+						<label class="control-label">Port:</label>
+						<div class="controls">
+							<input type="text" name="em_port" size="5" value="<?php echo($GLOBALS['config']['Email']['Port']); ?>" title="The SMPT port."/>
+						</div>
+					</div>
+					<div class="control-group">	
+						<label class="control-label">Email Username:</label>
+						<div class="controls">
+							<input type="text" name="em_username" size="30" value="<?php echo($GLOBALS['config']['Email']['Username']); ?>" title="The SMPT Username."/>
+						</div>
+					</div>
+					<div class="control-group">	
+						<label class="control-label">Email Password:</label>
+						<div class="controls">
+							<input type="password" name="em_password" size="30" value="<?php echo($GLOBALS['config']['Email']['Password']); ?>" title="The SMPT Password."/>
+						</div>
+					</div>
+					<div class="control-group">	
+						<label class="control-label">Enforce SSL/TLS:</label>
+						<div class="controls">
+							<input type="radio" name="em_type" value="ssl" <?php if($GLOBALS['config']['Email']['Type'] == "ssl") { echo('checked="checked"'); } ?>/> SSL <br/>
+							<input type="radio" name="em_type" value="tls" <?php if($GLOBALS['config']['Email']['Type'] == "tls") { echo('checked="checked"'); } ?>/> TLS
+						</div>
 					</div>
 				</div>
 			</div>
@@ -222,7 +276,16 @@
 				</div>
 			</div>
 			<div id="themes" class="tab-pane">
-				<h2>Themes support coming soon...</h2>
+				<h2>Themes settings:</h2>
+				<ul class="thumbnails">
+					<li class="span4">
+						<div class="thumbnail">
+							<img data-src="holder.js/300x200" alt="">
+							<h3>Thumbnail label</h3>
+							<p>Thumbnail caption...</p>
+						</div>
+					</li>
+				</ul>
 			</div>
 			<div id="reCAP" class="tab-pane">
 				<h2>reCAPTCHA Settings:</h2>

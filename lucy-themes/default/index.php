@@ -3,35 +3,29 @@ set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/
 
 include('default.php');
 
-getHeader('Welcome'); ?>
-<h1 style="text-align:center">Sometimes you just need a little help.</h1>
-<div id="index-wrapper">
-<div id="index-ticket">
-<h2>First time here?</h2>
-<form action="new_ticket.php" method="GET" name="fm_ticket" onSubmit="return validateTicket()">
-	<p>What's your name?:<br/><input type="text" name="n"/></p>
-	<p>And your Email Address:<br/><input type="email" name="e"/></p>
-	<p>And chose a password:<br/><input type="password" name="p"/></p>
-	<p><input type="submit" name="submit" value="Next"/> We'll finish this on the next page.</p>
-</form>
+getHeader('Welcome'); getNav(999); ?>
+<div class="hero-unit">
+	<h1>Sometimes you just need a little help.</h1>
+	<p>That's why we're here.  Lucy is an easy to use Support System built using PHP that is both easy to setup and easy to use.</p>
 </div>
-<div id="index-login">
-<h2>Already with us?</h2>
-<form action="login.php" method="POST" name="fm_login" onSubmit="return validateLogin()">
-	<p>Email Address:<br/><input type="email" name="email"/></p>
-	<p>Password:<br/><input type="password" name="pwd"/></p>
-	<?php if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Login']){
-		if($cap_error){ ?>
-		<div class="notice" id="yellow">
-			<strong>Incorrect Captcha</strong> Try Again.
-		</div>
-		<?php }
-		echo("<p>");
-		echo recaptcha_get_html($GLOBALS['config']['ReCaptcha']['Public']);
-		echo("</p>");
-	} ?>
-	<p><input type="submit" name="submit" value="Log in"/> <a href="forgot.php">Forgot your password?</a></p>
-</form>
-</div>
+<hr/>
+<div class="row-fluid">
+	<div class="span6" style="text-align:right">
+		<h2>First time here?</h2>
+		<form action="new_ticket.php" method="GET" name="fm_ticket" class="form-horizontal">
+			<input type="text" name="n" placeholder="Whats your Name?" class="input-block-level" style="margin-bottom:15px"/>
+			<input type="email" name="e" placeholder="And your Email Address" class="input-block-level" style="margin-bottom:15px"/>
+			<input type="password" name="p" placeholder="Chose a password" class="input-block-level" style="margin-bottom:15px"/>
+			We'll continue on the next page <input type="submit" name="submit" value="Continue" class="btn"/>
+		</form>
+	</div>
+	<div class="span6">
+		<h2>Already with us?</h2>
+		<form action="login.php" method="POST" name="fm_login" class="form-horizontal">
+			<input type="email" name="email" placeholder="Email Address" class="input-block-level" style="margin-bottom:15px"/>
+			<input type="password" name="pwd" placeholder="Password" class="input-block-level" style="margin-bottom:15px"/>
+			<input type="submit" name="submit" value="Log in" class="btn"/> <a href="forgot.php">Forgot your password?</a>
+		</form>
+	</div>
 </div>
 <?php getFooter(); ?>

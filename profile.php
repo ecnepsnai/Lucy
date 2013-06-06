@@ -4,7 +4,7 @@ require("lucy-admin/sql.php");
 
 // Obviously if the user is not signed in, we don't let them see a profile.
 if(!$usr_IsSignedIn){
-	header("Location: " . $GLOBALS['Config']['domain'] . "login.php?notice=login");
+	header("Location: login.php?notice=login");
 }
 
 if(isset($_POST['submit'])){

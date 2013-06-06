@@ -4,7 +4,7 @@ require("lucy-admin/sql.php");
 
 // Obviously if the user is already signed in, we don't let them reset their own password.
 if($usr_IsSignedIn){
-	header("Location: " . $GLOBALS['Config']['domain'] . "dash.php");
+	header("Location: dash.php");
 }
 
 // User requested a password reset.
@@ -29,7 +29,7 @@ if(isset($_POST['submit'])){
 		}
 
 		// Emails password reset link.
-		mailer_passwordReset($usr_Name, $usr_Email, $GLOBALS['config']['Domain'] . "forgot.php?a=" . $salt1 . "&b=" . $salt2);
+		mailer_passwordReset($usr_Name, $usr_Email, dirname(__FILE__) . "forgot.php?a=" . $salt1 . "&b=" . $salt2);
 		die("Please check your email for a validation link to change your password.");
 	}
 }

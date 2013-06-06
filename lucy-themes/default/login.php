@@ -2,22 +2,26 @@
 set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/',dirname(__FILE__))));
 include('default.php');
 
-getHeader('Login'); 
+getHeader('Login'); getNav(999);
 		if($_GET['notice'] == "login"){
 			?>
-			<div class="notice" id="yellow">
-				<strong>You need to be signed in to do that.</strong><br/>
-				Don't have an account? <a href="signup.php">Create one here</a>.
+			<div class="alert">
+				<strong>You need to be signed in to do that.</strong> Don't have an account? <a href="signup.php">Create one here</a>.
+			</div>
+			<?php
+		} elseif($_GET['notice'] == "welcome"){
+			?>
+			<div class="alert alert-success">
+				<strong>Welcome to Lucy!</strong> All of the required settings are configured.  Log in and go to settings to fine-tune Lucy to your liking!</a>.
 			</div>
 			<?php
 		}
 	?>
-<h1>Login</h1>
+<h1>Login to Lucy</h1>
 <?php if($login_error) {
 	?>
-<div class="notice" id="red">
-	<strong>Incorrect Password</strong><br/>
-	Please try again...
+<div class="alert">
+	<strong>Incorrect Password</strong> Please try again...
 </div>
 	<?php
 }
@@ -42,21 +46,27 @@ getHeader('Login');
 		return true;
 	}
 </script>
-<form method="POST" name="fm_login" onSubmit="return validateForm()">
-	<p>Email Address:<br/><input type="email" name="email" class="txtglow" size="45"/></p>
-	<p>Password:<br/><input type="password" name="pwd" class="txtglow" size="45"/></p>
+<form method="POST" name="fm_login" onSubmit="return validateForm()" class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label">Email Address:</label>
+		<div class="controls">
+			<input type="email" name="email" size="45"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Password:</label>
+		<div class="controls">
+			<input type="password" name="pwd" size="45"/>
+		</div>
+	</div>
 	<?php if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Login']){
 		if($cap_error){ ?>
 		<div class="notice" id="yellow">
 			<strong>Incorrect Captcha</strong> Try Again.
 		</div>
 		<?php }
-		echo("<p>");
 		echo recaptcha_get_html($GLOBALS['config']['ReCaptcha']['Public']);
-		echo("</p>");
 	} ?>
-	<a href="signup.php">Need an account?</a> | <a href="forgot.php">Forgot your password?</a>
-	<p><input type="submit" name="submit" value="Log in"/></p>
+	<input type="submit" name="submit" value="Log in" class="btn btn-primary"/> <a href="signup.php">Need an account?</a> | <a href="forgot.php">Forgot your password?</a>
 </form>
 <?php getFooter(); ?>
-</div>

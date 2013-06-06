@@ -3,24 +3,37 @@ set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/
 
 include('default.php');
 
-getHeader('Dash'); ?>
+getHeader('Dash'); getNav(0); ?>
 <h1>Your tickets</h1>
-<table>
-	<tr>
-		<td><strong>Application</strong></td>
-		<td><strong>Status</strong></td>
-		<td><strong>Date</strong></td>
-		<td><strong>Subject</strong></td>
-		<td><strong>Actions</strong></td>
-	</tr>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th><strong>Name</strong></th>
+			<th><strong>Application</strong></th>
+			<th><strong>Status</strong></th>
+			<th><strong>Date</strong></th>
+			<th><strong>Subject</strong></th>
+			<th><strong>Actions</strong></th>
+		</tr>
+	</thead>
+	<tbody>
 <?php foreach ($tickets as $ticket) { ?>
 	<tr>
+		<td><?php echo($ticket['name']); ?></td>
 		<td><?php echo($ticket['application']); ?></td>
-		<td><?php echo($ticket['status']); ?></td>
+		<td><?php
+			if($ticket['status'] == "Pending"){
+				echo('<span class="label">Pending</span>');
+			} elseif ($ticket['status'] == "Active"){
+				echo('<span class="label label-success">Active</span>');
+			} else {
+				echo('<span class="label label-inverse">Closed</span>');
+			} ?></td>
 		<td><?php echo(date_format(date_create($ticket['date']), 'd/m/Y')); ?></td>
 		<td><?php echo($ticket['subject']); ?>...</td>
 		<td><a href="ticket.php?id=<?php echo($ticket['id']); ?>">View</a></td>
 	</tr>
 <?php } ?>
+</tbody>
 </table>
 <?php getFooter(); ?>

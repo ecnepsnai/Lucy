@@ -2,11 +2,11 @@
 set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/',dirname(__FILE__))));
 include('default.php');
 
-getHeader('Signup'); ?>
+getHeader('Signup'); getNav(3); ?>
 <h1>Signup for Lucy</h1>
 <?php if($signup_error) {
 	?>
-<div class="notice" id="red">
+<div class="alert">
 	<?php echo($signup_error); ?>
 </div>
 	<?php
@@ -33,21 +33,33 @@ getHeader('Signup'); ?>
 		return true;
 	}
 </script>
-<form method="POST" name="fm_signup" onSubmit="return validateForm()">
-	<p>Name:<br/><input type="text" name="name" class="txtglow" size="45"/> <em>This one should be easy.</em></p>
-	<p>Email Address:<br/><input type="email" name="email" class="txtglow" size="45"/> <em>This is never sold or shared.</em></p>
-	<p>Password:<br/><input type="password" name="pwd" class="txtglow" size="45"/> <em>Make it hard to guess.</em></p>
+<form method="POST" name="fm_signup" onSubmit="return validateForm()" class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label">Name:</label>
+		<div class="controls">
+			<input type="text" name="name" class="txtglow" size="45"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Email Address:</label>
+		<div class="controls">
+			<input type="email" name="email" class="txtglow" size="45"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Password:</label>
+		<div class="controls">
+			<input type="password" name="pwd" class="txtglow" size="45"/>
+		</div>
+	</div>
 	<?php if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Signup']){
 		if($cap_error){ ?>
 		<div class="notice" id="yellow">
 			<strong>Incorrect Captcha</strong> Try Again.
 		</div>
 		<?php }
-		echo("<p>");
 		echo recaptcha_get_html($GLOBALS['config']['ReCaptcha']['Public']);
-		echo("</p>");
 	} ?>
-	<p><input type="submit" name="submit" value="Sign up for Lucy" class="btn" id="blue"/></p>
+	<input type="submit" name="submit" value="Sign up for Lucy" class="btn btn-primary"/>
 </form>
 <?php getFooter(); ?>
-</div>

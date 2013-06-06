@@ -35,6 +35,17 @@ body {
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 3){ echo('class="active"'); } echo('><a href="users.php">Users</a></li>'); } ?>
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 4){ echo('class="active"'); } echo('><a href="settings.php">Settings</a></li>'); } ?>
 					</ul>
+					<ul class="nav pull-right">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Hey, <?php echo($GLOBALS['usr_Name']); ?> <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="profile.php">My Profile</a></li>
+								<li><a href="auth.php">Two-Factor Config</a></li>
+								<li class="divider"></li>
+								<li><a href="../../logout.php">Log out</a></li>
+							</ul>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>

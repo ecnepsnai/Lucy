@@ -16,10 +16,6 @@
 		$user_name = addslashes($_POST['name']);
 		$user_email = addslashes($_POST['email']);
 		$user_type = addslashes($_POST['type']);
-		$pwd_reset = addslashes($_POST['pwd_reset']);
-		if($pwd_reset){
-			$sql = "UPDATE userlist SET `name` = '" . $user_name . "', `email` = '" . $user_email . "', `type` = '" . $user_type . "', `pwd_reset` = '1' WHERE `id` = " . $_GET['id'] . ";";
-		}
 		$sql = "UPDATE userlist SET `name` = '" . $user_name . "', `email` = '" . $user_email . "', `type` = '" . $user_type . "' WHERE `id` = " . $_GET['id'] . ";";
 		try{
 			sqlQuery($sql, True);
@@ -29,7 +25,7 @@
 		$changes_Saved = True;
 	}
 
-	$sql = "SELECT name, email, type FROM userlist WHERE id = '" . addslashes($_GET['id']) . "'";
+	$sql = "SELECT name, email, type, id FROM userlist WHERE id = '" . addslashes($_GET['id']) . "'";
 	try {
 		$user = sqlQuery($sql, True);
 	} catch (Exception $e) {
@@ -40,8 +36,8 @@
 	getNav(3);
 ?>
 <?php if($changes_Saved) { ?>
-<div id="notice">
-	Values Saved
+<div class="notice">
+	<strong>Values Saved</strong>
 </div>
 <?php } ?>
 <form class="form-horizontal" method="post">
@@ -62,7 +58,6 @@
 		<label class="control-label">User Type:</label>
 		<div class="controls">
 			<select name="type">
-				<option <?php if($user['type'] == "Bot") { echo('selected="selected"'); } ?>value="Bot">Bot</option>
 				<option <?php if($user['type'] == "Admin") { echo('selected="selected"'); } ?>value="Admin">Admin</option>
 				<option <?php if($user['type'] == "Agent") { echo('selected="selected"'); } ?>value="Agent">Agent</option>
 				<option <?php if($user['type'] == "Client") { echo('selected="selected"'); } ?>value="Client">Client</option>

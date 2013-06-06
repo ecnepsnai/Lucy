@@ -4,8 +4,12 @@ set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/
 include('default.php');
 
 getHeader('Ticket Status'); ?>
+<link href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/css/bootstrap-fileupload.css" rel="stylesheet">
+<script src="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/js/bootstrap.fileupload.js"></script>
+<?php
+getNav(0); ?>
 <h1>Ticket Status</h1>
-<table class="ticket_info">
+<table class="table">
 	<tr>
 		<td>
 			<strong>Application:</strong> <?php echo($ticket_info['application']); ?><br/>
@@ -29,12 +33,12 @@ getHeader('Ticket Status'); ?>
 
 			// If the message is the word CLOSED, the ticket has been closed.
 			if($message['Message'] == "CLOSED") { ?>
-				<div class="ticket_message client"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
+				<div class="alert alert-warning"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> closed this ticket.</strong></div>
 					<?php }
 
 					// The message was not CLOSED, writing the message and screenshot (if any)
 					else { ?>
-<div class="ticket_message client">
+<div class="alert alert-notice">
 	<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($ticket_info['name']); ?> said:</strong><br/><?php echo($message['Message']); ?>
 	<?php if($message['File'] != ""){ ?>
 	<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
@@ -47,12 +51,12 @@ else {
 
 	// In the message if the word CLOSED, the ticket has been closed.
 	if($message['Message'] == "CLOSED") { ?>
-		<div class="ticket_message agent"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
+		<div class="alert alert-warning"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
 					<?php }
 
 					// The message was not CLOSED, writing the message and screenshot (if any)
 					else { ?>
-<div class="ticket_message agent">
+<div class="alert alert-success">
 	<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> said:</strong><br/><?php echo($message['Message']); ?>
 	<?php if($message['File'] != ""){ ?>
 	<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
@@ -74,12 +78,25 @@ function hideTools() {
 	You can <button onclick="parent.location='javascript:hideTools()'" value="Reply to this ticket" class="btn" id="gray">Reply to this ticket</button> or <form method="POST" style="display:inline"><input type="hidden" name="close" value="CloseTicket"/><input type="submit" name"submit" value="Close this ticket" class="btn" id="gray"/></form>
 </div>
 <div id="ticket_reply" style="display:none">
-	<form method="POST" enctype="multipart/form-data">
+	<form method="POST" enctype="multipart/form-data" class="form-horizontal">
 		<input type="hidden" name="reply" value="ReplyToTicket"/>
-		<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Type your reply here" maxlength="16777216"></textarea><br/>
-		<p>Include a screenshot? (<em>Optional</em> - <a href="help_screenshots.php">Help</a>)<br/>
-		<input type="file" name="screenshot" /></p>
-		<input type="submit" name"reply" value="Add Reply" class="btn" id="blue"/>
+		<div class="control-group">
+			<label class="control-label">Your Reply:</label>
+			<div class="controls">
+				<textarea name="message" rows="10" cols="75" class="txtglow" placeholder="Type your reply here" maxlength="16777216"></textarea><br/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Screenshot:</label>
+			<div class="controls">
+				<div class="fileupload fileupload-new" data-provides="fileupload">
+					<span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input type="file" name="screenshot"/></span>
+					<span class="fileupload-preview"></span>
+					<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+				</div>
+			</div>
+		</div>
+		<input type="submit" name"reply" value="Add Reply" class="btn btn-primary" id="blue"/>
 	</form>
 </div>
 <?php } ?>

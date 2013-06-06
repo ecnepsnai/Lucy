@@ -10,7 +10,7 @@ if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha'][
 
 // Obviously if the user is already signed in, we don't let them sign in again.
 if($usr_IsSignedIn){
-	header("Location: " . $GLOBALS['Config']['domain'] . "dash.php");
+	header("Location: dash.php");
 }
 
 // If the user chose to signup.
@@ -80,7 +80,7 @@ if(isset($_POST['submit'])){
 	// Sends welcome message.
 	mailer_welcomeMessage($inp_name, $inp_email);
 	// Dies is successful.
-	header("Location: " . $GLOBALS['Config']['domain'] . "new_ticket.php");
+	header("Location: new_ticket.php");
 }
 
 writeDoc:

@@ -4,8 +4,8 @@ set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/
 include('default.php');
 
 getHeader('Ticket Status'); ?>
-<link href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/css/bootstrap-fileupload.css" rel="stylesheet">
-<script src="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/js/bootstrap.fileupload.js"></script>
+<link href="lucy-themes/default/assets/css/bootstrap-fileupload.css" rel="stylesheet">
+<script src="lucy-themes/default/assets/js/bootstrap.fileupload.js"></script>
 <?php
 getNav(0); ?>
 <h1>Ticket Status</h1>

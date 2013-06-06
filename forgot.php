@@ -29,7 +29,7 @@ if(isset($_POST['submit'])){
 		}
 
 		// Emails password reset link.
-		mailer_passwordReset($usr_Name, $usr_Email, dirname(__FILE__) . "forgot.php?a=" . $salt1 . "&b=" . $salt2);
+		mailer_passwordReset($usr_Name, $usr_Email, "forgot.php?a=" . $salt1 . "&b=" . $salt2);
 		die("Please check your email for a validation link to change your password.");
 	}
 }

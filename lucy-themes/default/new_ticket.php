@@ -4,8 +4,8 @@ set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/
 include('default.php');
 
 getHeader('Welcome'); ?>
-<link href="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/css/bootstrap-fileupload.css" rel="stylesheet">
-<script src="<?php echo($GLOBALS['config']['Domain']); ?>lucy-themes/default/assets/js/bootstrap.fileupload.js"></script>
+<link href="lucy-themes/default/assets/css/bootstrap-fileupload.css" rel="stylesheet">
+<script src="lucy-themes/default/assets/js/bootstrap.fileupload.js"></script>
 <?php getNav(1); ?>
 <h1>Submit a ticket</h1>
 <form method="POST" name="fm_ticket" onsubmit="return validateForm()" enctype="multipart/form-data" class="form-horizontal">

@@ -9,10 +9,6 @@ if($usr_IsSignedIn){
 	header("Location: dash.php");
 }
 
-//if(!isset($_SESSION['tf_secret'])){
-//	header("Location: " . dirname(__FILE__) . "login.php?notice=login");
-//}
-
 // User entered a code.
 if(isset($_POST['submit'])){
 

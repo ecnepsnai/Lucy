@@ -13,6 +13,8 @@ Lucy is now in Beta!  Currently there is no support for Microsoft SQL Server or 
 
 - Added automatic setup script.
 - Updated admin back-end to make way for assignments.
+- Added 2-Step Authentication for Adminstrators and Agents
+- Removed almost all absolute URIs.
 
 ## Alpha Release
 

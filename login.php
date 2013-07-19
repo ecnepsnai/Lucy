@@ -1,6 +1,6 @@
 <?php
 require("lucy-admin/session.php");
-require("lucy-admin/sql.php");
+
 $login_error = False;
 
 // Obviously if the user is already signed in, we don't let them log in again.
@@ -8,22 +8,15 @@ if($usr_IsSignedIn){
 	header("Location: dash.php");
 }
 
-// Requires the captcha library if reCAP is enabled.
-if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Login']){
-	require("lucy-admin/recaptchalib.php");
-}
-
 // User chose to login.
 if(isset($_POST['submit'])){
-	// Validates the reCAPTICHA challenge if enabled.
-	if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Login']){
-		$resp = recaptcha_check_answer ($GLOBALS['config']['ReCaptcha']['Private'], $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-		if (!$resp->is_valid) {
-			$cap_error = True;
-			goto writeDOC;
-		}
-	}
+	// Requiring the CDA library.
+	require("lucy-admin/cda.php");
 
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
 
 	// Getting the raw inputs.
 	$raw_email = trim($_POST['email']);
@@ -34,38 +27,23 @@ if(isset($_POST['submit'])){
 	// Preparing the first sql request.
 	$inp_email = addslashes($raw_email);
 	// Ask for user salt first, then verify, THEN get rest of data
-	$sql = "SELECT email, salt FROM userlist WHERE email = '". $inp_email . "'";
 	try {
-		$pw = sqlQuery($sql, True);
+		$response = $cda->select(array("email, salt"),"userlist",array("email"=>$inp_email));
 	} catch (Exception $e) {
-		require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/error-db.php');
+		die($e);
 	}
+	$pw = $response['data'];
 	$pw_hash = md5($pw['salt'] . md5(trim($_POST['pwd'])));
 
 	// Preparing the second sql request.
-	$sql = "SELECT id, name, type, email, tf_enable, tf_secret FROM userlist WHERE email = '". $inp_email ."' AND password = '" . $pw_hash . "'";
 	try {
-		$user = sqlQuery($sql, True);
+		$response = $cda->select(array("id","name","type","email","tf_enable","tf_secret"),"userlist",array("email"=>$inp_email,"password"=>$pw_hash));
 	} catch (Exception $e) {
-		require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/error-db.php');
+		die($e);
 	}
+	$user = $response['data'];
 	if(empty($user['id'])){
 		$login_error = True;
-	} elseif($user['type'] == "Ban"){
-		?>
-			<?php documentCreate(TITLE_ERROR, False); ?>
-			<div id="wrapper">
-			<?php writeHeader(); ?>
-			<div id="content">
-			<div class="notice" id="red">
-				<strong>Account Banned</strong><br/>
-				Your account has been banned.
-			</div>
-			</div>
-			<?php writeFooter(); ?>
-			</div>
-		<?php
-		die();
 	} else {
 
 		// Testing to see if Two-Factor Authentication is Enabled

@@ -3,7 +3,7 @@
 		die("No ID");
 	}
 	require("../session.php");
-	require("../sql.php");
+	require("../cda.php");
 	require("default.php");
 
 	// Administrator access only
@@ -13,17 +13,17 @@
 
 	// User chose to delete the ticket.
 	if(isset($_POST['submit'])){
-		$sql = "DELETE FROM ticketlist WHERE id = '" . $_GET['id'] . "';";
-		echo($sql);
+		// Creating the CDA class.
+		$cda = new cda;
+		// Initializing the CDA class.
+		$cda->init($GLOBALS['config']['Database']['Type']);
 		try{
-			sqlQuery($sql, True);
+			$cda->delete("ticketlist",array("id"=>$_GET['id']));
 		} catch (Exception $e) {
 			die($e);
 		}
-		$sql = "DROP TABLE " . $_GET['id'] . ";";
-		echo($sql);
 		try{
-			sqlQuery($sql, True);
+			$cda->dropTable($_GET['id']);
 		} catch (Exception $e) {
 			die($e);
 		}

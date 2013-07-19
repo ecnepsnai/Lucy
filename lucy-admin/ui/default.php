@@ -32,8 +32,8 @@ body {
 						<li <?php if($pageIndex == 0){ echo('class="active"'); } ?>><a href="index.php">Dashboard</a></li>
 						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="mytickets.php">My Tickets</a></li>
 						<li <?php if($pageIndex == 2){ echo('class="active"'); } ?>><a href="alltickets.php">All Tickets</a></li>
-						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 3){ echo('class="active"'); } echo('><a href="users.php">Users</a></li>'); } ?>
-						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 4){ echo('class="active"'); } echo('><a href="settings.php">Settings</a></li>'); } ?>
+						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 4){ echo('class="active"'); } echo('><a href="users.php">Users</a></li>'); } ?>
+						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 5){ echo('class="active"'); } echo('><a href="settings.php">Settings</a></li>'); } ?>
 					</ul>
 					<ul class="nav pull-right">
 						<li class="dropdown">

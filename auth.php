@@ -1,6 +1,5 @@
 <?php
 require("lucy-admin/session.php");
-require("lucy-admin/sql.php");
 require("lucy-admin/auth.php");
 $auth_error = False;
 
@@ -11,6 +10,14 @@ if($usr_IsSignedIn){
 
 // User entered a code.
 if(isset($_POST['submit'])){
+	// Requiring the CDA library.
+	require("lucy-admin/cda.php");
+
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
+	
 
 	$tf = new tfa;
 
@@ -27,12 +34,12 @@ if(isset($_POST['submit'])){
 		goto writeDOC;
 	}
 
-	$sql = "SELECT id, name, type, email FROM userlist WHERE tf_secret = '". $_SESSION['tf_secret'] ."'";
 	try {
-		$user = sqlQuery($sql, True);
+		$response = $cda->select(array("id","name","type","email"),"userlist",array("tf_secret"=>$_SESSION['tf_secret']));
 	} catch (Exception $e) {
 		die($e);
 	}
+	$user = $response['data'];
 
 	// Creating the session data for the user.
 	unset($_SESSION['tf_secret']);

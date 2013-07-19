@@ -68,15 +68,197 @@
 
 		// Including the required libraries to create the sql tables.  If there are any problems these libraries will throw their own errors.
 		include("../lucy-admin/defines.php");
-		include("../lucy-admin/sql.php");
+		include("../lucy-admin/cda.php");
 
-		// The SQL statements for creating the tables.  When other database types are supports these will not be hard-coded.
-		// These statements were generated using PHPMyAdmin.
-		$sql[0] = "CREATE TABLE IF NOT EXISTS `ticketlist` (`id` varchar(11) NOT NULL, `name` varchar(45) NOT NULL, `email` varchar(45) NOT NULL, `application` varchar(45) NOT NULL, `version` varchar(45) NOT NULL, `os` varchar(45) NOT NULL, `status` enum('Pending','Active','Closed') NOT NULL, `subject` varchar(100) NOT NULL, `date` datetime NOT NULL, `lastreply` enum('Client','Agent','Bot') NOT NULL, `assignedto` int(11) NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
-		$sql[1] = "CREATE TABLE IF NOT EXISTS `userlist` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(45) NOT NULL, `email` varchar(45) NOT NULL, `password` varchar(32) NOT NULL, `salt` tinyint(2) NOT NULL, `tf_enable` tinyint(1) NOT NULL, `tf_secret` varchar(32) NOT NULL, `type` enum('Admin','Agent','Client','Bot') NOT NULL, `date_registered` date NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `email` (`email`) ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;";
-		$sql[2] = "CREATE TABLE IF NOT EXISTS `pwd_reset` (`email` varchar(45) NOT NULL, `salt1` varchar(32) NOT NULL, `salt2` varchar(32) NOT NULL, `date` datetime NOT NULL, `status` enum('Requested','Reset') NOT NULL, PRIMARY KEY (`email`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
-		$sql[3] = "INSERT INTO `userlist` (`id`, `name`, `email`, `password`, `salt`, `tf_enable`, `type`, `date_registered`) VALUES (1, 'Spam Bot', '', '', 0, 0, 'Bot', '0000-00-00');";
-		
+		// Creating the CDA class.
+		$cda = new cda;
+		// Initializing the CDA class.
+		$cda->init($GLOBALS['config']['Database']['Type']);
+
+		// The SQL statements for creating the tables.
+
+		// Columns for table: ticketlist
+		$ticketlist_cols = array(
+			array(
+				"name"=>"id",
+				"type"=>"varchar",
+				"length"=>11,
+				"null"=>false
+			),
+			array(
+				"name"=>"owner",
+				"type"=>"int",
+				"length"=>11,
+				"null"=>false
+			),
+			array(
+				"name"=>"email",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"application",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"version",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"os",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"status",
+				"type"=>"enum",
+				"length"=>"'Pending','Active','Closed'",
+				"null"=>false
+			),
+			array(
+				"name"=>"subject",
+				"type"=>"varchar",
+				"length"=>100,
+				"null"=>false
+			),
+			array(
+				"name"=>"date",
+				"type"=>"datetime",
+				"length"=>null,
+				"null"=>false
+			),
+			array(
+				"name"=>"lastreply",
+				"type"=>"enum",
+				"length"=>"'Client','Agent','Bot'",
+				"null"=>false
+			),
+			array(
+				"name"=>"assignedto",
+				"type"=>"int",
+				"length"=>11,
+				"null"=>false
+			)
+		);
+		try{
+			$cda->createTable("ticketlist",$ticketlist_cols,"id",null);
+		} catch (Exception $e) {
+			die('Could not create Ticketlist Table: ' . $e);
+		}
+
+		// Columns for table: userlist
+		$userlist_cols = array(
+			array(
+				"name"=>"id",
+				"type"=>"int",
+				"length"=>11,
+				"null"=>false,
+				"ai"=>true
+			),
+			array(
+				"name"=>"name",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"email",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"password",
+				"type"=>"varchar",
+				"length"=>32,
+				"null"=>false
+			),
+			array(
+				"name"=>"salt",
+				"type"=>"tinyint",
+				"length"=>2,
+				"null"=>false
+			),
+			array(
+				"name"=>"tf_enable",
+				"type"=>"tinyint",
+				"length"=>1,
+				"null"=>false
+			),
+			array(
+				"name"=>"tf_secret",
+				"type"=>"varchar",
+				"length"=>32,
+				"null"=>false
+			),
+			array(
+				"name"=>"type",
+				"type"=>"enum",
+				"length"=>"'Admin','Agent','Client','Bot'",
+				"null"=>false
+			),
+			array(
+				"name"=>"date_registered",
+				"type"=>"date",
+				"length"=>null,
+				"null"=>false
+			)
+		);
+		try{
+			$cda->createTable("userlist",$userlist_cols,"id",array("email"));
+		} catch (Exception $e) {
+			die('Could not create Userlist Table: ' . $e);
+		}
+
+		// Columns for table: pwd_reset
+		$pwd_cols = array(
+			array(
+				"name"=>"email",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"salt1",
+				"type"=>"varchar",
+				"length"=>32,
+				"null"=>false
+			),
+			array(
+				"name"=>"salt2",
+				"type"=>"varchar",
+				"length"=>32,
+				"null"=>false
+			),
+			array(
+				"name"=>"date_registered",
+				"type"=>"datetime",
+				"length"=>null,
+				"null"=>false
+			),
+			array(
+				"name"=>"status",
+				"type"=>"enum",
+				"length"=>"'Requested','Reset'",
+				"null"=>false
+			)
+		);
+		try{
+			$cda->createTable("pwd_reset",$pwd_cols,"email",null);
+		} catch (Exception $e) {
+			die('Could not create PasswordReset Table: ' . $e);
+		}
+		try{
+			$cda->insert("userlist",array("id","name","email","password","salt","type","date_registered"),array(1, 'Spam Bot', '', '', 0, 'Bot', '0000-00-00'));
+		} catch (Exception $e) {
+			die('Could not create Spam Bot user: ' . $e);
+		}
 
 		// Setting up the admin userlist
 		// Generating a random salt used for encryption.
@@ -84,15 +266,10 @@
 
 		// Encrypting the password.
 		$hashed_password = md5($salt . md5($user_password));
-
-		// Creating the statement to inset the admin user.
-		$sql[4] = "INSERT INTO  `userlist` (`type`, `name`, `email`, `password`, `date_registered`, `salt`) VALUES ('Admin',  '" . $user_name . "',  '" . $user_email . "',  '" . $hashed_password . "',  '" . date("Y-m-d") . "', '". $salt ."');";
-		for ($i=0; $i < 5; $i++) { 
-			try {
-				sqlQuery($sql[$i], True);
-			} catch (Exception $e) {
-				die($e);
-			}
+		try{
+			$cda->insert("userlist",array("name","email","password","salt","type","date_registered"),array($user_name, $user_email, $hashed_password, $salt,'Admin', date("Y-m-d")));
+		} catch (Exception $e) {
+			die('Could not create Admin user: ' . $e);
 		}
 		
 

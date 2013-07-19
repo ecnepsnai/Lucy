@@ -8,136 +8,42 @@
 	}
 
 
-	require("lucy-admin/sql.php");
+	require("lucy-admin/cda.php");
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
 	$id = addslashes($id);
 
 
-	// User chose to close the ticket.
-	if(isset($_POST['close']) && $_POST['close'] == "CloseTicket"){
-
-		// Updates the master ticketlist.
-		$sql = "UPDATE ticketlist SET status = 'Closed' WHERE  id = '" . $id . "';";
-		try {
-			sqlQuery($sql, True);
-		} catch (Exception $e) {
-			require("error_db.php");
-		}
-
-		// Inserts a CLOSED message into the ticket table.
-		$sql = "INSERT INTO " . $id . " (`Name`, `Email`, `Date`, `Message`, `From`) VALUES ('" . $usr_Name . "', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', 'CLOSED', '";
-		if($usr_Type == "Admin"){
-			$sql.= "Agent');";
-		} else {
-			$sql.= "Client');";
-		}
-		try {
-			sqlQuery($sql, True);
-		} catch (Exception $e) {
-			require("error_db.php");
-		}
-	}
-
-	// User added a reply
-	if(isset($_POST['reply']) && $_POST['reply'] == "ReplyToTicket"){
-
-		// If no message was included.
-		if(empty($_POST['message'])){
-			require("error_empty.php");
-		}
-		$message = addslashes($_POST['message']);
-
-		//Trims the message to the maximum length of MEDIUMTEXT.
-		//IE and Opera don't support the maxlength attribute for textarea, so this is the fallback.
-		$message = substr($message, 0, 16777216);
-
-		$isFile = False;
-		$filename = $_FILES['screenshot']['tmp_name'];
-
-
-		// Tests to see if a screenshot was included.
-		if (empty($filename)) {
-			$img_hash = "";
-		} elseif (isset($filename) && $GLOBALS['config']['Imgur']['Enable']) {
-
-			// Getting the file information.
-			$isFile = True;
-			$handle = fopen($filename, "r");
-			$data = fread($handle, filesize($filename));
-			$pvars = array('image' => base64_encode($data), 'key' => $GLOBALS['config']['Imgur']['Key']);
-			$timeout = 30;
-
-			// Setting up the cUrl uploader.
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_URL, 'http://api.imgur.com/2/upload.json');
-			curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
-			curl_setopt($curl, CURLOPT_POST, 1);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $pvars);
-
-			// Uploading to Imgur.
-			$json = curl_exec($curl);
-			curl_close ($curl);
-			$data = json_decode($json,true);
-
-			// Getting the image hash from the response.
-			$img_hash = $data["upload"]["image"]["hash"];
-		}
-
-		// Inserts the new entry into the ticket table.
-		$sql = "INSERT INTO " . $id . " (`Name`, `Email`, `Date`, `Message`, `File`, `From`) VALUES ('" . $usr_Name . "', '" . $usr_Email . "', '" . date("Y-m-d H:i:s")  . "', '" . $message . "', '" . $img_hash . "', '";
-		if($usr_Type == "Admin"){
-			$sql.= "Agent');";
-		} else {
-			$sql.= "Client');";
-		}
-		try {
-			sqlQuery($sql, True);
-		} catch (Exception $e) {
-			require("error_db.php");
-		}
-
-		if($usr_Type == "Admin"){
-			$sql = "UPDATE ticketlist SET lastreply = 'Agent' WHERE  id = '" . $id . "';";
-		} else {
-			$sql = "UPDATE ticketlist SET lastreply = 'Client' WHERE  id = '" . $id . "';";
-		}
-		try {
-			sqlQuery($sql, True);
-		} catch (Exception $e) {
-			require("error_db.php");
-		}
-
-		
-	}
-
-	// Getting the ticket information from the master ticketlist.
-	$sql = "SELECT application, version, os, status, id, name, email, date FROM ticketlist WHERE id = '" . $id . "'";
-
-	// Administrator users can see all tickets.
-	if($usr_Type != "Admin"){
-		// $sql.= " AND email = '" . $usr_Email . "'";
-	}
-	try {
-		$ticket_info = sqlQuery($sql, True);
+	try{
+		$response = $cda->select(array("application","version","os","status","id","owner"),"ticketlist",array("id"=>$id));
 	} catch (Exception $e) {
-		require("error_db.php");
+		die($e);
 	}
+	$ticket_info = $response['data'];
 
-	// If no data was returned -- no ticket does not exist.
+	// If no data was returned -- ticket does not exist.
 	if(count($ticket_info) == 0){
-		die();
+		die("Ticket does not exist");
 	}
 
-
-
-	// Getting everything from the ticket table.
-	$sql = "SELECT * FROM " . $id;
-	try {
-		$ticket_messages = sqlQuery($sql, False);
+	try{
+		$response = $cda->select(null,$id,null);
 	} catch (Exception $e) {
 		die($e);
 	}
 
+	$ticket_messages = $response['data'];
+	if(isset($ticket_messages['id'])){
+		$ticket_messages = array($ticket_messages);
+	}
+
+	// Correcting issue if there is only one item in the database.
+	if(isset($ticket_messages['From'])){
+		$ticket_messages = array($ticket_messages);
+	}
+	
 	// If somebody is trying to view the ticket without being signed in it will deny the request
 	if($usr_Email == "" || $usr_Email == null){
 		header("Location: login.php?notice=login");

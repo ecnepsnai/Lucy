@@ -6,10 +6,16 @@ if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha'][
 	require("lucy-admin/recaptchalib.php");
 }
 
-
-require("lucy-admin/sql.php");
 // User submitted a new ticket.
 if(isset($_POST['submit'])){
+	// Requiring the CDA library.
+	require("lucy-admin/cda.php");
+
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
+
 	// Validate the form if Javascript failed
 	if(empty($_POST['app']) || empty($_POST['version']) || empty($_POST['os']) || empty($_POST['message'])){
 		$val_error = True;
@@ -23,6 +29,8 @@ if(isset($_POST['submit'])){
 			goto writeDOC;
 		}
 	}
+	$inp_name = null;
+	$inp_email = null;
 
 	// Getting & Setting the ticket information.
 	if($usr_IsSignedIn){
@@ -39,29 +47,26 @@ if(isset($_POST['submit'])){
 		// Encrypting the password.
 		$hashed_password = md5($salt . md5($_POST['password']));
 
-		$sql = "INSERT INTO  userlist (type, name, email, password, date_registered, salt) VALUES ('Client',  '" . $inp_name . "',  '" . $inp_email . "',  '" . $hashed_password . "',  '" . date("Y-m-d") . "', '". $salt ."');";
+		// Creating the SQL statment.
+		// We hard-code in the user as a Client user with the assumption that there is already an admin.
 		try{
-			sqlQuery($sql, True);
+			$response = $cda->insert("userlist",array("type","name","email","password","date_registered","salt"),array("Client",$inp_name,$inp_email,$hashed_password,date("Y-m-d"),$salt));
 		} catch (Exception $e){
-			die($e);
-		}
-
-		// Gets the id from the database.
-		$sql = "SELECT id FROM userlist WHERE email = '" . $inp_email . "'";
-		try{
-			$user = sqlQuery($sql, True);
-		} catch (Exception $e){
-			die($e);
+			$signup_error = $e;
+			goto writeDOC;
 		}
 
 		// Opens the session for the user.
 		session_start();
-		$_SESSION['id'] = $user['id'];
+		$_SESSION['id'] = $response['id'];
 		$_SESSION['name'] = $inp_name;
 		// Like before, we hard-code all users as Clients when signing up.
 		$_SESSION['type'] = 'Client';
 		$_SESSION['email'] = $inp_email;
 		$_SESSION['LAST_ACTIVITY'] = time();
+
+		// Sends welcome message.
+		mailer_welcomeMessage($inp_name, $inp_email);
 	}
 
 	// Creating the Ticket ID based off on the setting
@@ -117,32 +122,70 @@ if(isset($_POST['submit'])){
 		$img_hash = $data["upload"]["image"]["hash"];
 	}
 
-	// Inserting the ticket into the master ticket list.
-	$sql = "INSERT INTO ticketlist (id, name, email, application, version, os, status, subject, date, lastreply) ";
-	$sql.= "VALUES ('" . $ticketid . "','" . $inp_name . "','" . $inp_email . "','" . $application . "', '" . $version . "', '" . $os . "', 'Pending', '" . substr($message, 0, 50) . "', '" . date("Y-m-d H:i:s") . "', 'Client')";
-	try {
-		sqlQuery($sql, False);
-	} catch (Exception $e) {
-		require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/error-db.php');
+	try{
+		$response = $cda->insert("ticketlist",array("id","owner","email","application","version","os","status","subject","date","lastreply"),array($ticketid,$_SESSION['id'],$inp_email,$application,$version,$os,'Pending',substr($message, 0, 50),date("Y-m-d H:i:s"),'Client'));
+	} catch (Exception $e){
+		die($e);
 	}
 
-	// Creating the specific table for the ticket.
-	$sql = "CREATE  TABLE `" . $ticketid . "` (`UpdateID` INT NOT NULL AUTO_INCREMENT ,  `From` ENUM('Client','Agent') NULL , `Name` VARCHAR(45) NULL ,   
-	`Email` VARCHAR(45) NULL ,  `Date` DATETIME NULL ,  `Message` MEDIUMTEXT NULL ,  `File` VARCHAR(25) NULL ,  PRIMARY KEY (`UpdateID`));";
-	try {
-		sqlQuery($sql, False);
-	} catch (Exception $e) {
-		require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/error-db.php');
+	
+
+	try{
+		$cols = array(
+			array(
+				"name"=>"UpdateID",
+				"type"=>"int",
+				"length"=>11,
+				"null"=>false,
+				"ai"=>true
+			),
+			array(
+				"name"=>"From",
+				"type"=>"enum",
+				"length"=>"'Client','Agent'",
+				"null"=>false
+			),
+			array(
+				"name"=>"Name",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"Email",
+				"type"=>"varchar",
+				"length"=>45,
+				"null"=>false
+			),
+			array(
+				"name"=>"Date",
+				"type"=>"DATETIME",
+				"length"=>null,
+				"null"=>false
+			),
+			array(
+				"name"=>"Message",
+				"type"=>"mediumtext",
+				"length"=>null,
+				"null"=>false
+			),
+			array(
+				"name"=>"File",
+				"type"=>"varchar",
+				"length"=>8,
+				"null"=>false
+			)
+		);
+		$response = $cda->createTable($ticketid, $cols, 'UpdateID', null);
+	} catch (Exception $e){
+		die($e);
 	}
 
-	// Inserting information into that table.
-	$sql = "INSERT INTO `" . $ticketid . "` (`From`, `Name`, `Email`, `Date`, `Message`, `File`) VALUES ('Client', '" . $usr_Name . "', '" . $usr_Email . "', '" . $date . "', '" . $message . "', '" . $img_hash . "');";
-	try {
-		sqlQuery($sql, False);
-	} catch (Exception $e) {
-		require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/error-db.php');
+	try{
+		$response = $cda->insert($ticketid,array('From','Name','Email','Date','Message','File'),array('Client',$_SESSION['name'],$_SESSION['email'],date("Y-m-d H:i:s"),$message,$img_hash));
+	} catch (Exception $e){
+		die($e);
 	}
-
 	header("Location: ticket.php?id=" . $ticketid . "&notice=new");
 }
 writeDOC:

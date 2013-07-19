@@ -1,6 +1,6 @@
 <?php
 	require("../session.php");
-	require("../sql.php");
+	require("../cda.php");
 	require("default.php");
 
 	// Administrator or Agent access only.
@@ -8,11 +8,21 @@
 		lucy_die(0);
 	}
 
-	$sql = "SELECT * FROM ticketlist";
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
+
 	try {
-		$tickets = sqlQuery($sql, False);
+		$response = $cda->select(null,"ticketlist",null);
 	} catch (Exception $e) {
 		die($e);
+	}
+	$tickets = $response['data'];
+
+	// Correcting issue if there is only one item in the database.
+	if(isset($tickets['id'])){
+		$tickets = array($tickets);
 	}
 
 	getHeader("All Tickets");
@@ -48,12 +58,12 @@
 		if($ticket['assignedto'] == 0) {
 			echo("<em>Nobody!</em>");
 		} else {
-			$sql = "SELECT name FROM userlist WHERE id = '" . $ticket['assignedto'] . "'";
 			try {
-				$user = sqlQuery($sql, True);
+				$response = $cda->select(array("name"),"userlist",array("id"=>$ticket['assignedto']));
 			} catch (Exception $e) {
 				die($e);
 			}
+			$user = $response['data'];
 		echo($user['name']);
 		} ?></td>
 		<td><a href="view_ticket.php?id=<?php echo($ticket['id']); ?>">View</a><?php if($usr_Type == "Admin"){ ?> | <a href="del_ticket.php?id=<?php echo($ticket['id']); ?>">Delete</a><?php } ?></td>

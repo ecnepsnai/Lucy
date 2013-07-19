@@ -1,7 +1,6 @@
 <?php
 require("lucy-admin/session.php");
-require("lucy-admin/sql.php");
-$signup_error = "";
+$signup_error = null;
 
 // Requires the captcha library if reCAP is enabled.
 if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Signup']){
@@ -15,6 +14,13 @@ if($usr_IsSignedIn){
 
 // If the user chose to signup.
 if(isset($_POST['submit'])){
+	// Requiring the CDA library.
+	require("lucy-admin/cda.php");
+
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
 
 	// Validates the reCAPTICHA challenge if enabled.
 	if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Signup']){
@@ -31,13 +37,13 @@ if(isset($_POST['submit'])){
 
 	// Validating the inputs.
 	if(empty($raw_name) || empty($raw_email) || empty($_POST['pwd'])){
-		$signup_error = "<strong>Missing Information</strong><br/>All of the fields are required.";
+		$signup_error = "All of the fields are required.";
 		goto writeDoc;
 	}
 
 	require("lucy-admin/validEmail.php");
 	if(!validEmail($raw_email)){
-		$signup_error = "<strong>Invalid Email</strong><br/>The email address you provided was not valid.";
+		$signup_error = "The email address you provided was not valid.";
 		goto writeDoc;
 	}
 
@@ -51,26 +57,16 @@ if(isset($_POST['submit'])){
 
 	// Creating the SQL statment.
 	// We hard-code in the user as a Client user with the assumption that there is already an admin.
-	$sql = "INSERT INTO  userlist (type, name, email, password, date_registered, salt) VALUES ('Client',  '" . $inp_name . "',  '" . $inp_email . "',  '" . $hashed_password . "',  '" . date("Y-m-d") . "', '". $salt ."');";
 	try{
-		sqlQuery($sql, True);
+		$response = $cda->insert("userlist",array("type","name","email","password","date_registered","salt"),array("Client",$inp_name,$inp_email,$hashed_password,date("Y-m-d"),$salt));
 	} catch (Exception $e){
-		$signup_error = "<strong>Error</strong> " . $e;
-		goto writeDoc;
-	}
-
-	// Gets the id from the database.
-	$sql = "SELECT id FROM userlist WHERE email = '" . $inp_email . "'";
-	try{
-		$user = sqlQuery($sql, True);
-	} catch (Exception $e){
-		$signup_error = "<strong>Error</strong> " . $e;
+		$signup_error = $e;
 		goto writeDoc;
 	}
 
 	// Opens the session for the user.
 	session_start();
-	$_SESSION['id'] = $user['id'];
+	$_SESSION['id'] = $response['id'];
 	$_SESSION['name'] = $inp_name;
 	// Like before, we hard-code all users as Clients when signing up.
 	$_SESSION['type'] = 'Client';

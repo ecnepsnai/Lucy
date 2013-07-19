@@ -1,9 +1,9 @@
 <?php
-	if(!isset($_GET['id'])){
+	if($_GET['id'] == ""){
 		die("No ID");
 	}
 	require("../session.php");
-	require("../sql.php");
+	require("../cda.php");
 	require("default.php");
 
 	// Administrator access only
@@ -11,37 +11,43 @@
 		lucy_die(0);
 	}
 
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
+
 	// User chose to save the settings.
 	if(isset($_POST['submit'])){
 		$user_name = addslashes($_POST['name']);
 		$user_email = addslashes($_POST['email']);
 		$user_type = addslashes($_POST['type']);
-		$sql = "UPDATE userlist SET `name` = '" . $user_name . "', `email` = '" . $user_email . "', `type` = '" . $user_type . "' WHERE `id` = " . $_GET['id'] . ";";
 		try{
-			sqlQuery($sql, True);
+			$response = $cda->update("userlist", array("name"=>$user_name,"email"=>$user_email,"type"=>$user_type), array("id"=>$_GET['id']));
 		} catch (Exception $e) {
 			die($e);
 		}
 		$changes_Saved = True;
 	}
 
-	$sql = "SELECT name, email, type, id FROM userlist WHERE id = '" . addslashes($_GET['id']) . "'";
 	try {
-		$user = sqlQuery($sql, True);
+		$response = $cda->select(array("name","email","type","id"),"userlist",array("id"=>$_GET['id']));
 	} catch (Exception $e) {
 		die($e);
 	}
+	$user = $response['data'];
+
+	if($user['type'] == "Bot"){ die('Cannot modify settings for Bots.  <a href="users.php">Go Back</a>'); }
 
 	getHeader("Edit User");
-	getNav(3);
+	getNav(4);
 ?>
 <?php if($changes_Saved) { ?>
-<div class="notice">
+<div class="alert alert-success">
 	<strong>Values Saved</strong>
 </div>
 <?php } ?>
 <form class="form-horizontal" method="post">
-	<h2>Edit User</h2>
+	<h1>Edit User</h1>
 	<div class="control-group">
 		<label class="control-label">User Name:</label>
 		<div class="controls">

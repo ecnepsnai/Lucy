@@ -1,6 +1,6 @@
 <?php
 	require("../session.php");
-	require("../sql.php");
+	require("../cda.php");
 	require("default.php");
 
 	// Administrator access only
@@ -8,14 +8,25 @@
 		lucy_die(0);
 	}
 
-	$sql = "SELECT * FROM userlist";
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
+
 	try {
-		$users = sqlQuery($sql, False);
+		$response = $cda->select(array("name","email","type","id"),"userlist",null);
 	} catch (Exception $e) {
 		die($e);
 	}
+	$users = $response['data'];
+
+	// Correcting issue if there is only one item in the database.
+	if(isset($users['name'])){
+		$users = array($users);
+	}
+
 	getHeader("Users");
-	getNav(3);
+	getNav(4);
 ?>
 <h1>All Users</h1>
 <table class="table table-hover">

@@ -1,6 +1,6 @@
 <?php
 	require("../session.php");
-	require("../sql.php");
+	require("../cda.php");
 	require("default.php");
 
 	// Administrator or Agent access only.
@@ -8,16 +8,27 @@
 		lucy_die(0);
 	}
 
-	$sql = "SELECT * FROM ticketlist WHERE assignedto = '" . $GLOBALS['usr_ID'] . "'";
+	// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
+
 	try {
-		$tickets = sqlQuery($sql, False);
+		$response = $cda->select(null,"ticketlist",array("assignedto"=>$GLOBALS['usr_ID']));
 	} catch (Exception $e) {
 		die($e);
+	}
+	$tickets = $response['data'];
+
+	// Correcting issue if there is only one item in the database.
+	if(isset($tickets['id'])){
+		$tickets = array($tickets);
 	}
 
 	getHeader("My Tickets");
 	getNav(1);
-?><h1>My Tickets</h1>
+?>
+<h1>My Tickets</h1>
 <table class="table table-hover">
 	<thead>
 		<tr>

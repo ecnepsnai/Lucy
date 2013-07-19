@@ -1,6 +1,6 @@
 <?php
 	require("../session.php");
-	require("../sql.php");
+	require("../cda.php");
 	require("default.php");
 
 	// Administrator access only
@@ -10,6 +10,10 @@
 
 	// User chose to save the settings.
 	if(isset($_POST['submit'])){
+		// Creating the CDA class.
+		$cda = new cda;
+		// Initializing the CDA class.
+		$cda->init($GLOBALS['config']['Database']['Type']);
 		$user_name = addslashes($_POST['name']);
 		$user_email = addslashes($_POST['email']);
 		$user_type = addslashes($_POST['type']);
@@ -21,11 +25,11 @@
 		$hashed_password = md5($salt . md5($_POST['password']));
 
 		// Creating the SQL statment.
-		$sql = "INSERT INTO  userlist (type, name, email, password, date_registered, salt) VALUES ('" . $user_type . "',  '" . $user_name . "',  '" . $user_email . "',  '" . $hashed_password . "',  '" . date("Y-m-d") . "', '". $salt ."');";
 		try{
-			sqlQuery($sql, True);
-		} catch (Exception $e) {
-			die($e);
+			$response = $cda->insert("userlist",array("type","name","email","password","date_registered","salt"),array($user_type,$user_name,$user_email,$hashed_password,date("Y-m-d"),$salt));
+		} catch (Exception $e){
+			$signup_error = $e;
+			goto writeDoc;
 		}
 		$changes_Saved = True;
 	}

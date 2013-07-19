@@ -3,7 +3,7 @@
 		die("No ID");
 	}
 	require("../session.php");
-	require("../sql.php");
+	require("../cda.php");
 	require("default.php");
 
 	// Administrator access only
@@ -13,22 +13,25 @@
 
 	// User chose to delete the user.
 	if(isset($_POST['submit'])){
-		$sql = "DELETE FROM userlist WHERE `id` = " . $_GET['id'] . ";";
+		// Creating the CDA class.
+		$cda = new cda;
+		// Initializing the CDA class.
+		$cda->init($GLOBALS['config']['Database']['Type']);
 		try{
-			sqlQuery($sql, True);
+			$cda->delete("userlist",array("id"=>$_GET['id']));
 		} catch (Exception $e) {
 			die($e);
 		}
 		// Dies when complete.
-		die("<meta http-equiv=\"REFRESH\" content=\"0;url=users.php\">Redirecting...");
+		header("Location: users.php");
 	}
 
 	// User chose not to delete the user
 	if(isset($_POST['reset'])){
-		die("<meta http-equiv=\"REFRESH\" content=\"0;url=users.php\">Redirecting...");
+		header("Location: users.php");
 	}
 	getHeader("Delete User");
-	getNav(3);
+	getNav(4);
 ?>
 <form name="usrsetngs" method="post">
 	<div class="alert alert-block alert-error fade in">

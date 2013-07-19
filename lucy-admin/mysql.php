@@ -41,7 +41,7 @@ class sql{
 			foreach ($conditions as $variable => $value) {
 				$sql.= $variable . " = '" . $value . "' AND ";
 			}
-			$sql = rtrim($sql, ", AND ");
+			$sql = rtrim($sql, "' AND ");
 		}
 		
 		if($this->cda_output != 0){

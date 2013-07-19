@@ -7,14 +7,24 @@
 
 Lucy is a conversation based online support system built in PHP that's easy to use, set-up, theme, and edit.  Lucy is the foundation for a really powerful CMS system that focuses more on theme developers rather than plugins, letting you make themes however you want.
 
-## Beta Release
+## Beta 2
+
+Massive improvements have been made to lucy all over the application.
+
+- Lucy now uses CDA.  CDA is a PHP library that makes supporting multiple SQL database types easy!
+- Replying and Closing tickets now uses AJAX, making it loads faster.
+- Vastly improved speed through the application
+- Removed a lot of unnecessary crap.
+- Made assigning tickets to specific users easier
+
+**Note:** reCaptcha and Imgur upload (through AJAX) currently are not functioning in this release, will be fixed in the next release.
+
+## Beta 1
 
 Lucy is now in Beta!  Currently there is no support for Microsoft SQL Server or SQLite.
 
 - Added automatic setup script.
 - Updated admin back-end to make way for assignments.
-- Added 2-Step Authentication for Adminstrators and Agents
-- Removed almost all absolute URIs.
 
 ## Alpha Release
 

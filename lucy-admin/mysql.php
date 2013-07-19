@@ -56,11 +56,12 @@ class sql{
 		$data = array();
 		while($row = mysql_fetch_assoc($mysql_response)){			
 			array_push($data, $row);			
-		}		
+        }
+        $response = array("status" => "OK");        
 		if(count($data) == 1){			
-			$response = array("status" => "OK", "data" => $data[0]);
+			$response["data"] = $data[0];
 		} else {			
-			$response = array("status" => "OK", "data" => $data);
+			$response["data"] = $data;
 		}		
 		mysql_close($GLOBALS['connection']);
 		return $response;

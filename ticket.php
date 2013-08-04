@@ -13,7 +13,7 @@
 	$cda = new cda;
 	// Initializing the CDA class.
 	$cda->init($GLOBALS['config']['Database']['Type']);
-	$id = addslashes($id);
+	$id = $id;
 
 
 	try{

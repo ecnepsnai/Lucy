@@ -1,4 +1,5 @@
 <?php
+	error_reporting(E_ALL);
 	$error = null;
 
 	// Verifying that the file exists.  If not it will redirect the user to the configuration page.
@@ -15,23 +16,29 @@
 		$user_password = $_POST['user_password'];
 		
 		// Gathering all of the Database information
-		$db_type = "MYSQL";
+		$db_type = $_POST['db_type'];
 		$db_location = $_POST['db_location'];
 		$db_name = $_POST['db_name'];
 		$db_username = $_POST['db_username'];
 		$db_password = $_POST['db_password'];
 
+		if($db_type != "SQLITE"){
+			// Testing for missing information.
+			if($user_name == null || $user_email == null || $user_password == null){
+				$error = "Please include all of your information...";
+				goto docWrite;
+			}
 
-		// Testing for missing information.
-		if($user_name == null || $user_email == null || $user_password == null){
-			$error = "Please include all of your information...";
-			goto docWrite;
-		}
-
-		// Testing for missing information (except Database Password)
-		if($db_type == null || $db_location == null || $db_name == null || $db_username == null){
-			$error = "Please include all of the database information...";
-			goto docWrite;
+			// Testing for missing information (except Database Password)
+			if($db_type == null || $db_location == null || $db_name == null || $db_username == null){
+				$error = "Please include all of the database information...";
+				goto docWrite;
+			}
+		} else {
+			if($db_name == null){
+				$error = "Please include all of the database information...";
+				goto docWrite;
+			}
 		}
 
 
@@ -117,8 +124,8 @@
 			),
 			array(
 				"name"=>"status",
-				"type"=>"enum",
-				"length"=>"'Pending','Active','Closed'",
+				"type"=>"varchar",
+				"length"=>10,
 				"null"=>false
 			),
 			array(
@@ -135,8 +142,8 @@
 			),
 			array(
 				"name"=>"lastreply",
-				"type"=>"enum",
-				"length"=>"'Client','Agent','Bot'",
+				"type"=>"varchar",
+				"length"=>10,
 				"null"=>false
 			),
 			array(
@@ -199,8 +206,8 @@
 			),
 			array(
 				"name"=>"type",
-				"type"=>"enum",
-				"length"=>"'Admin','Agent','Client','Bot'",
+				"type"=>"varchar",
+				"length"=>10,
 				"null"=>false
 			),
 			array(
@@ -244,8 +251,8 @@
 			),
 			array(
 				"name"=>"status",
-				"type"=>"enum",
-				"length"=>"'Requested','Reset'",
+				"type"=>"varchar",
+				"length"=>10,
 				"null"=>false
 			)
 		);
@@ -274,7 +281,7 @@
 		
 
 		// If there were no errors the user will be redirected to the setting page to finish the setup.
-		header("Location: ../login.php?notice=welcome");
+		die('<a href="../login.php?notice=welcome">Setup Complete - Continue to Login</a>');
 	}
 	docWrite:
 ?>
@@ -285,22 +292,25 @@
 	<style>
 		body{
 			font-family: Helvetica, Arial, sans-serif;
+			font-weight: bold;
 			color:red;
 		}
 		.container{
 			width: 500px;
 			margin: 0 auto;
+			font-weight: normal;
 			color:#000;
 		}
-		input{
+		input[type="text"],input[type="password"],select{
 			border: 1px solid #8fa0ae;
-			padding: 2px;
+			padding: 3px;
+			border-radius: 3px;
 			-webkit-transition: border linear .2s,box-shadow linear .2s;
 			-moz-transition: border linear .2s,box-shadow linear .2s;
 			-o-transition: border linear .2s,box-shadow linear .2s;
 			transition: border linear .2s,box-shadow linear .2s;
 		}
-		input:focus{
+		input[type="text"]:focus,input[type="password"]:focus,select:focus{
 			border-color: rgba(82,168,236,0.8);
 			outline: 0;
 			outline: thin dotted \9;
@@ -314,8 +324,10 @@
 		}
 		td.first{
 			text-align: right;
+			width: 200px;
 		}
 	</style>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 </head>
 <body>
 	<?php if($error) { echo($error); } ?>
@@ -331,7 +343,7 @@
 				</tr>
 				<tr>
 					<td class="first"><strong>Your Email:</strong></td>
-					<td><input type="email" name="user_email" maxlength="255" /></td>
+					<td><input type="text" name="user_email" maxlength="255" /></td>
 				</tr>
 				<tr>
 					<td class="first"><strong>Chose a Password:</strong></td>
@@ -340,37 +352,37 @@
 			</table>
 			<h2>Database Settings</h2>
 			<table>
-				<tr>
+				<tr id="row_db_type">
 					<td class="first"><strong>Database Type:</strong></td>
 					<td>
-						<select name="db_type" disabled="disabled">
+						<select name="db_type" id="db_type">
 							<option value="MYSQL">MySQL</option>
 							<option value="MYSQLI" disabled="disabled">MySQLi</option>
 							<option value="MSSQL" disabled="disabled">Microsoft SQL Server</option>
-							<option value="SQLITE" disabled="disabled">SQLite</option>
+							<option value="SQLITE">SQLite3</option>
 						</select><br/>
-						<em>*Currently only MySQL is supported.</em>
+						<em>*Currently only MySQL and SQLite3 are supported.</em>
 					</td>
 				</tr>
-				<tr>
+				<tr id="db_lrow_ocation">
 					<td class="first"><strong>Database Location:</strong></td>
 					<td>
 						<input type="text" name="db_location"/>
 					</td>
 				</tr>
-				<tr>
+				<tr id="row_db_name">
 					<td class="first"><strong>Database Name:</strong></td>
 					<td>
-						<input type="text" name="db_name"/>
+						<span id="sqlite3x1" style="display:none">lucy-config\</span> <input type="text" name="db_name"/> <span id="sqlite3x2" style="display:none">.sql</span>
 					</td>
 				</tr>
-				<tr>
+				<tr id="db_urow_sername">
 					<td class="first"><strong>Database Username:</strong></td>
 					<td>
 						<input type="text" name="db_username"/>
 					</td>
 				</tr>
-				<tr>
+				<tr id="db_prow_assword">
 					<td class="first"><strong>Database Password:</strong></td>
 					<td>
 						<input type="password" name="db_password"/> (Optional)
@@ -384,3 +396,23 @@
 	</div>
 </body>
 </html>
+
+<script type="text/javascript">
+$('#db_type').change(function() {
+  if(document.getElementsByName("db_type")[0].value == "SQLITE"){
+		$('#db_lrow_ocation').hide();
+		$('#db_urow_sername').hide();
+		$('#db_prow_assword').hide();
+		$('#sqlite3x1').show();
+		$('#sqlite3x2').show();		
+
+	} else {
+		$('#db_lrow_ocation').show();
+		$('#db_urow_sername').show();
+		$('#db_prow_assword').show();
+		$('#sqlite3x1').hide();
+		$('#sqlite3x2').hide();		
+
+	}
+});
+</script>

@@ -4,37 +4,21 @@
 
 	// Requires user to be signed in
 	if($usr_IsSignedIn === false){
-		$error = array("code"=>401,"message"=>"Authentication required");
+		$error = array("code"=>401,"message"=>"Authentication required. Provided User ID was: " . $usr_ID);
 		goto writeDoc;
 	}
 
 	// Only the owner of the ticked or Admins may alter it.
-	if($usr_Type != "Admin") {
-		$error = array("code"=>403,"message"=>"Authentication failed");
+	if($_POST['ownerID'] == $usr_ID){} elseif($usr_Type == "Admin"){} else {
+		$error = array("code"=>403,"message"=>"Authentication required. Provided User ID was: " . $usr_ID);
 		goto writeDoc;
 	}
 
-	$ticketID = $_POST['ticketid'];
+	$id = $_POST['id'];
 
-	// Checks for missing ticketID
-	if(empty($ticketID)){
+	// Checks for missing ID
+	if(empty($id)){
 		$error = array("code"=>400,"message"=>"Ticket ID is Missing");
-		goto writeDoc;
-	}
-
-	$message = $_POST['message'];
-
-	// If no message id was included.
-	if(empty($_POST['message'])){
-		$error = array("code"=>400,"message"=>"Message is Missing");
-		goto writeDoc;
-	}
-
-	$updateid = $_POST['updateid'];
-
-	// If no updateid id was included.
-	if(empty($_POST['updateid'])){
-		$error = array("code"=>400,"message"=>"UpdateID is Missing");
 		goto writeDoc;
 	}
 
@@ -46,10 +30,19 @@
 	$cda->init($GLOBALS['config']['Database']['Type']);
 	
 
-
+	// Updates the master ticketlist.
 	try{
-		$response = $cda->update($ticketID,array("Message"=>$message),array("UpdateID"=>$updateid));
-	} catch (Exception $e) {
+		$response = $cda->update("ticketlist", array("status"=>"Closed"), array("id"=>$id));
+	} catch (Exception $e){
+		$error = array("code"=>500,"message"=>$e);
+		goto writeDoc;
+	}
+
+	// Inserts the closed message into the ticket table.
+	$values = array(date("Y-m-d H:i:s"), "SPAM", "Bot");
+	try{
+		$response = $cda->insert($id,array("Date","Message","From"),$values);
+	} catch (Exception $e){
 		$error = array("code"=>500,"message"=>$e);
 		goto writeDoc;
 	}

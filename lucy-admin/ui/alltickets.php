@@ -32,7 +32,6 @@
 <table class="table table-hover">
 	<thead>
 		<tr>
-			<th><strong>Name</strong></th>
 			<th><strong>Application</strong></th>
 			<th><strong>Status</strong></th>
 			<th><strong>Date</strong></th>
@@ -43,7 +42,6 @@
 	<tbody>
 <?php foreach ($tickets as $ticket) { ?>
 	<tr>
-		<td><?php echo($ticket['name']); ?></td>
 		<td><?php echo($ticket['application']); ?></td>
 		<td><?php
 			if($ticket['status'] == "Pending"){

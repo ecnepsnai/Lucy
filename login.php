@@ -25,7 +25,7 @@ if(isset($_POST['submit'])){
 	}
 
 	// Preparing the first sql request.
-	$inp_email = addslashes($raw_email);
+	$inp_email = $raw_email;
 	// Ask for user salt first, then verify, THEN get rest of data
 	try {
 		$response = $cda->select(array("email, salt"),"userlist",array("email"=>$inp_email));

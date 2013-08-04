@@ -14,7 +14,7 @@
 		goto writeDoc;
 	}
 
-	$id = addslashes($_POST['id']);
+	$id = $_POST['id'];
 
 	// Checks for missing ID
 	if(empty($id)){
@@ -35,7 +35,7 @@
 		$error = array("code"=>400,"message"=>"Ticket Message is Missing");
 		goto writeDoc;
 	}
-	$message = addslashes($_POST['message']);
+	$message = $_POST['message'];
 
 	//Trims the message to the maximum length of MEDIUMTEXT.
 	//IE and Opera don't support the maxlength attribute for textarea, so this is the fallback.

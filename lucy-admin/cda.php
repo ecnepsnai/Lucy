@@ -4,7 +4,7 @@
 
 	/* Database Location */
 	define('dba_location', $GLOBALS['config']['Database']['Location']);
-	
+
 	/* Database Name */
 	define('dba_name', $GLOBALS['config']['Database']['Name']);
 
@@ -55,11 +55,6 @@
 					require("sqlite.php");
 				break;
 
-				case 'RMYSQL':
-					$dba_type = $type;
-					require("rmysql.php");
-				break;
-				
 				default:
 					die("Unknown database type");
 				break;
@@ -139,6 +134,11 @@
 			}
 
 			$sql = new sql;
+
+			if(cda_output != 0){
+				$sql->setOutput(cda_output);
+			}
+			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -164,6 +164,11 @@
 			}
 
 			$sql = new sql;
+
+			if(cda_output != 0){
+				$sql->setOutput(cda_output);
+			}
+			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -185,6 +190,11 @@
 			}
 
 			$sql = new sql;
+
+			if(cda_output != 0){
+				$sql->setOutput(cda_output);
+			}
+			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -211,6 +221,11 @@
 			}
 
 			$sql = new sql;
+
+			if(cda_output != 0){
+				$sql->setOutput(cda_output);
+			}
+			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -231,6 +246,11 @@
 			}
 
 			$sql = new sql;
+
+			if(cda_output != 0){
+				$sql->setOutput(cda_output);
+			}
+			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();

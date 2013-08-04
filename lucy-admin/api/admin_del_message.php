@@ -22,14 +22,6 @@
 		goto writeDoc;
 	}
 
-	$message = $_POST['message'];
-
-	// If no message id was included.
-	if(empty($_POST['message'])){
-		$error = array("code"=>400,"message"=>"Message is Missing");
-		goto writeDoc;
-	}
-
 	$updateid = $_POST['updateid'];
 
 	// If no updateid id was included.
@@ -48,7 +40,7 @@
 
 
 	try{
-		$response = $cda->update($ticketID,array("Message"=>$message),array("UpdateID"=>$updateid));
+		$response = $cda->delete($ticketID,array("UpdateID"=>$updateid));
 	} catch (Exception $e) {
 		$error = array("code"=>500,"message"=>$e);
 		goto writeDoc;

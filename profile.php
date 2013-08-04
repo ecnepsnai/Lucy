@@ -16,9 +16,9 @@ if(!$usr_IsSignedIn){
 
 if(isset($_POST['submit'])){
 	if(isset($_POST['cur_password'])){
-		$current_password = addslashes($_POST['cur_password']);
-		$new_password = addslashes($_POST['new_password']);
-		$new_password_rep = addslashes($_POST['new_password_rep']);
+		$current_password = $_POST['cur_password'];
+		$new_password = $_POST['new_password'];
+		$new_password_rep = $_POST['new_password_rep'];
 		if($new_password != $new_password_rep){
 			die("Passwords do not match.");
 		}

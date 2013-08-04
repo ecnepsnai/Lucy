@@ -14,7 +14,7 @@
 		goto writeDoc;
 	}
 
-	$id = addslashes($_POST['id']);
+	$id = $_POST['id'];
 
 	// Checks for missing ID
 	if(empty($id)){
@@ -28,7 +28,7 @@
 		goto writeDoc;
 	}
 
-	$assignment = addslashes($_POST['assignment']);
+	$assignment = $_POST['assignment'];
 
 	// If no status id was included.
 	if(empty($_POST['status'])){
@@ -36,7 +36,7 @@
 		goto writeDoc;
 	}
 
-	$status = addslashes($_POST['status']);
+	$status = $_POST['status'];
 
 
 	require("../cda.php");

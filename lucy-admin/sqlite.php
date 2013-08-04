@@ -1,6 +1,6 @@
 <?php
 
-/* MYSQL CLASS FOR CDA */
+/* SQLITE3 CLASS FOR CDA */
 
 $connection = null;
 
@@ -15,14 +15,13 @@ class sql{
 
 
 	/* Connects to the database */
+	/* NOTE: For consistency with other database types, we include this unused parameters.*/
+	/* They are not required and can be null (except $name) */
 	function connect($location, $name, $username, $password){
-		$GLOBALS['connection'] = mysql_connect($location, $username, $password);
+		$file = dirname(__FILE__) . '\\..\\lucy-config\\' . $name . '.sql';
+		$GLOBALS['connection'] = new SQLite3($file); 
 		if(!$GLOBALS['connection']){
-			throw new Exception(mysql_error(), 1);
-		}
-		$r = mysql_select_db($name);
-		if(!$r){
-			throw new Exception(mysql_error(), 1);
+			throw new Exception("Error connecting to database: " . $location, 1);
 		}
 		return True;
 	}
@@ -39,30 +38,32 @@ class sql{
 		if($conditions != null){
 			$sql.= " WHERE ";
 			foreach ($conditions as $variable => $value) {
-				$sql.= $variable . " = '" . mysql_real_escape_string($value) . "' AND ";
+				$sql.= $variable . " = '" . $GLOBALS['connection']->escapeString($value) . "' AND ";
 			}
 			$sql = rtrim($sql, ", AND ");
 		}
 		
+
 		if($this->cda_output != 0){
 			echo("<code class=\"cda-output\">" . $sql . "</code><br/>");
 		}
 
-		$mysql_response = mysql_query($sql);
-		if(!$mysql_response){
-			throw new Exception(mysql_error(), 1);
-		}
 
+		$sqlite_response = $GLOBALS['connection']->query($sql); 
+		if(!$sqlite_response){
+			throw new Exception($GLOBALS['connection']->lastErrorMsg(), 1);
+		}
 		$data = array();
-		while($row = mysql_fetch_assoc($mysql_response)){			
-			array_push($data, $row);			
-		}		
+		while($row = $sqlite_response->fetchArray(SQLITE3_ASSOC)){
+			array_push($data, $row);
+		}
 		if(count($data) == 1){			
 			$response = array("status" => "OK", "data" => $data[0]);
 		} else {			
 			$response = array("status" => "OK", "data" => $data);
-		}		
-		mysql_close($GLOBALS['connection']);
+		}
+		$GLOBALS['connection']->close();
+
 		return $response;
 	}
 
@@ -77,30 +78,31 @@ class sql{
 		$sql.= " FROM " . $table . " WHERE ( ";
 
 		foreach($library as $column){
-			$sql.= $column . " like '%" . mysql_real_escape_string($query) . "%' OR "; 
+			$sql.= $column . " like '%" . $query . "%' OR "; 
 		}
 		$sql = rtrim($sql, " OR ");
 		$sql.= " )";
-		
+	
+
 		if($this->cda_output != 0){
 			echo("<code class=\"cda-output\">" . $sql . "</code><br/>");
 		}
 
-		$mysql_response = mysql_query($sql);
-		if(!$mysql_response){
-			throw new Exception(mysql_error(), 1);
+		$sqlite_response = $GLOBALS['connection']->query($sql); 
+		if(!$sqlite_response){
+			throw new Exception($GLOBALS['connection']->lastErrorMsg(), 1);
 		}
-
 		$data = array();
-		while($row = mysql_fetch_assoc($mysql_response)){			
-			array_push($data, $row);			
-		}		
+		while($row = $sqlite_response->fetchArray(SQLITE3_ASSOC)){
+			array_push($data, $row);
+		}
 		if(count($data) == 1){			
 			$response = array("status" => "OK", "data" => $data[0]);
 		} else {			
 			$response = array("status" => "OK", "data" => $data);
-		}		
-		mysql_close($GLOBALS['connection']);
+		}
+		$GLOBALS['connection']->close();
+
 		return $response;
 	}
 
@@ -113,7 +115,7 @@ class sql{
 		$sql = rtrim($sql, ", ");
 		$sql.= ") VALUES ( ";
 		foreach ($values as $value) {
-			$sql.="'" . mysql_real_escape_string($value) . "', ";
+			$sql.="'" . $GLOBALS['connection']->escapeString($value) . "', ";
 		}
 		$sql = rtrim($sql, ", ");
 		$sql.= ")";
@@ -122,12 +124,13 @@ class sql{
 			echo("<code class=\"cda-output\">" . $sql . "</code><br/>");
 		}
 
-		$mysql_response = mysql_query($sql);
-		if(!$mysql_response){
-			throw new Exception(mysql_error(), 1);
+		$sqlite_response = $GLOBALS['connection']->exec($sql); 
+		if(!$sqlite_response){
+			throw new Exception($GLOBALS['connection']->lastErrorMsg(), 1);
 		}
-		$response = array("id" => mysql_insert_id(), "num" => mysql_affected_rows());
-		mysql_close($GLOBALS['connection']);
+
+		$response = array("id" => $GLOBALS['connection']->lastInsertRowID(), "num" => $GLOBALS['connection']->changes());
+		$GLOBALS['connection']->close();
 		return $response;
 	}
 
@@ -136,27 +139,29 @@ class sql{
 	function update($table, $changes, $conditions){
 		$sql = "UPDATE `" . $table . "` SET ";
 		foreach($changes as $col => $value){
-			$sql.= "`" . $col . "` = '" . mysql_real_escape_string($value) . "', ";
+			$sql.= "`" . $col . "` = '" . $value . "', ";
 		}
 		$sql = rtrim($sql, ", ");
 		if($conditions != null){
 			$sql.= " WHERE ";
 			foreach ($conditions as $variable => $value) {
-				$sql.= $variable . " = '" . mysql_real_escape_string($value) . "' AND ";
+				$sql.= $variable . " = '" . $GLOBALS['connection']->escapeString($value) . "' AND ";
 			}
 			$sql = rtrim($sql, ", AND ");
 		}
+
 
 		if($this->cda_output != 0){
 			echo("<code class=\"cda-output\">" . $sql . "</code><br/>");
 		}
 
-		$mysql_response = mysql_query($sql);
-		if(!$mysql_response){
-			throw new Exception(mysql_error(), 1);
+		$sqlite_response = $GLOBALS['connection']->exec($sql); 
+		if(!$sqlite_response){
+			throw new Exception($GLOBALS['connection']->lastErrorMsg(), 1);
 		}
-		$response = array("num" => mysql_affected_rows());
-		mysql_close($GLOBALS['connection']);
+
+		$response = array("num" => $GLOBALS['connection']->changes());
+		$GLOBALS['connection']->close();
 		return $response;
 	}
 
@@ -166,21 +171,23 @@ class sql{
 		if($conditions != null){
 			$sql.= " WHERE ";
 			foreach ($conditions as $variable => $value) {
-				$sql.= $variable . " = '" . mysql_real_escape_string($value) . "' AND ";
+				$sql.= $variable . " = '" . $GLOBALS['connection']->escapeString($value) . "' AND ";
 			}
 			$sql = rtrim($sql, ", AND ");
 		}
 		
+
 		if($this->cda_output != 0){
 			echo("<code class=\"cda-output\">" . $sql . "</code><br/>");
 		}
 
-		$mysql_response = mysql_query($sql);
-		if(!$mysql_response){
-			throw new Exception(mysql_error(), 1);
+		$sqlite_response = $GLOBALS['connection']->exec($sql); 
+		if(!$sqlite_response){
+			throw new Exception($GLOBALS['connection']->lastErrorMsg(), 1);
 		}
-		$response = array("num" => mysql_affected_rows());
-		mysql_close($GLOBALS['connection']);
+
+		$response = array("num" => $GLOBALS['connection']->changes());
+		$GLOBALS['connection']->close();
 		return $response;
 	}
 
@@ -190,43 +197,31 @@ class sql{
 
 		$sql = "CREATE TABLE IF NOT EXISTS `" . $table . "` (";
 		foreach($columns as $column){
-			$sql.= "`" . $column['name'] . "` " . $column['type'];
-			if($column['length'] != null){
-				$sql.= "(" . $column['length'] . ")";
-			}
-			if($column['null'] === false){
-				$sql.= " NOT NULL";
+			if(!empty($column['ai']) && $column['name'] == $primary){
+				$sql.= "`" . $column['name'] . "` INTEGER PRIMARY KEY";
 			} else {
-				$sql.= " NULL";
-			}
-			if(!empty($column['ai'])){
-				$sql.= " AUTO_INCREMENT";
-				$is_AI = true;
+				$sql.= "`" . $column['name'] . "` " . $column['type'];
+				if($column['length'] != null){
+					$sql.= "(" . $column['length'] . ")";
+				}
 			}
 			$sql.=",";
 		}
-		if(!empty($primary)){
-			$sql.= " PRIMARY KEY (`" . $primary . "`),";
-		}
-		foreach($uniques as $unique){
-			$sql.= " UNIQUE KEY (`" . $unique . "`),";
-		}
 		$sql = rtrim($sql, ",");
 		$sql.= ")";
-		if($is_AI){
-			$sql.= "AUTO_INCREMENT=1";
-		}
 
 		if($this->cda_output != 0){
 			echo("<code class=\"cda-output\">" . $sql . "</code><br/>");
 		}
 
-		$mysql_response = mysql_query($sql);
-		if(!$mysql_response){
-			throw new Exception(mysql_error(), 1);
+		$sqlite_response = $GLOBALS['connection']->exec($sql);
+
+		if(!$sqlite_response){
+			throw new Exception($GLOBALS['connection']->lastErrorMsg(), 1);
 		}
+
 		$response = true;
-		mysql_close($GLOBALS['connection']);
+		$GLOBALS['connection']->close();
 		return $response;
 	}
 
@@ -234,16 +229,18 @@ class sql{
 	function dropTable($table){
 		$sql = "DROP TABLE " . $table;
 
+
 		if($this->cda_output != 0){
 			echo("<code class=\"cda-output\">" . $sql . "</code><br/>");
 		}
 		
-		$mysql_response = mysql_query($sql);
-		if(!$mysql_response){
-			throw new Exception(mysql_error(), 1);
+		$sqlite_response = $GLOBALS['connection']->exec($sql); 
+		if(!$sqlite_response){
+			throw new Exception($GLOBALS['connection']->lastErrorMsg(), 1);
 		}
+
 		$response = true;
-		mysql_close($GLOBALS['connection']);
+		$GLOBALS['connection']->close();
 		return $response;
 	}
 }

@@ -52,8 +52,8 @@ if(isset($_POST['submit'])){
 
 	// Encrypting the password.
 	$hashed_password = md5($salt . md5($_POST['pwd']));
-	$inp_name = addslashes($raw_name);
-	$inp_email = addslashes($raw_email);
+	$inp_name = $raw_name;
+	$inp_email = $raw_email;
 
 	// Creating the SQL statment.
 	// We hard-code in the user as a Client user with the assumption that there is already an admin.

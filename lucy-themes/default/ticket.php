@@ -26,7 +26,13 @@ getNav(0); ?>
 
 		postRequest.done(function(data){
 			var obj = jQuery.parseJSON(data);
-			window.location.reload();
+			if(obj.response.code != 200){
+				alert(obj.response.message);
+				$("#closeBtns").show();
+				$("#closeWait").hide();
+			} else {
+				window.location.reload();
+			}
 		});
 	}
 	function addReply() {
@@ -158,7 +164,7 @@ getNav(0); ?>
 
 
 		// The message was from an agent.
-		else { 
+		elseif($message['From'] == "Agent"){
 			// In the message if the word CLOSED, the ticket has been closed.
 			if($message['Message'] == "CLOSED") { ?>
 				<div class="alert alert-warning"><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
@@ -172,6 +178,14 @@ getNav(0); ?>
 					<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
 					<?php } ?>
 				</div>
+			<?php }
+		}
+
+		// The message was from a bot.
+		elseif($message['From'] == "Bot"){
+			//Currently the only active bot is the spam bot, it posts a message in all caps saying "SPAM"
+			if($message['Message'] == "SPAM") { ?>
+				<div class="alert alert-error"><strong>This ticket has been flagged as spam and automatically closed.</strong></div>
 			<?php }
 		}
 	} ?> </div> <?php

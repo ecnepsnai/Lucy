@@ -46,7 +46,11 @@
 		$GLOBALS['config']['ReCaptcha']['Login'] = $_POST['cap_login'];
 		$GLOBALS['config']['ReCaptcha']['Ticket'] = $_POST['cap_ticket'];
 
-		// Getting the Imgur Settings:
+		// Gettings the Imgur Settings:
+		$GLOBALS['config']['Imgur']['Enable'] = $_POST['img_enable'];
+		$GLOBALS['config']['Imgur']['Key'] = $_POST['img_key'];
+
+		// Getting the Strings Settings:
 		$GLOBALS['config']['Strings']['Main'] = $_POST['txt_main'];
 		$GLOBALS['config']['Strings']['Separator'] = $_POST['txt_sep'];
 		$GLOBALS['config']['Strings']['Footer'] = $_POST['txt_ftr'];
@@ -235,39 +239,39 @@
 				<div class="control-group">
 					<label class="control-label">Database Type:</label>
 					<div class="controls">
-						<select name="db_type">
+						<select name="db_type" id="db_type">
 							<option value="MYSQL" <?php if($GLOBALS['config']['Database']['Type'] == "MYSQL"){echo('selected="selected"');} ?>>MySQL</option>
-							<option value="MYSQLI" <?php if($GLOBALS['config']['Database']['Type'] == "MYSQLI"){echo('selected="selected"');} ?>>MySQLi</option>
-							<option value="MSSQL" <?php if($GLOBALS['config']['Database']['Type'] == "MSSQL"){echo('selected="selected"');} ?>>Microsoft SQL Server</option>
+							<option value="MYSQLI" <?php if($GLOBALS['config']['Database']['Type'] == "MYSQLI"){echo('selected="selected"');} ?> disabled>MySQLi</option>
+							<option value="MSSQL" <?php if($GLOBALS['config']['Database']['Type'] == "MSSQL"){echo('selected="selected"');} ?> disabled>Microsoft SQL Server</option>
 							<option value="SQLITE" <?php if($GLOBALS['config']['Database']['Type'] == "SQLITE"){echo('selected="selected"');} ?>>SQLite</option>
 						</select>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-group" id="control-group-location">
 					<label class="control-label">Database Location:</label>
 					<div class="controls">
 						<input type="text" name="db_location" size="45" value="<?php echo($GLOBALS['config']['Database']['Location']); ?>" title="The location or URL of your database."/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-group" id="control-group-name">
 					<label class="control-label">Database Name:</label>
 					<div class="controls">
 						<input type="text" name="db_name" size="45" value="<?php echo($GLOBALS['config']['Database']['Name']); ?>" title="The name of the database that Lucy will use."/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-group" id="control-group-username">
 					<label class="control-label">Database Username:</label>
 					<div class="controls">
 						<input type="text" name="db_username" size="45" value="<?php echo($GLOBALS['config']['Database']['Username']); ?>" title="The username for the database connection."/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-group" id="control-group-password">
 					<label class="control-label">Database Password:</label>
 					<div class="controls">
 						<input type="password" name="db_password" size="45" value="<?php echo($GLOBALS['config']['Database']['Password']); ?>" title="The password for the database connection."/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-group" id="control-group-unsecured">
 					<label class="control-label">Allow unsecured (no password) connections:</label>
 					<div class="controls">
 						<input type="checkbox" name="db_nullpwd" <?php if($GLOBALS['config']['Database']['nullpwd']){echo('checked="checked"');} ?>/>
@@ -382,4 +386,33 @@
 		<hr/>
 		<input type="submit" name="submit" value="Save Changes" class="btn btn-primary"/> <input type="reset" name="reset" value="Rest Settings to Default" class="btn"/>
 	</form>
+<script type="text/javascript">
+$('#db_type').change(function() {
+  if(document.getElementsByName("db_type")[0].value == "SQLITE"){
+		$('#control-group-location').hide();
+		$('#control-group-username').hide();
+		$('#control-group-password').hide();
+		$('#control-group-unsecured').hide();
+
+	} else {
+		$('#control-group-location').show();
+		$('#control-group-username').show();
+		$('#control-group-password').show();
+		$('#control-group-unsecured').show();
+	}
+});
+
+if(document.getElementsByName("db_type")[0].value == "SQLITE"){
+	$('#control-group-location').hide();
+	$('#control-group-username').hide();
+	$('#control-group-password').hide();
+	$('#control-group-unsecured').hide();
+
+} else {
+	$('#control-group-location').show();
+	$('#control-group-username').show();
+	$('#control-group-password').show();
+	$('#control-group-unsecured').show();
+}
+</script>
 <?php getFooter(); ?>

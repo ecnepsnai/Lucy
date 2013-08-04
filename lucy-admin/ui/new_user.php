@@ -14,9 +14,9 @@
 		$cda = new cda;
 		// Initializing the CDA class.
 		$cda->init($GLOBALS['config']['Database']['Type']);
-		$user_name = addslashes($_POST['name']);
-		$user_email = addslashes($_POST['email']);
-		$user_type = addslashes($_POST['type']);
+		$user_name = $_POST['name'];
+		$user_email = $_POST['email'];
+		$user_type = $_POST['type'];
 
 		// Generating a random salt used for encryption.
 		$salt = mt_rand(10, 99);

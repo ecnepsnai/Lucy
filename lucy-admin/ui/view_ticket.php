@@ -19,7 +19,7 @@
 	if(empty($id)){
 		die("No ID");
 	}
-	$id = addslashes($id);
+	$id = $id;
 
 
 	try {
@@ -84,7 +84,7 @@
 			alert(obj.response.message);
 		} else {
 			var length = obj.response.data.users.length;
-			var isassignedto = <?php echo($ticket_info['assignedto']); ?>;
+			var isassignedto = <?php if(!empty($ticket_info['assignedto'])){ echo($ticket_info['assignedto']);} else { echo("null"); } ?>;
 			for (var i = 0; i < length; i++) {
 				var html = '<option ';
 				if(obj.response.data.users[i].id == isassignedto){
@@ -108,8 +108,26 @@
 			var obj = jQuery.parseJSON(data);
 			if(obj.response.code != 200){
 				alert(obj.response.message);
-				$("#replyBtns").show();
-				$("#replyWait").hide();
+				$("#closeBtns").show();
+				$("#closeWait").hide();
+			} else {
+				window.location.reload();
+			}
+		});
+	}
+	function flagTicket() {
+		$("#flagBtns").hide();
+		$("#flagWait").show();
+		var postRequest = $.post("../api/admin_flag_spam.php", {
+			id: "<?php echo($ticket_info['id']); ?>"
+		});
+
+		postRequest.done(function(data){
+			var obj = jQuery.parseJSON(data);
+			if(obj.response.code != 200){
+				alert(obj.response.message);
+				$("#flagBtns").show();
+				$("#flagWait").hide();
 			} else {
 				window.location.reload();
 			}
@@ -207,6 +225,29 @@
 			}
 		});
 	}
+	function showdelMessageModal(messageID) {
+		$("#delbtn").attr('onclick','delMessage(' + messageID + ')');
+		$('#delMessageModal').modal('show');
+	}
+	function delMessage(messageID) {
+		$("#delMessageBtns").hide();
+		$("#delMessageWait").show();
+		var postRequest = $.post("../api/admin_del_message.php", {
+			ticketid: "<?php echo($ticket_info['id']); ?>",
+			updateid: messageID
+		});
+
+		postRequest.done(function(data){
+			var obj = jQuery.parseJSON(data);
+			if(obj.response.code != 200){
+				alert(obj.response.message);
+				$("#delMessageBtns").show();
+				$("#delMessageWait").hide();
+			} else {
+				window.location.reload();
+			}
+		});
+	}
 </script>
 <div class="container-fluid">
 	<div class="row-fluid">
@@ -225,6 +266,7 @@
 					<?php if($ticket_info['status'] == "Pending" || $ticket_info['status'] == "Active") { ?>
 					<a href="#replyModal" role="button" class="btn" data-toggle="modal">Reply</a>
 					<a href="#closeModal" role="button" class="btn" data-toggle="modal">Close</a>
+					<a href="#spamModal" role="button" class="btn" data-toggle="modal">Spam</a>
 					<?php } ?>
 					<a href="#updateModal" role="button" class="btn" data-toggle="modal">Edit</a>
 				</div>
@@ -279,6 +321,22 @@
 					<input type="submit" onClick="closeTicket()" class="btn btn-primary" id="closebtn" value="Close Ticket"/>
 				</div>
 				<div class="modal-footer" id="closeWait" style="display:none">
+					<img src="assets/img/ajax-loader.gif" style="width:16px;height=16px;" alt="Please Wait" /> Please Wait...
+				</div>
+			</div>
+			<!--
+				Spam Modal
+			-->
+			<div id="spamModal" class="modal hide fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+				<div class="modal-body">
+					<h4>Flag as Spam</h4>
+					Are you sure you want to flag this ticket as spam?
+				</div>
+				<div class="modal-footer" id="flagBtns">
+					<button type="button" data-dismiss="modal" class="btn">Cancel</button>
+					<input type="submit" onClick="flagTicket()" class="btn btn-primary" id="flagbtn" value="Flag Ticket"/>
+				</div>
+				<div class="modal-footer" id="flagWait" style="display:none">
 					<img src="assets/img/ajax-loader.gif" style="width:16px;height=16px;" alt="Please Wait" /> Please Wait...
 				</div>
 			</div>
@@ -350,6 +408,22 @@
 					<img src="assets/img/ajax-loader.gif" style="width:16px;height=16px;" alt="Please Wait" /> Please Wait...
 				</div>
 			</div>
+			<!--
+				Delete Message Modal
+			-->
+			<div id="delMessageModal" class="modal hide fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+				<div class="modal-body">
+					<h4>Delete Message</h4>
+					Are you sure you want to delete this message?
+				</div>
+				<div class="modal-footer" id="delBtns">
+					<button type="button" data-dismiss="modal" class="btn">Cancel</button>
+					<input type="submit" class="btn btn-primary" id="delbtn" value="Delete Message"/>
+				</div>
+				<div class="modal-footer" id="delWait" style="display:none">
+					<img src="assets/img/ajax-loader.gif" style="width:16px;height=16px;" alt="Please Wait" /> Please Wait...
+				</div>
+			</div>
 		</div>
 		<div class="span9">
 			<h4>Ticket Updates</h4>
@@ -361,12 +435,12 @@
 
 			// If the message is the word CLOSED, the ticket has been closed.
 			if($message['Message'] == "CLOSED") { ?>
-				<div class="alert alert-warning"><a onclick="deleteMessage(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
+				<div class="alert alert-warning"><a onclick="showdelMessageModal(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> closed this ticket.</strong></div>
 			<?php }
 
 			// The message was not CLOSED, writing the message and screenshot (if any)
 			else { ?>
-				<div class="alert alert-notice"><a onclick="deleteMessage(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a>
+				<div class="alert alert-notice"><a onclick="showdelMessageModal(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a>
 					<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> <?php echo($message['Name']); ?> said:</strong><br/><?php echo($message['Message']); ?>
 					<?php if($message['File'] != ""){ ?>
 					<hr/>
@@ -381,20 +455,28 @@
 
 
 		// The message was from an agent.
-		else { 
+		elseif($message['From'] == "Agent"){
 			// In the message if the word CLOSED, the ticket has been closed.
 			if($message['Message'] == "CLOSED") { ?>
-				<div class="alert alert-warning"><a onclick="deleteMessage(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> you closed this ticket.</strong></div>
+				<div class="alert alert-warning"><a onclick="showdelMessageModal(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a><strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> you closed this ticket.</strong></div>
 			<?php }
 
 			// The message was not CLOSED, writing the message and screenshot (if any)
 			else { ?>
-				<div class="alert alert-success"><a onclick="showMessageModal(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-edit"></i></a> <a onclick="deleteMessage(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a>
+				<div class="alert alert-success"><a onclick="showMessageModal(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-edit"></i></a> <a onclick="showdelMessageModal(<?php echo($message['UpdateID']); ?>)" class="close"><i class="icon-remove"></i></a>
 					<strong>On <?php echo(date_format(date_create($message['Date']), 'l, F jS \a\t g:i a')); ?> you said:</strong><br/><span id="reply_ID_<?php echo($message['UpdateID']); ?>"><?php echo($message['Message']); ?></span>
 					<?php if($message['File'] != ""){ ?>
 					<hr/><a href="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" class="msgimg" target="blank"><img src="http://i.imgur.com/<?php echo($message['File']); ?>.jpg" alt="User provided screenshot."/></a>
 					<?php } ?>
 				</div>
+			<?php }
+		}
+
+		// The message was from a bot.
+		elseif($message['From'] == "Bot"){
+			//Currently the only active bot is the spam bot, it posts a message in all caps saying "SPAM"
+			if($message['Message'] == "SPAM") { ?>
+				<div class="alert alert-error"><strong>This ticket has been flagged as spam and automatically closed.</strong></div>
 			<?php }
 		}
 	} ?>

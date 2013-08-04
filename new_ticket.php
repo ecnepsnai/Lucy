@@ -38,8 +38,8 @@ if(isset($_POST['submit'])){
 		$inp_email = $usr_Email;
 	} else {
 		// Gathering the Email and Name.
-		$inp_name = addslashes($_POST['name']);
-		$inp_email = addslashes($_POST['email']);
+		$inp_name = $_POST['name'];
+		$inp_email = $_POST['email'];
 
 		// Generating a random salt used for encryption.
 		$salt = mt_rand(10, 99);
@@ -80,10 +80,10 @@ if(isset($_POST['submit'])){
 			$ticketid.= $char;
 		}
 	}
-	$application = addslashes($_POST['app']);
-	$version = addslashes($_POST['version']);
-	$os = addslashes($_POST['os']);
-	$message = addslashes($_POST['message']);
+	$application = $_POST['app'];
+	$version = $_POST['version'];
+	$os = $_POST['os'];
+	$message = $_POST['message'];
 	$date = date("Y-m-d H:i:s"); 
 	$isFile = False;
 	$filename = $_FILES['screenshot']['tmp_name'];
@@ -141,8 +141,8 @@ if(isset($_POST['submit'])){
 			),
 			array(
 				"name"=>"From",
-				"type"=>"enum",
-				"length"=>"'Client','Agent'",
+				"type"=>"varchar",
+				"length"=>10,
 				"null"=>false
 			),
 			array(

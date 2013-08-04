@@ -18,9 +18,9 @@
 
 	// User chose to save the settings.
 	if(isset($_POST['submit'])){
-		$user_name = addslashes($_POST['name']);
-		$user_email = addslashes($_POST['email']);
-		$user_type = addslashes($_POST['type']);
+		$user_name = $_POST['name'];
+		$user_email = $_POST['email'];
+		$user_type = $_POST['type'];
 		try{
 			$response = $cda->update("userlist", array("name"=>$user_name,"email"=>$user_email,"type"=>$user_type), array("id"=>$_GET['id']));
 		} catch (Exception $e) {

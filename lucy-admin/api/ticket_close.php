@@ -14,7 +14,7 @@
 		goto writeDoc;
 	}
 
-	$id = addslashes($_POST['id']);
+	$id = $_POST['id'];
 
 	// Checks for missing ID
 	if(empty($id)){

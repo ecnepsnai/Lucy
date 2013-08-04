@@ -15,7 +15,7 @@ if(isset($_POST['submit'])){
 	$cda = new cda;
 	// Initializing the CDA class.
 	$cda->init($GLOBALS['config']['Database']['Type']);
-	$inp_email = addslashes(trim($_POST['email']));
+	$inp_email = trim($_POST['email']);
 
 	try{
 		$response = $cda->select(array("id","email"),"userlist",array("email"=>$inp_email));
@@ -49,8 +49,8 @@ if(isset($_GET['a']) && isset($_GET['b'])){
 	$cda = new cda;
 	// Initializing the CDA class.
 	$cda->init($GLOBALS['config']['Database']['Type']);
-	$salt1 = addslashes($_GET['a']);
-	$salt2 = addslashes($_GET['b']);
+	$salt1 = $_GET['a'];
+	$salt2 = $_GET['b'];
 	try{
 		$response = $cda->select(array("email"),"pwd_reset",array("salt1"=>$salt1,"salt2"=>$salt2));
 	} catch (Exception $e) {

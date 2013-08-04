@@ -7,6 +7,16 @@
 
 Lucy is a conversation based online support system built in PHP that's easy to use, set-up, theme, and edit.  Lucy is the foundation for a really powerful CMS system that focuses more on theme developers rather than plugins, letting you make themes however you want.
 
+## Beta 3
+
+More improvements throughout the application including:
+
+- SQLite3 support
+- The ability to delete and edit ticket messages though AJAX
+- Flagging tickets as spam (no automatic methods just yet)
+- Lucy no longer escapes the SQL queries using `addslashes` before sending them to CDA, as CDA now escapes the strings for you.
+- Bug fixes
+
 ## Beta 2
 
 Massive improvements have been made to lucy all over the application.

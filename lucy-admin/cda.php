@@ -18,7 +18,7 @@
 	/* 0 = No output: production. */
 	/* 1 = Outputs all SQL queries: development. */
 	/* 2 = Outputs everything: debugging. */
-	define("cda_output", 0);
+	define("cda_output", $GLOBALS['config']['Debug']);
 
 
 
@@ -60,6 +60,20 @@
 				break;
 
 			}
+		}
+
+		/* Tests database connection */
+		/* $location = Database server location */
+		/* $username & $password = Self Explanatory. */
+		function testConnection($location, $username, $password){
+			$sql = new sql;
+			$response = false;
+			try{
+				$response = $sql->testConnection($location, $username, $password);
+			} catch(exception $e){
+				$response = false;
+			}
+			return $response;
 		}
 
 		/* Selects row(s) from the database */

@@ -17,7 +17,4 @@
 		$usr_Type = $_SESSION['type'];
 		$usr_IsSignedIn = True;
 	}
-	if($_GET['r'] == "1"){
-		print_r($_SESSION);
-	}
 ?>

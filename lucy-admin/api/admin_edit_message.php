@@ -14,11 +14,11 @@
 		goto writeDoc;
 	}
 
-	$ticketID = $_POST['ticketid'];
+	$threadID = $_POST['threadid'];
 
-	// Checks for missing ticketID
-	if(empty($ticketID)){
-		$error = array("code"=>400,"message"=>"Ticket ID is Missing");
+	// Checks for missing threadID
+	if(empty($threadID)){
+		$error = array("code"=>400,"message"=>"thread ID is Missing");
 		goto writeDoc;
 	}
 
@@ -48,7 +48,7 @@
 
 
 	try{
-		$response = $cda->update($ticketID,array("Message"=>$message),array("UpdateID"=>$updateid));
+		$response = $cda->update($threadID,array("Message"=>$message),array("UpdateID"=>$updateid));
 	} catch (Exception $e) {
 		$error = array("code"=>500,"message"=>$e);
 		goto writeDoc;

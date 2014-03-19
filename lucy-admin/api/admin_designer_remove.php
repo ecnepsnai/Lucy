@@ -1,0 +1,73 @@
+<?php
+	require("../session.php");
+	$error = array();
+
+	// Requires user to be signed in
+	if($usr_IsSignedIn === false){
+		$error = array("code"=>401,"message"=>"Authentication required");
+		goto writeDoc;
+	}
+
+	// Only the owner of the ticked or Admins may alter it.
+	if($usr_Type != "Admin") {
+		$error = array("code"=>403,"message"=>"Authentication failed");
+		goto writeDoc;
+	}
+
+	$url = dirname(__FILE__) . '/../../lucy-config/designer.json';
+
+	$json = file_get_contents($url);
+	$designer = json_decode($json, true);
+
+	$obj_name = $_POST['name'];
+
+	if(empty($obj_name)){
+		$error == array("code"=>400,"message"=>"Object Name not included.");
+		goto writeDoc;
+	}
+
+	if(!isset($designer['config'][$obj_name])){
+		$error == array("code"=>404,"message"=>"No object with that name found.");
+		goto writeDoc;
+	}
+
+
+	unset($designer['config'][$obj_name]);
+
+	$json = '{"config":' . json_encode($designer['config']) . ',"static":' . json_encode($designer['static']) . '}';
+
+	file_put_contents('../../lucy-config/designer.json', $json);
+
+	$curl = dirname(__FILE__) . '/../../lucy-config/config.json';
+
+	$cjson = file_get_contents($curl);
+	$cconfig = json_decode($cjson, true);
+	
+	for ($i=0; $i < count($cconfig['config']['Support']['Order']); $i++) { 
+		if($cconfig['config']['Support']['Order'][$i] == $obj_name){
+			unset($cconfig['config']['Support']['Order'][$i]);
+		}
+	}
+
+	$cjson = '{"config":' . json_encode($cconfig['config']) . '}';
+	file_put_contents('../../lucy-config/config.json', $cjson);
+
+	$notice = True;
+
+writeDoc:
+// There was an error
+if($error['code'] != 0 && !empty($error['message'])){ ?>
+{
+	"response": {
+		"code":<?php echo($error['code']); ?>,
+		"message":"<?php echo($error['message']); ?>"
+	}
+}
+<?php } else { ?>
+{
+	"response": {
+		"code":200,
+		"message":""
+	}
+}
+<?php }

@@ -27,6 +27,20 @@ class sql{
 		return True;
 	}
 
+	/* Tests database connectivity */
+	function testConnection($location, $username, $password){
+		/* We temporary disable error reporting here since mysql doesn't throw an error, only a warning if connection failed */
+		$cerl = error_reporting ();
+		error_reporting (0);
+		$conn = mysql_connect($location, $username, $password);
+		error_reporting ($cerl);
+		if(!$conn){
+			return false;
+		}
+		mysql_close($conn);
+		return true;
+	}
+
 	/* Selects row(s) from the database */
 	function select($columns, $table, $conditions){
 		$sql = "SELECT ";

@@ -9,7 +9,7 @@ if($usr_IsSignedIn){
 }
 
 // User chose to login.
-if(isset($_POST['submit'])){
+if(isset($_POST['email']) && isset($_POST['pwd'])){
 	// Requiring the CDA library.
 	require("lucy-admin/cda.php");
 
@@ -37,7 +37,7 @@ if(isset($_POST['submit'])){
 
 	// Preparing the second sql request.
 	try {
-		$response = $cda->select(array("id","name","type","email","tf_enable","tf_secret"),"userlist",array("email"=>$inp_email,"password"=>$pw_hash));
+		$response = $cda->select(array("id","name","type","email","type","tf_enable","tf_secret"),"userlist",array("email"=>$inp_email,"password"=>$pw_hash));
 	} catch (Exception $e) {
 		die($e);
 	}
@@ -45,9 +45,12 @@ if(isset($_POST['submit'])){
 	if(empty($user['id'])){
 		$login_error = True;
 	} else {
-
+		if($GLOBALS['config']['ReadOnly'] == true && $user['type'] !== "Admin"){
+			header("location: index.php?notice=readonly");
+			die();
+		}
 		// Testing to see if Two-Factor Authentication is Enabled
-		if($user['tf_enable'] && $user['tf_secret'] != ""){
+		if($user['tf_secret'] !== "" && $user['tf_secret'] !== null){
 			session_start();
 			$_SESSION['tf_secret'] = $user['tf_secret'];
 			header("Location: auth.php");

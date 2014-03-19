@@ -6,6 +6,14 @@ if($usr_IsSignedIn){
 	header("Location: dash.php");
 }
 
+// Status for Alert Bars.
+// 0 = nothing
+// 1 = Password reset link sent
+// 2 = New password sent
+// 3 = No user for inputted email
+// 4 = Expired/Invalid reset tokens
+$status = 0;
+
 // User requested a password reset.
 if(isset($_POST['submit'])){
 	// Requiring the CDA library.
@@ -18,7 +26,7 @@ if(isset($_POST['submit'])){
 	$inp_email = trim($_POST['email']);
 
 	try{
-		$response = $cda->select(array("id","email"),"userlist",array("email"=>$inp_email));
+		$response = $cda->select(array("id","email","name"),"userlist",array("email"=>$inp_email));
 	} catch (Exception $e) {
 		die($e);
 	}
@@ -27,16 +35,19 @@ if(isset($_POST['submit'])){
 	if(isset($user['id']) && isset($user['email'])) {
 		$salt1 = md5(rand(10,99));
 		$salt2 = md5(rand(10,99) . $salt1);
-		$sql = "INSERT INTO pwd_reset (`email`, `salt1`, `salt2`) VALUES ('" . $user['email'] . "', '" . $salt1 . "', '" . $salt2 . "')";
 		try {
-			sqlQuery($sql, False);
+			$response = $cda->insert('pwd_reset',array('email','salt1','salt2'),array($user['email'],$salt1,$salt2));
 		} catch (Exception $e) {
 			die($e);
 		}
 
+		$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . '?a=' . $salt1 . '&b=' . $salt2;
+
 		// Emails password reset link.
-		mailer_passwordReset($usr_Name, $usr_Email, "forgot.php?a=" . $salt1 . "&b=" . $salt2);
-		die("Please check your email for a validation link to change your password.");
+		mailer_passwordReset($user['name'], $user['email'], $url);
+		$status = 1;
+	} else {
+		$status = 3;
 	}
 }
 
@@ -80,12 +91,12 @@ if(isset($_GET['a']) && isset($_GET['b'])){
 		}
 
 		// Emails new password.
-		mailer_generalMessage("You", $reset['email'], "Lucy Password", "Your new password is <b>" . $password . "</b> you probably should change it after signing in again...");
-		die("A new password has been mailed to you.  $password");
+		mailer_generatedPassword('', $reset['email'], $password);
+		$status = 2;
 	}
 
 	// If no email address was returned = Invalid tokens.
-	else { die("Invalid reset tokens."); }
+	else { $status = 4; }
 }
 
 writeDOC:

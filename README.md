@@ -1,11 +1,34 @@
 <p align="center">
-  <img src="https://raw.github.com/ecnepsnai/Lucy/master/lucy-themes/default/assets/img/logo.png"/>
+  <img src="https://raw.github.com/ecnepsnai/Lucy/master/lucy-themes/default/preview.jpg"/>
 </p>
 
 
 # Lucy
 
 Lucy is a conversation based online support system built in PHP that's easy to use, set-up, theme, and edit.  Lucy is the foundation for a really powerful CMS system that focuses more on theme developers rather than plugins, letting you make themes however you want.
+
+## Beta 4
+
+**Lucy now is a completely customizable online form platform, allowing you to configure what you want from your users**
+
+- **NEW** - Added new Designer mode to make your form
+- **NEW** - Forms are dynamically generated from a json configuration file
+- **NEW** - Added preflight checklist to help easy the setup of Lucy.  You can leave your cellphone on, however.
+- **IMPROVED** - Tickets are now called Threads because its more *fancy*
+- **IMPROVED** - Threads are no longer stored in their own tables, rather as JSON in the master threads table.
+- **IMPROVED** - Updated to Bootstrap 3
+- **IMPROVED** - CSS & JS are loaded from MaxCDN, source no longer included in releases
+- **IMPROVED** - More AJAX, Less Call of Duty.
+- **IMPROVED** - Bye bye, Imgur!  Image uploads are now done locally.
+- **IMPROVED** - Simplified settings page, removed a lot of clutter.
+- **IMPROVED** - Better Two-Step Authentication Setup
+- **IMPROVED** - Temporarily Removed Akismet support (While I figure out how to make it work with the dynamic forms)
+- **FIXED** - Finally got around to making Password Rest work normally
+- **FIXED** - And Email Verification.  That works too.
+- **FIXED** - Mailer functions actually, you know, send mail.
+- **FIXED** - The initial setup page now actually exits correctly!
+- **FIXED** - Numerous little bugs have been squashed.  Sorry, PETA.
+- **FIXED** - Improved error handling.
 
 ## Beta 3
 

@@ -11,13 +11,13 @@ if($usr_IsSignedIn){
 	// Initializing the CDA class.
 	$cda->init($GLOBALS['config']['Database']['Type']);
 	try {
-		$response = $cda->select(null,"ticketlist",array("owner"=>$usr_ID));
+		$response = $cda->select(null,"threads",array("owner"=>$usr_ID));
 	} catch (Exception $e) {
 		die($e);
 	}
-	$tickets = $response['data'];
-	if(isset($tickets['id'])){
-		$tickets = array($tickets);
+	$threads = $response['data'];
+	if(isset($threads['id'])){
+		$threads = array($threads);
 	}
 	require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/dash.php');
 } else {

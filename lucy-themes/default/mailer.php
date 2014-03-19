@@ -5,8 +5,8 @@ function get_welcomeMessage($name, $email) {
 	return('<html><body><h1>Welcome to Lucy, ' . $name . '!</h1>  Your account has been created and you\'re all set.  This email is just letting you know that.</body></html>');
 }
 
-function get_ticketUpdate($name, $email, $id) {
-	return('<html><body><h1>Hey, ' . $name . ', there\'s been activity on your ticket!</h1>Better go check it out <a href="' . $url . '">here</a></body>');
+function get_threadUpdate($name, $email, $id) {
+	return('<html><body><h1>Hey, ' . $name . ', there\'s been activity on your thread!</h1>Better go check it out <a href="' . $url . '">here</a></body>');
 }
 
 function get_passwordReset($name, $email, $url) {

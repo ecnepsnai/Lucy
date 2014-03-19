@@ -2,9 +2,8 @@
 require("lucy-admin/session.php");
 $signup_error = null;
 
-// Requires the captcha library if reCAP is enabled.
-if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Signup']){
-	require("lucy-admin/recaptchalib.php");
+if($GLOBALS['config']['ReadOnly'] == true && $user['type'] != "Admin"){
+	header("location: index.php?notice=readonly");
 }
 
 // Obviously if the user is already signed in, we don't let them sign in again.
@@ -22,15 +21,6 @@ if(isset($_POST['submit'])){
 	// Initializing the CDA class.
 	$cda->init($GLOBALS['config']['Database']['Type']);
 
-	// Validates the reCAPTICHA challenge if enabled.
-	if($GLOBALS['config']['ReCaptcha']['Enable'] && $GLOBALS['config']['ReCaptcha']['Signup']){
-		$resp = recaptcha_check_answer ($GLOBALS['config']['ReCaptcha']['Private'], $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-		if (!$resp->is_valid) {
-			$cap_error = True;
-			goto writeDoc;
-		}
-	}
-
 	// Getting the name and email.
 	$raw_name = trim($_POST['name']);
 	$raw_email = trim($_POST['email']);
@@ -41,7 +31,7 @@ if(isset($_POST['submit'])){
 		goto writeDoc;
 	}
 
-	require("lucy-admin/validEmail.php");
+	require("lucy-admin/validemail.php");
 	if(!validEmail($raw_email)){
 		$signup_error = "The email address you provided was not valid.";
 		goto writeDoc;
@@ -76,7 +66,7 @@ if(isset($_POST['submit'])){
 	// Sends welcome message.
 	mailer_welcomeMessage($inp_name, $inp_email);
 	// Dies is successful.
-	header("Location: new_ticket.php");
+	header("Location: new_thread.php");
 }
 
 writeDoc:

@@ -18,7 +18,7 @@
 
 	// Checks for missing ID
 	if(empty($id)){
-		$error = array("code"=>400,"message"=>"Ticket ID is Missing");
+		$error = array("code"=>400,"message"=>"thread ID is Missing");
 		goto writeDoc;
 	}
 
@@ -28,26 +28,33 @@
 	$cda = new cda;
 	// Initializing the CDA class.
 	$cda->init($GLOBALS['config']['Database']['Type']);
-	
 
-	// Updates the master ticketlist.
-	try{
-		$response = $cda->update("ticketlist", array("status"=>"Closed"), array("id"=>$id));
-	} catch (Exception $e){
-		$error = array("code"=>500,"message"=>$e);
-		goto writeDoc;
-	}
-
-	// Inserts the closed message into the ticket table.
-	$values = array(date("Y-m-d H:i:s"), "CLOSED");
+	// Inserts the new entry into the thread table.
+	$values = array($usr_Name,$usr_Email,date("Y-m-d H:i:s"),'CLOSED');
 	if($usr_Type == "Admin"){
 		array_push($values, 'Agent');
 	} else {
 		array_push($values, 'Client');
 	}
+	
+	$get_response = null;
+
 	try{
-		$response = $cda->insert($id,array("Date","Message","From"),$values);
+		$get_response = $cda->select(array('data'),'threads',array('id'=>$id));
 	} catch (Exception $e){
+		$error  = $e;
+		goto writeDoc;
+	}
+	$json = json_decode($get_response['data']['data']);
+
+	$messageData = array("id"=>count($json->messages) + 1,"from"=>array("id"=>intval($usr_ID), "name"=>$usr_Name, "email"=>$usr_Email),"body"=>'CLOSED',"image"=>null);
+
+	array_push($json->messages, $messageData);
+
+	$put_response = null;
+	try{
+		$put_response = $cda->update('threads',array('status'=>'Closed','data'=>json_encode($json)),array('id'=>$id));
+	}  catch (Exception $e){
 		$error = array("code"=>500,"message"=>$e);
 		goto writeDoc;
 	}

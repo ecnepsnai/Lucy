@@ -18,7 +18,7 @@
 
 	// Checks for missing ID
 	if(empty($id)){
-		$error = array("code"=>400,"message"=>"Ticket ID is Missing");
+		$error = array("code"=>400,"message"=>"thread ID is Missing");
 		goto writeDoc;
 	}
 
@@ -48,7 +48,7 @@
 
 
 	try{
-		$response = $cda->update("ticketlist",array("assignedto"=>$assignment,"status"=>$status),array("id"=>$id));
+		$response = $cda->update("threads",array("assignedto"=>$assignment,"status"=>$status),array("id"=>$id));
 	} catch (Exception $e) {
 		$error = array("code"=>500,"message"=>$e);
 		goto writeDoc;

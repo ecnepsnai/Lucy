@@ -28,9 +28,9 @@
 	$cda = new cda;
 	// Initializing the CDA class.
 	$cda->init($GLOBALS['config']['Database']['Type']);
-	
+
 	// Inserts the new entry into the thread table.
-	$values = array($usr_Name,$usr_Email,date("Y-m-d H:i:s"),'SPAM');
+	$values = array($usr_Name,$usr_Email,date("Y-m-d H:i:s"),'OPEN');
 	if($usr_Type == "Admin"){
 		array_push($values, 'Agent');
 	} else {
@@ -47,13 +47,25 @@
 	}
 	$json = json_decode($get_response['data']['data']);
 
-	$messageData = array("id"=>count($json->messages) + 1,"from"=>array("id"=>1, "name"=>'root', "email"=>null),"body"=>'SPAM',"image"=>null);
+
+	if($usr_Type !== "Admin"){
+		if($json->messages[count($json->messages) - 1]->body == "SPAM"){
+			$error = array("code"=>403,"message"=>"This thread has been marked as spam and cannot be reopened.");
+			goto writeDoc;
+		}
+		if($json->messages[count($json->messages) - 1]->body == "CLOSED" && $json->messages[count($json->messages) - 1]->owner->name !== $usr_Name){
+			$error = array("code"=>403,"message"=>"You can only reopen threads you closed.");
+			goto writeDoc;
+		}
+	}
+
+	$messageData = array("id"=>count($json->messages) + 1,"from"=>array("id"=>intval($usr_ID), "name"=>$usr_Name, "email"=>$usr_Email),"body"=>'OPEN',"image"=>null);
 
 	array_push($json->messages, $messageData);
 
 	$put_response = null;
 	try{
-		$put_response = $cda->update('threads',array('status'=>'Closed','data'=>json_encode($json)),array('id'=>$id));
+		$put_response = $cda->update('threads',array('status'=>'Active','data'=>json_encode($json)),array('id'=>$id));
 	}  catch (Exception $e){
 		$error = array("code"=>500,"message"=>$e);
 		goto writeDoc;

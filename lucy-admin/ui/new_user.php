@@ -33,6 +33,8 @@
 		}
 		$changes_Saved = True;
 	}
+
+writeDoc:
 	getHeader("New User");
 	getNav(3);
 ?>

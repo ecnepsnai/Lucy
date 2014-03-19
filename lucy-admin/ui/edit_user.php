@@ -46,24 +46,24 @@
 	<strong>Values Saved</strong>
 </div>
 <?php } ?>
-<form class="form-horizontal" method="post">
+<form class="form-horizontal" role="form" method="post">
 	<h1>Edit User</h1>
-	<div class="control-group">
-		<label class="control-label">User Name:</label>
-		<div class="controls">
-			<input type="text" name="name" size="45" value="<?php echo($user['name']); ?>" title="The name of the user."/>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Name:</label>
+		<div class="col-sm-3">
+			<input type="text" class="form-control" name="name" size="45" value="<?php echo($user['name']); ?>" title="The name of the user."/>
 		</div>
 	</div>
-	<div class="control-group">
-		<label class="control-label">User Email:</label>
-		<div class="controls">
-			<input type="email" name="email" size="45" value="<?php echo($user['email']); ?>" title="The email of the user."/>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Email:</label>
+		<div class="col-sm-3">
+			<input type="email" class="form-control" name="email" size="45" value="<?php echo($user['email']); ?>" title="The email of the user."/>
 		</div>
 	</div>
-	<div class="control-group">
-		<label class="control-label">User Type:</label>
-		<div class="controls">
-			<select name="type">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Type:</label>
+		<div class="col-sm-3">
+			<select name="type" class="form-control">
 				<option <?php if($user['type'] == "Admin") { echo('selected="selected"'); } ?>value="Admin">Admin</option>
 				<option <?php if($user['type'] == "Agent") { echo('selected="selected"'); } ?>value="Agent">Agent</option>
 				<option <?php if($user['type'] == "Client") { echo('selected="selected"'); } ?>value="Client">Client</option>

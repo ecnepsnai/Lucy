@@ -4,27 +4,30 @@ set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/
 include('default.php');
 
 getHeader('Welcome'); getNav(999); ?>
-<div class="hero-unit">
-	<h1>Sometimes you just need a little help.</h1>
-	<p>That's why we're here.  Lucy is an easy to use Support System built using PHP that is both easy to setup and easy to use.</p>
+<?php if($_GET['notice'] == 'readonly'){ ?>
+<div class="alert alert-danger">
+	<strong>Unable to Login - </strong> Lucy is in Read-Only Mode, only approved administrators may log in.
 </div>
-<hr/>
-<div class="row-fluid">
-	<div class="span6" style="text-align:right">
-		<h2>First time here?</h2>
-		<form action="new_ticket.php" method="GET" name="fm_ticket" class="form-horizontal">
-			<input type="text" name="n" placeholder="Whats your Name?" class="input-block-level" style="margin-bottom:15px"/>
-			<input type="email" name="e" placeholder="And your Email Address" class="input-block-level" style="margin-bottom:15px"/>
-			<input type="password" name="p" placeholder="Chose a password" class="input-block-level" style="margin-bottom:15px"/>
-			We'll continue on the next page <input type="submit" name="submit" value="Continue" class="btn"/>
-		</form>
+<?php } ?>
+<div class="row">
+	<div class="col-md-6">
+		<h1><?php echo($GLOBALS['config']['Strings']['Home']['Title']); ?></h1>
+		<p><?php echo($GLOBALS['config']['Strings']['Home']['Slogan']); ?></p>
 	</div>
-	<div class="span6">
-		<h2>Already with us?</h2>
-		<form action="login.php" method="POST" name="fm_login" class="form-horizontal">
-			<input type="email" name="email" placeholder="Email Address" class="input-block-level" style="margin-bottom:15px"/>
-			<input type="password" name="pwd" placeholder="Password" class="input-block-level" style="margin-bottom:15px"/>
-			<input type="submit" name="submit" value="Log in" class="btn"/> <a href="forgot.php">Forgot your password?</a>
+	<div class="col-md-6">
+		<h2>Sign Up</h2>
+		<form action="new_thread.php" method="GET" name="fm_thread" class="form-horizontal">
+			<div class="form-group">
+				<label for="n">What's your Name?</label>
+				<input type="text" name="n" placeholder="Jimmy Jones" class="form-control"/>
+			</div>
+			<div class="form-group">
+				<label for="e">And your Email address</label>
+				<input type="email" name="e" placeholder="jim@jones.com" class="form-control"/>
+			</div>
+			<div class="form-group">
+				<input type="submit" name="submit" value="Continue" class="btn btn-default"/> We'll finish on the next page
+			</div>
 		</form>
 	</div>
 </div>

@@ -18,7 +18,7 @@
 
 	// Checks for missing ID
 	if(empty($id)){
-		$error = array("code"=>400,"message"=>"Ticket ID is Missing");
+		$error = array("code"=>400,"message"=>"thread ID is Missing");
 		goto writeDoc;
 	}
 
@@ -32,7 +32,7 @@
 
 	// If no message was included.
 	if(empty($_POST['message'])){
-		$error = array("code"=>400,"message"=>"Ticket Message is Missing");
+		$error = array("code"=>400,"message"=>"thread Message is Missing");
 		goto writeDoc;
 	}
 	$message = $_POST['message'];
@@ -43,43 +43,46 @@
 
 
 	// Tests to see if a screenshot was included.
-	if (empty($_POST['data'])) {
-		$img_hash = "";
-	} elseif (isset($_POST['data']) && $GLOBALS['config']['Imgur']['Enable']) {
-
-		// Getting the file information.
-		$isFile = True;
-		$pvars = array('image' => $_POST['data'], 'key' => $GLOBALS['config']['Imgur']['Key']);
-		$timeout = 30;
-
-		// Setting up the cUrl uploader.
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_URL, 'http://api.imgur.com/2/upload.json');
-		curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
-		curl_setopt($curl, CURLOPT_POST, 1);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $pvars);
-
-		// Uploading to Imgur.
-		$json = curl_exec($curl);
-		curl_close ($curl);
-		$data = json_decode($json,true);
-
-		// Getting the image hash from the response.
-		$img_hash = $data["upload"]["image"]["hash"];
+	if (empty($_POST['image'])) {
+		// No Screenshot Included
+		$img_hash = null;
+	} elseif ($GLOBALS['config']['Images']['Enable'] && !empty($_POST['image'])) {
+		// Screenshots Enabled and file upload was successful.
+		$hash = md5(time());
+		$data = strstr($_POST['image'], ',');
+		$data = str_replace(',', '', $data);
+		$data = base64_decode($data);
+		file_put_contents('../../lucy-content/uploads/' . $hash, $data);
+		$img_hash = $hash;
 	}
 
-	// Inserts the new entry into the ticket table.
+	// Inserts the new entry into the thread table.
 	$values = array($usr_Name,$usr_Email,date("Y-m-d H:i:s"),$message,$img_hash);
 	if($usr_Type == "Admin"){
 		array_push($values, 'Agent');
 	} else {
 		array_push($values, 'Client');
 	}
+	
+	$get_response = null;
+
 	try{
-		$response = $cda->insert($id,array("Name","Email","Date","Message","File","From"),$values);
-	} catch (Exception $e) {
-		$error = array("code"=>500,"message"=>$e);
+		$get_response = $cda->select(array('data'),'threads',array('id'=>$id));
+	} catch (Exception $e){
+		$error  = $e;
+		goto writeDoc;
+	}
+	$json = json_decode($get_response['data']['data']);
+
+	$messageData = array("id"=>count($json->messages) + 1,"from"=>array("id"=>intval($usr_ID), "name"=>$usr_Name, "email"=>$usr_Email),"body"=>$message,"image"=>$img_hash);
+
+	array_push($json->messages, $messageData);
+
+	$put_response = null;
+	try{
+		$put_response = $cda->update('threads',array('data'=>json_encode($json)),array('id'=>$id));
+	}  catch (Exception $e){
+		$error  = $e;
 		goto writeDoc;
 	}
 

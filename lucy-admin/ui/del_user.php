@@ -2,6 +2,9 @@
 	if(!isset($_GET['id'])){
 		die("No ID");
 	}
+	if($_GET['id'] == 1){
+		die('Cannot delete the root user. <a href="index.php">Back</a>');
+	}
 	require("../session.php");
 	require("../cda.php");
 	require("default.php");
@@ -36,7 +39,7 @@
 <form name="usrsetngs" method="post">
 	<div class="alert alert-block alert-error fade in">
 		<h4 class="alert-heading">Are you sure you want to delete this user?</h4>
-		<p>Deleting this user will not delete any tickets they created, they will not be able to login anymore.</p>
+		<p>Deleting this user will not delete any threads they created, they will not be able to login anymore.</p>
 		<p>
 			<input type="submit" name="submit" value="Delete Forever" class="btn btn-danger"/> <input type="submit" name="reset" value="Maybe Later" class="btn"/>
 		</p>

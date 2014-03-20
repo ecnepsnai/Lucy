@@ -26,7 +26,8 @@ if(isset($_POST['submit'])){
 	try{
 		$codeIsValid = $tf->verifyCode($_SESSION['tf_secret'], $_POST['pin'], 1);
 	} catch (Exception $e){
-		die($e);
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
 	}
 
 	if(!$codeIsValid){
@@ -37,7 +38,8 @@ if(isset($_POST['submit'])){
 	try {
 		$response = $cda->select(array("id","name","type","email"),"userlist",array("tf_secret"=>$_SESSION['tf_secret']));
 	} catch (Exception $e) {
-		die($e);
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
 	}
 	$user = $response['data'];
 

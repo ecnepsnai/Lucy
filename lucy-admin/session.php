@@ -16,5 +16,31 @@
 		$usr_Email = $_SESSION['email'];
 		$usr_Type = $_SESSION['type'];
 		$usr_IsSignedIn = True;
+
+		$error = array();
+		$error['title'] = $_SESSION['error_title'];
+		$error['body'] = $_SESSION['error_body'];
+		$error['fatal'] = $_SESSION['error_fatal'];
+	}
+	function lucy_error($title = null, $body = null, $fatal = null){
+		if($title == null && $body == null && $fatal == null){
+			$error = array();
+			$error['title'] = $_SESSION['error_title'];
+			$error['body'] = $_SESSION['error_body'];
+			$error['fatal'] = $_SESSION['error_fatal'];
+			$_SESSION['error_title'] = null;
+			$_SESSION['error_body'] = null;
+			$_SESSION['error_fatal'] = null;
+			return $error;
+		} else {
+			$_SESSION['error_title'] = $title;
+			$_SESSION['error_body'] = $body;
+			$_SESSION['error_fatal'] = $fatal;
+			$error = array();
+			$error['title'] = $_SESSION['error_title'];
+			$error['body'] = $_SESSION['error_body'];
+			$error['fatal'] = $_SESSION['error_fatal'];
+			return $error;
+		}
 	}
 ?>

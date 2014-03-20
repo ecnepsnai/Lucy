@@ -75,9 +75,7 @@ Installing lucy is easy! Make a database for Lucy to use, upload all of the file
 
 ## Todo
 
-- [ ] Add MSSQL support
-- [ ] Add SQLite support
-- [x] Add automated setup page
+- [ ] Full Error Handling
+- [ ] Add input validation based off of settings in Designer
 - [ ] Write full documentation
-- [ ] Add dynamic error pages
 - [ ] Execute function-control-shift-kill

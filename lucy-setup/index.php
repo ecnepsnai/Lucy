@@ -227,13 +227,13 @@
 				"null"=>false
 			),
 			array(
-				"name"=>"tf_enable",
-				"type"=>"tinyint",
-				"length"=>1,
+				"name"=>"tf_secret",
+				"type"=>"varchar",
+				"length"=>32,
 				"null"=>false
 			),
 			array(
-				"name"=>"tf_secret",
+				"name"=>"tf_enable",
 				"type"=>"varchar",
 				"length"=>32,
 				"null"=>false
@@ -295,13 +295,6 @@
 			$cda->createTable("pwd_reset",$pwd_cols,"email",null);
 		} catch (Exception $e) {
 			$error = 'Could not create passwordreset Table: ' . $e;
-			goto docWrite;
-		}
-
-		try{
-			$cda->insert("userlist",array("id","name","email","password","salt","type","date_registered"),array(1, 'root', '', '', 0, 'Bot', '0000-00-00'));
-		} catch (Exception $e) {
-			$error = 'Could not create the root user: ' . $e;
 			goto docWrite;
 		}
 

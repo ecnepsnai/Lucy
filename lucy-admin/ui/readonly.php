@@ -28,7 +28,7 @@ endTest1:
 		if($testResults["1"] === true){
 			$response = array();
 			try{
-				$response = $cda->select(array("type"),"userlist",array("id"=>"2"));
+				$response = $cda->select(array("type"),"userlist",array("id"=>"1"));
 			} catch(Exception $e){
 				goto endTest2;
 			}

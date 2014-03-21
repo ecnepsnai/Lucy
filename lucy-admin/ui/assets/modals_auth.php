@@ -84,6 +84,23 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="backupModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Your Backup Key</h4>
+			</div>
+			<div class="modal-body">
+				<p>If your code generator isn't working, you can use this code to get access into your account.  Keep this code handy, and don't share it with anybody!</p>
+				<h2 id="backupcode"></h2>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="next">Finish!</button>
+			</div>
+		</div>
+	</div>
+</div>
 <div class="modal fade" id="disableModal" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">

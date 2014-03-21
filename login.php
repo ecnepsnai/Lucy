@@ -37,7 +37,7 @@ if(isset($_POST['email']) && isset($_POST['pwd'])){
 
 	// Preparing the second sql request.
 	try {
-		$response = $cda->select(array("id","name","type","email","type","tf_enable","tf_secret"),"userlist",array("email"=>$inp_email,"password"=>$pw_hash));
+		$response = $cda->select(array("id","name","type","email","type","tf_secret"),"userlist",array("email"=>$inp_email,"password"=>$pw_hash));
 	} catch (Exception $e) {
 		lucy_error('Database Error',$e, true);
 		goto writeDOC;

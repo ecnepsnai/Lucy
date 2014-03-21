@@ -99,9 +99,14 @@ $("#testModal #next").bind('click',function(){
 			$("#testModal #token").val('');
 			$("#testModal #token").focus();
 		} else {
-			window.location.reload();
+			$("#testModal").modal("hide");
+			$("#backupModal").modal("show");
+			$("#backupModal #backupcode").text(obj.response.message);
 		}
 	});
+});
+$("#backupModal #next").bind('click', function(){
+	window.location.reload();
 });
 $("#disableModal #next").bind('click',function(){
 	postRequest = $.post("../api/admin_auth_setup.php?s=4", {

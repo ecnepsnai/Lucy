@@ -28,7 +28,7 @@ class sql{
 	}
 
 	/* Tests database connectivity */
-	function testConnection($location, $username, $password){
+	function testConnection($location, $username, $password, $name){
 		/* We temporary disable error reporting here since mysql doesn't throw an error, only a warning if connection failed */
 		$cerl = error_reporting ();
 		error_reporting (0);
@@ -68,13 +68,14 @@ class sql{
 		}
 
 		$data = array();
+
 		while($row = mysql_fetch_assoc($mysql_response)){			
 			array_push($data, $row);			
 		}		
 		if(count($data) == 1){			
-			$response = array("status" => "OK", "data" => $data[0]);
+			$response = array("status" => true, "data" => $data[0]);
 		} else {			
-			$response = array("status" => "OK", "data" => $data);
+			$response = array("status" => true, "data" => $data);
 		}		
 		mysql_close($GLOBALS['connection']);
 		return $response;
@@ -91,7 +92,7 @@ class sql{
 		$sql.= " FROM " . $table . " WHERE ( ";
 
 		foreach($library as $column){
-			$sql.= $column . " like '%" . mysql_real_escape_string($query) . "%' OR "; 
+			$sql.= $column . " like '%" . mysql_real_escape_string($query) . "%' OR ";
 		}
 		$sql = rtrim($sql, " OR ");
 		$sql.= " )";
@@ -110,9 +111,9 @@ class sql{
 			array_push($data, $row);			
 		}		
 		if(count($data) == 1){			
-			$response = array("status" => "OK", "data" => $data[0]);
+			$response = array("status" => true, "data" => $data[0]);
 		} else {			
-			$response = array("status" => "OK", "data" => $data);
+			$response = array("status" => true, "data" => $data);
 		}		
 		mysql_close($GLOBALS['connection']);
 		return $response;

@@ -121,7 +121,7 @@
 
 		if($db_type != "SQLITE"){
 			// Testing database connection settings
-			if($cda->testConnection($db_location, $db_username, $db_password) === false){
+			if($cda->testConnection($db_location, $db_username, $db_password, $db_name) === false){
 				$error = "Database connection failed.";
 				goto docWrite;
 			}
@@ -419,9 +419,8 @@
 	<label class="col-sm-4 control-label">Database Type:</label>
 	<div class="col-sm-7">
 		<select class="form-control" name="db_type" id="db_type">
+			<option value="MYSQLI">MySQLi</option>
 			<option value="MYSQL">MySQL</option>
-			<option value="MYSQLI" disabled>MySQLi</option>
-			<option value="MSSQL" disabled>Microsoft SQL Server</option>
 			<option value="SQLITE">SQLite</option>
 		</select>
 	</div>

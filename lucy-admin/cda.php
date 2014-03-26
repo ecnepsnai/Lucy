@@ -35,11 +35,6 @@
 		/* $type = String : The SQL Type. */
 		function init($type){
 			switch ($type) {
-				case 'MSSQL':
-					$dba_type = $type;
-					require("mssql.php");
-				break;
-
 				case 'MYSQLI':
 					$dba_type = $type;
 					require("mysqli.php");
@@ -58,7 +53,6 @@
 				default:
 					die("Unknown database type");
 				break;
-
 			}
 		}
 

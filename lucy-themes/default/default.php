@@ -60,7 +60,13 @@ body {
 				</div>
 			</div>
 		</nav>
-<?php }
+		<?php
+		$lcy_error = array();
+		$lcy_error = lucy_error();
+		if($lcy_error['title'] !== null && $lcy_error['body'] !== null){ ?>
+		<div <?php if($lcy_error['fatal'] === true){ ?>class="alert alert-danger"<?php } else { ?>class="alert alert-warning"<?php } ?>><strong><?php echo($lcy_error['title']); ?></strong> - <?php echo($lcy_error['body']); ?></div>
+		<?php }
+}
 
 	function getFooter(){ ?>
 <footer>

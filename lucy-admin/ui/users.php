@@ -27,6 +27,17 @@
 
 	getHeader("Users");
 	getNav(4);
+
+	if(isset($_GET['notice'])){
+		switch ($_GET['notice']) {
+			case 'create': ?>
+				<div class="alert alert-success"><strong>User Created</strong></div>
+			<?php break;
+			case 'del': ?>
+				<div class="alert alert-warning"><strong>User Deleted</strong></div>
+			<?php break;
+		}
+	}
 ?>
 <h1>All Users</h1>
 <table class="table table-hover">

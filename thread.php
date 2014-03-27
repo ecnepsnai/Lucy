@@ -19,7 +19,7 @@
 	try{
 		$response = $cda->select(null,"threads",array("id"=>$id));
 	} catch (Exception $e) {
-		die($e);
+		header('location: index.php');
 	}
 	$thread_info = $response['data'];
 
@@ -30,8 +30,7 @@
 
 	// If no data was returned -- thread does not exist.
 	if(count($thread_info) == 0){
-		header("location: index?notice=nothread");
-		die();
+		header('location: index.php');
 	}
 
 
@@ -40,14 +39,13 @@
 	
 	// If somebody is trying to view the thread without being signed in it will deny the request
 	if($usr_Email == "" || $usr_Email == null){
-		header("location: login.php?notice=login");
+		header('location: index.php');
 	}
 
 	// THIS SHOULD NOT RETURN TRUE
 	// If the thread table has no data in it.
 	if(count($thread_messages) == 0){
-		header("location: index?notice=nothread");
-		die();
+		header('location: index.php');
 	}
 
 require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/thread.php');

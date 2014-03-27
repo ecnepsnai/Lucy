@@ -1,8 +1,6 @@
 <?php
 require("lucy-admin/session.php");
 
-$login_error = False;
-
 // Obviously if the user is already signed in, we don't let them log in again.
 if($usr_IsSignedIn){
 	header("Location: dash.php");
@@ -21,6 +19,7 @@ if(isset($_POST['email']) && isset($_POST['pwd'])){
 	// Getting the raw inputs.
 	$raw_email = trim($_POST['email']);
 	if(empty($raw_email) || empty($_POST['pwd'])){
+		lucy_error('Whoops!','Missing Username or Password.  Try again');
 		goto writeDOC;
 	}
 
@@ -30,20 +29,22 @@ if(isset($_POST['email']) && isset($_POST['pwd'])){
 	try {
 		$response = $cda->select(array("email, salt"),"userlist",array("email"=>$inp_email));
 	} catch (Exception $e) {
-		die($e);
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
 	}
 	$pw = $response['data'];
 	$pw_hash = md5($pw['salt'] . md5(trim($_POST['pwd'])));
 
 	// Preparing the second sql request.
 	try {
-		$response = $cda->select(array("id","name","type","email","type","tf_enable","tf_secret"),"userlist",array("email"=>$inp_email,"password"=>$pw_hash));
+		$response = $cda->select(array("id","name","type","email","type","tf_secret"),"userlist",array("email"=>$inp_email,"password"=>$pw_hash));
 	} catch (Exception $e) {
-		die($e);
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
 	}
 	$user = $response['data'];
 	if(empty($user['id'])){
-		$login_error = True;
+		lucy_error('Whoops!','Incorrect Username or Password.  Try again');
 	} else {
 		if($GLOBALS['config']['ReadOnly'] == true && $user['type'] !== "Admin"){
 			header("location: index.php?notice=readonly");

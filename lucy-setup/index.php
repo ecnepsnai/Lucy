@@ -24,6 +24,13 @@
 		$db_username = $_POST['db_username'];
 		$db_password = $_POST['db_password'];
 
+		// Getting the local and remote paths.  Local = absolute path of the operating system of the host.  Remote = URI that the setup script is hosted on.
+		$path_local = str_replace('lucy-setup', '', __DIR__);
+		$path_remote  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+		$path_remote .= ( $_SERVER["SERVER_PORT"] !== "80" ) ? ":".$_SERVER["SERVER_PORT"] : "";
+		$path_remote .= $_SERVER["REQUEST_URI"];
+		$path_remote = str_replace('lucy-setup/', '', $path_remote);
+
 		if($db_type != "SQLITE"){
 			// Testing for missing information.
 			if($user_name == null || $user_email == null || $user_password == null){
@@ -40,6 +47,8 @@
 			if($db_name == null){
 				$error = "Please include all of the database information...";
 				goto docWrite;
+			} else {
+				$db_name = $path_local . 'lucy-config/' . $db_name;
 			}
 		}
 
@@ -57,12 +66,21 @@
 		$GLOBALS['config']['Images']['Enable'] = True;
 
 		// Strings.
-		$GLOBALS['config']['Strings']['Main'] = "Lucy";
-		$GLOBALS['config']['Strings']['Separator'] = " — ";
-		$GLOBALS['config']['Strings']['Footer'] = "Copyright &copy; 2014";
+		$GLOBALS['config']['Strings']['Main'] = $_POST['strings_title'];
+		$GLOBALS['config']['Strings']['Separator'] = $_POST['strings_titlesep'];
+		$GLOBALS['config']['Strings']['Footer'] = $_POST['strings_footer'];
 		$GLOBALS['config']['Support']['ID'] = "%#%#%#";
-		$GLOBALS['config']['Strings']['Home']['Title'] = "You've got questions, we have the answers.";
-		$GLOBALS['config']['Strings']['Home']['Slogan'] = "Sign up and start asking today";
+		$GLOBALS['config']['Strings']['Home']['Title'] = $_POST['strings_welcome_title'];
+		$GLOBALS['config']['Strings']['Home']['Slogan'] = $_POST['strings_welcome_slogan'];
+
+		// Email
+		$GLOBALS['config']['Email']['Name'] = $_POST['email_name'];
+		$GLOBALS['config']['Email']['Address'] = $_POST['email_email'];
+		$GLOBALS['config']['Email']['Footer'] = $_POST['email_footer'];
+
+		// Paths
+		$GLOBALS['config']['Paths']['Local'] = $path_local;
+		$GLOBALS['config']['Paths']['Remote'] = $path_remote;
 
 		// Creating the default value for the input order setting
 		$GLOBALS['config']['Support']['Order'] = array('name','email','password','message','image');
@@ -116,7 +134,7 @@
 
 		if($db_type != "SQLITE"){
 			// Testing database connection settings
-			if($cda->testConnection($db_location, $db_username, $db_password) === false){
+			if($cda->testConnection($db_location, $db_username, $db_password, $db_name) === false){
 				$error = "Database connection failed.";
 				goto docWrite;
 			}
@@ -222,13 +240,13 @@
 				"null"=>false
 			),
 			array(
-				"name"=>"tf_enable",
-				"type"=>"tinyint",
-				"length"=>1,
+				"name"=>"tf_secret",
+				"type"=>"varchar",
+				"length"=>32,
 				"null"=>false
 			),
 			array(
-				"name"=>"tf_secret",
+				"name"=>"tf_enable",
 				"type"=>"varchar",
 				"length"=>32,
 				"null"=>false
@@ -293,13 +311,6 @@
 			goto docWrite;
 		}
 
-		try{
-			$cda->insert("userlist",array("id","name","email","password","salt","type","date_registered"),array(1, 'root', '', '', 0, 'Bot', '0000-00-00'));
-		} catch (Exception $e) {
-			$error = 'Could not create the root user: ' . $e;
-			goto docWrite;
-		}
-
 		// Setting up the admin userlist
 		// Generating a random salt used for encryption.
 		$salt = mt_rand(10, 99);
@@ -307,170 +318,222 @@
 		// Encrypting the password.
 		$hashed_password = md5($salt . md5($user_password));
 		try{
-			$cda->insert("userlist",array("name","email","password","salt","type","date_registered"),array($user_name, $user_email, $hashed_password, $salt,'Admin', date("Y-m-d")));
+			$response = $cda->insert("userlist",array("name","email","password","salt","type","date_registered"),array($user_name, $user_email, $hashed_password, $salt,'Admin', date("Y-m-d")));
 		} catch (Exception $e) {
 			$error = 'Could not create the admin user: ' . $e;
 			goto docWrite;
 		}
+
+		session_start();
+		$_SESSION['id'] = $response['id'];
+		$_SESSION['name'] = $user_name;
+		$_SESSION['type'] = 'Admin';
+		$_SESSION['email'] = $user_email;
+		$_SESSION['LAST_ACTIVITY'] = time();
 		
-		header("Location: ../login.php?notice=welcome");
+		header("Location: ../lucy-admin/ui/");
+		die();
+	}
+
+	session_start();
+	session_unset();
+	session_destroy();
+
+	$disableForm = false;
+
+	$files = array(
+		'lucy-admin/auth.php',
+		'lucy-admin/cda.php',
+		'lucy-admin/defines.php',
+		'lucy-admin/index.php',
+		'lucy-admin/mailer.php',
+		'lucy-admin/mysql.php',
+		'lucy-admin/session.php',
+		'lucy-admin/sqlite.php',
+		'lucy-admin/api/admin_auth_setup.php',
+		'lucy-admin/api/admin_del_message.php',
+		'lucy-admin/api/admin_designer_add.php',
+		'lucy-admin/api/admin_designer_change_order.php',
+		'lucy-admin/api/admin_designer_edit_constant.php',
+		'lucy-admin/api/admin_designer_edit.php',
+		'lucy-admin/api/admin_designer_remove.php',
+		'lucy-admin/api/admin_edit_message.php',
+		'lucy-admin/api/admin_edit_thread.php',
+		'lucy-admin/api/admin_flag_spam.php',
+		'lucy-admin/api/admin_get_users.php',
+		'lucy-admin/api/thread_close.php',
+		'lucy-admin/api/thread_reopen.php',
+		'lucy-admin/api/thread_update.php',
+		'lucy-admin/ui/allthreads.php',
+		'lucy-admin/ui/auth.php',
+		'lucy-admin/ui/default.php',
+		'lucy-admin/ui/del_thread.php',
+		'lucy-admin/ui/del_user.php',
+		'lucy-admin/ui/designer.php',
+		'lucy-admin/ui/designer_preview.php',
+		'lucy-admin/ui/edit_user.php',
+		'lucy-admin/ui/index.php',
+		'lucy-admin/ui/mythreads.php',
+		'lucy-admin/ui/new_user.php',
+		'lucy-admin/ui/purge.php',
+		'lucy-admin/ui/readonly.php',
+		'lucy-admin/ui/settings.php',
+		'lucy-admin/ui/users.php',
+		'lucy-admin/ui/view_thread.php'
+	);
+
+	foreach ($files as $file) {
+		if(!file_exists('../' . $file)){
+			echo('<span class="label label-danger">Error</span> The <code>' . $file . '</code> is missing or corrupt.  This may cause problems when running this setup script<br>');
+			$disableForm = true;
+		}
+	}
+
+	if(!is_writable('../lucy-config')){
+		echo('<span class="label label-danger">Error</span> Lucy does not have write permissions to the <code>lucy-config</code> directory and will not be able to save the settings.  This may cause problems when running this setup script');
+		$disableForm = true;
 	}
 
 	docWrite:
-	if(!empty($error)){ try{ unlink(realpath("../lucy-config/config.json")); } catch (exception $e) { /* supress errors here */ }}
-	if(!empty($error)){ try{ unlink(realpath("../lucy-config/designer.json")); } catch (exception $e) { /* supress errors here */ }}
+	if(!empty($error)){ @unlink(realpath("../lucy-config/config.json")); }
+	if(!empty($error)){ @unlink(realpath("../lucy-config/designer.json")); }
 ?>
 <!DOCTYPE html>
 <html lang="en-US">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Lucy Setup</title>
-<style>
-	body{
-		font-family: Helvetica, Arial, sans-serif;
-		font-weight: bold;
-		color:red;
-	}
-	.container{
-		width: 500px;
-		margin: 0 auto;
-		font-weight: normal;
-		color:#000;
-	}
-	input[type="text"],input[type="password"],select{
-		border: 1px solid #8fa0ae;
-		padding: 5px;
-		font-size: 15pt;
-		color: #8fa0ae;
-		border-radius: 3px;
-		-webkit-transition: border linear .2s,box-shadow linear .2s;
-		-moz-transition: border linear .2s,box-shadow linear .2s;
-		-o-transition: border linear .2s,box-shadow linear .2s;
-		transition: border linear .2s,box-shadow linear .2s;
-	}
-	input[type="text"]:focus,input[type="password"]:focus,select:focus{
-		border-color: rgba(82,168,236,0.8);
-		outline: 0;
-		outline: thin dotted 9;
-		color: rgb(82,168,236);
-		-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
-		-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
-		box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
-	}
-	select, select:focus{
-		font-size: 12pt;
-		color: black;
-	}
-	strong,em{ color: #000; }
-	h2{
-		border-bottom: 1px solid #ccc;
-	}
-	td.label{
-		text-align: right;
-		width: 200px;
-	}
-	@media (max-width:380px){
-		body{
-			font-family: Helvetica, Arial, sans-serif;
-			font-weight: bold;
-			color:red;
-			padding: 0;
-			margin: 0;
-		}
-		.container{
-			width: auto;
-			max-width: 380px;
-			margin: 0 auto;
-			font-weight: normal;
-			color:#000;
-		}
-		input[type="text"],input[type="password"]{
-			font-size: 12pt;
-		}
-	}
-</style>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-	<?php if($error) { echo($error); } ?>
-	<div class="container">
-		<form method="post">
-			<h1>Welcome to Lucy!</h1>
-			You're only a few steps away from having great engagement with your clients.
-			<h2>The Basics</h2>
-			<table>
-				<tr>
-					<td class="label"><strong>Your Name:</strong></td>
-					<td><input type="text" name="user_name" maxlength="255" placeholder="Rob Frog"/></td>
-				</tr>
-				<tr>
-					<td class="label"><strong>Your Email:</strong></td>
-					<td><input type="text" name="user_email" maxlength="255" placeholder="rob.frog@xyz.com"/></td>
-				</tr>
-				<tr>
-					<td class="label"><strong>Chose a Password:</strong></td>
-					<td><input type="password" name="user_password" maxlength="255" /></td>
-				</tr>
-			</table>
-			<h2>Database Settings</h2>
-			<table>
-				<tr id="row_db_type">
-					<td class="label"><strong>Database Type:</strong></td>
-					<td>
-						<select name="db_type" id="db_type">
-							<option value="MYSQL">MySQL</option>
-							<option value="MYSQLI" disabled="disabled">MySQLi</option>
-							<option value="MSSQL" disabled="disabled">Microsoft SQL Server</option>
-							<option value="SQLITE">SQLite3</option>
-						</select><br/>
-						<em>*Currently only MySQL and SQLite3 are supported.</em>
-					</td>
-				</tr>
-				<tr id="db_lrow_ocation">
-					<td class="label"><strong>Database Location:</strong></td>
-					<td>
-						<input type="text" name="db_location" maxlength="255" placeholder="localhost" />
-					</td>
-				</tr>
-				<tr id="row_db_name">
-					<td class="label"><strong>Database Name:</strong></td>
-					<td>
-						<span id="sqlite3x1" style="display:none">lucy-config\</span> <input type="text" name="db_name" maxlength="255" placeholder="lucy" /> <span id="sqlite3x2" style="display:none">.sql</span>
-					</td>
-				</tr>
-				<tr id="db_urow_sername">
-					<td class="label"><strong>Database Username:</strong></td>
-					<td>
-						<input type="text" name="db_username" maxlength="255" placeholder="user" />
-					</td>
-				</tr>
-				<tr id="db_prow_assword">
-					<td class="label"><strong>Database Password:</strong></td>
-					<td>
-						<input type="password" name="db_password" maxlength="255" placeholder="secret"/>
-					</td>
-				</tr>
-			</table>
-			<h2>That's all for now!</h2>
-			You can change these after we're done. 
-			<input type="submit" name="submit" value="Finish Setup" />
-		</form>
+<div class="container">
+<?php if($error) { ?><div class="alert alert-danger"><?php echo($error); ?></div><?php } ?>
+<?php if(!$disableForm){ ?>
+<h1>Welcome to Lucy! <small>Let's get a few things sorted before we begin</small></h1>
+<form method="post" class="form-horizontal" autocomplete="off">
+<h2>The Basics <small>Required</small></h2>
+<div class="form-group">	
+	<label class="col-sm-4 control-label">Your Name</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="user_name" placeholder="Rob Frog" required/>
 	</div>
-
+</div>
+<div class="form-group">	
+	<label class="col-sm-4 control-label">Your Email</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="email" name="user_email" placeholder="rob@frog.com" required/>
+	</div>
+</div>
+<div class="form-group">	
+	<label class="col-sm-4 control-label">Your Password</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="password" name="user_password" required/>
+	</div>
+</div>
+<h2>Database Settings <small>Required</small></h2>
+<div class="form-group">
+	<label class="col-sm-4 control-label">Database Type:</label>
+	<div class="col-sm-7">
+		<select class="form-control" name="db_type" id="db_type">
+			<option value="MYSQLI">MySQLi</option>
+			<option value="MYSQL">MySQL</option>
+			<option value="SQLITE">SQLite</option>
+		</select>
+	</div>
+</div>
+<div class="form-group" id="control-group-location">
+	<label class="col-sm-4 control-label">Database Location:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="db_location" title="The location or URL of your database." value="localhost"/>
+	</div>
+</div>
+<div class="form-group" id="control-group-name">
+	<label class="col-sm-4 control-label">Database Name:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="db_name" title="The name of the database that Lucy will use." value="lucy"/>
+	</div>
+</div>
+<div class="form-group" id="control-group-username">
+	<label class="col-sm-4 control-label">Database Username:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="db_username" title="The username for the database connection." value="lucy"/>
+	</div>
+</div>
+<div class="form-group" id="control-group-password">
+	<label class="col-sm-4 control-label">Database Password:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="password" name="db_password" title="The password for the database connection."/>
+	</div>
+</div>
+<h2>Appearance Settings <small>Optional</small></h2>
+<div class="form-group">
+	<label class="col-sm-4 control-label">Main Title:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="strings_title" value="Lucy"/>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-4 control-label">Title Separator:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="strings_titlesep" value=" — "/>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-4 control-label">Footer Text:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="strings_footer" value="Copyright &copy; 2014"/>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-4 control-label">Welcome Page Title:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="strings_welcome_title" value="You've got questions, we have the answers."/>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-4 control-label">Welcome Page Slogan:</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="strings_welcome_slogan" value="Sign up and start asking today"/>
+	</div>
+</div>
+<h2>Email Settings <small>Optional</small></h2>
+<div class="form-group">	
+	<label class="col-sm-4 control-label">Email Sender Name</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="email_name" value="Lucy" />
+	</div>
+</div>
+<div class="form-group">	
+	<label class="col-sm-4 control-label">Email Sender Address</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="email" name="email_email" value="lucy@<?php echo($_SERVER['SERVER_NAME']); ?>" />
+	</div>
+</div>
+<div class="form-group">	
+	<label class="col-sm-4 control-label">Email Message Footer</label>
+	<div class="col-sm-7">
+		<input class="form-control" type="text" name="email_footer" value="With Love, The Lucy Team" />
+	</div>
+</div>
+<div class="form-group">	
+	<label class="col-sm-4 control-label"></label>
+	<div class="col-sm-7">
+		<input type="submit" name="submit" class="btn btn-success" value="Save Settings!" />
+	</div>
+</div>
+</form>
+<?php } ?>
+</div>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 $('#db_type').change(function() {
-  if(document.getElementsByName("db_type")[0].value == "SQLITE"){
-		$('#db_lrow_ocation').hide();
-		$('#db_urow_sername').hide();
-		$('#db_prow_assword').hide();
-		$('#sqlite3x1').show();
-		$('#sqlite3x2').show();		
-
+  if($("#db_type").val() == "SQLITE"){
+		$('#control-group-location').hide();
+		$('#control-group-username').hide();
+		$('#control-group-password').hide();	
 	} else {
-		$('#db_lrow_ocation').show();
-		$('#db_urow_sername').show();
-		$('#db_prow_assword').show();
-		$('#sqlite3x1').hide();
-		$('#sqlite3x2').hide();		
-
+		$('#control-group-location').show();
+		$('#control-group-username').show();
+		$('#control-group-password').show();	
 	}
 });
 </script>

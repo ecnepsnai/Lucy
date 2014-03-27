@@ -78,6 +78,21 @@
 				"length_max"=>$obj_length_max
 			);
 		break;
+		case 'range':
+			$obj_title = $_POST['title'];
+			$obj_helptext = $_POST['helptext'];
+			$obj_required = $_POST['required'];
+			$obj_length_min = $_POST['length_min'];
+			$obj_length_max = $_POST['length_max'];
+			$obj_array = array(
+				"type"=>"range",
+				"title"=>$obj_title,
+				"helptext"=>$obj_helptext,
+				"required"=>$obj_required,
+				"length_min"=>$obj_length_min,
+				"length_max"=>$obj_length_max
+			);
+		break;
 		case 'select':
 			$obj_type = $_POST['type'];
 			$obj_title = $_POST['title'];

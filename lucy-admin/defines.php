@@ -17,7 +17,7 @@
 		die("The configuration file is not valid and could not be parsed.");
 	}
 	$GLOBALS['config'] = $data['config'];
-	$GLOBALS['readonly']['version'] = 'Beta 4';
+	$GLOBALS['readonly']['version'] = '1.0-rc1';
 
 	// The path to the designer file.
 	$url = dirname(__FILE__) . '/../lucy-config/designer.json';

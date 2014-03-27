@@ -28,7 +28,8 @@ if(isset($_POST['submit'])){
 	try{
 		$response = $cda->select(array("id","email","name"),"userlist",array("email"=>$inp_email));
 	} catch (Exception $e) {
-		die($e);
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
 	}
 	$user = $response['data'];
 
@@ -38,10 +39,11 @@ if(isset($_POST['submit'])){
 		try {
 			$response = $cda->insert('pwd_reset',array('email','salt1','salt2'),array($user['email'],$salt1,$salt2));
 		} catch (Exception $e) {
-			die($e);
+			lucy_error('Database Error',$e, true);
+			goto writeDOC;
 		}
 
-		$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . '?a=' . $salt1 . '&b=' . $salt2;
+		$url = $GLOBALS['config']['Paths']['Remote'] . 'forgot.php?a=' . $salt1 . '&b=' . $salt2;
 
 		// Emails password reset link.
 		mailer_passwordReset($user['name'], $user['email'], $url);
@@ -65,7 +67,8 @@ if(isset($_GET['a']) && isset($_GET['b'])){
 	try{
 		$response = $cda->select(array("email"),"pwd_reset",array("salt1"=>$salt1,"salt2"=>$salt2));
 	} catch (Exception $e) {
-		die($e);
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
 	}
 	$reset = $response['data'];
 
@@ -79,7 +82,8 @@ if(isset($_GET['a']) && isset($_GET['b'])){
 		try{
 			$response = $cda->update("userlist",array("password"=>$hashed_password,"salt"=>$salt),array("email"=>$reset['email']));
 		} catch (Exception $e) {
-			die($e);
+			lucy_error('Database Error',$e, true);
+			goto writeDOC;
 		}
 
 
@@ -87,7 +91,8 @@ if(isset($_GET['a']) && isset($_GET['b'])){
 		try {
 			$response = $cda->delete("pwd_reset",array("salt1"=>$salt1,"salt2"=>$salt2));
 		} catch (Exception $e) {
-			die($e);
+			lucy_error('Database Error',$e, true);
+			goto writeDOC;
 		}
 
 		// Emails new password.

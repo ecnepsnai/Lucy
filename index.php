@@ -13,7 +13,7 @@ if($usr_IsSignedIn){
 	try {
 		$response = $cda->select(null,"threads",array("owner"=>$usr_ID));
 	} catch (Exception $e) {
-		die($e);
+		lucy_error('Database Error',$e, true);
 	}
 	$threads = $response['data'];
 	if(isset($threads['id'])){

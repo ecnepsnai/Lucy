@@ -43,7 +43,7 @@
 	Stages for Authentication Setup
 	Stage 1: Verify Password
 	Stage 2: Generate and Update Secret
-	Stage 3: Verify Token
+	Stage 3: Verify Token & Generate Backup
 	Stage 4: Remove Secret (No Password)
 	Stage 5: Remove Secret (Password)
 	*/
@@ -169,7 +169,7 @@
 
 
 			try {
-				$response = $cda->select(array("tf_secret"),"userlist",array("id"=>$usr_ID));
+				$response = $cda->select(array("tf_secret","salt"),"userlist",array("id"=>$usr_ID));
 			} catch (Exception $e) {
 				?>{
 					"response": {
@@ -180,25 +180,35 @@
 				die();
 			}
 
-			if($tf->verifyCode($response['data']['tf_secret'],$_POST['code'],2) === true){
-				?>{
-					"response": {
-						"code":200,
-						"message":"OK"
-					}
-				}<?php
-			} else {
+			if($tf->verifyCode($response['data']['tf_secret'],$_POST['code'],2) === false){
 				?>{
 					"response": {
 						"code":403,
-						"message":"Bad Token",
-						"token":"<?php echo($_POST['code']); ?>",
-						"secret":"<?php echo($response['data']['tf_secret']); ?>",
-						"time":"<?php echo(time()); ?>",
-						"url":"<?php echo($tf->getQRCodeGoogleUrl('Lucy', $response['data']['tf_secret'])); ?>"
+						"message":"Bad Token"
 					}
 				}<?php
+				die();
 			}
+
+			$backup = mt_rand(100000,999999);
+			$hashed_backup = md5($response['data']['salt'] . md5($backup));
+			try {
+				$response = $cda->update("userlist", array("tf_backup"=>$hashed_backup),array("id"=>$usr_ID));
+			} catch (Exception $e) {
+				?>{
+					"response": {
+						"code":<?php echo($error['code']); ?>,
+						"message":"<?php echo($error['message']); ?>"
+					}
+				}<?php
+				die();
+			}
+			?>{
+				"response": {
+					"code":200,
+					"message":"<?php echo($backup); ?>"
+				}
+			}<?php
 		break;
 		case '4':
 			// Requiring the CDA library.

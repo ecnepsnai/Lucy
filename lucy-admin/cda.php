@@ -18,7 +18,7 @@
 	/* 0 = No output: production. */
 	/* 1 = Outputs all SQL queries: development. */
 	/* 2 = Outputs everything: debugging. */
-	define("cda_output", $GLOBALS['config']['Debug']);
+	define("cda_output", 0);
 
 
 
@@ -35,11 +35,6 @@
 		/* $type = String : The SQL Type. */
 		function init($type){
 			switch ($type) {
-				case 'MSSQL':
-					$dba_type = $type;
-					require("mssql.php");
-				break;
-
 				case 'MYSQLI':
 					$dba_type = $type;
 					require("mysqli.php");
@@ -58,14 +53,14 @@
 				default:
 					die("Unknown database type");
 				break;
-
 			}
 		}
 
 		/* Tests database connection */
 		/* $location = Database server location */
 		/* $username & $password = Self Explanatory. */
-		function testConnection($location, $username, $password){
+		/* $name (optional) = Database Name */
+		function testConnection($location, $username, $password, $name = null){
 			$sql = new sql;
 			$response = false;
 			try{
@@ -148,11 +143,6 @@
 			}
 
 			$sql = new sql;
-
-			if(cda_output != 0){
-				$sql->setOutput(cda_output);
-			}
-			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -178,11 +168,6 @@
 			}
 
 			$sql = new sql;
-
-			if(cda_output != 0){
-				$sql->setOutput(cda_output);
-			}
-			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -204,11 +189,6 @@
 			}
 
 			$sql = new sql;
-
-			if(cda_output != 0){
-				$sql->setOutput(cda_output);
-			}
-			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -235,11 +215,6 @@
 			}
 
 			$sql = new sql;
-
-			if(cda_output != 0){
-				$sql->setOutput(cda_output);
-			}
-			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();
@@ -260,11 +235,6 @@
 			}
 
 			$sql = new sql;
-
-			if(cda_output != 0){
-				$sql->setOutput(cda_output);
-			}
-			
 			$dba_isConnected = $sql->connect(dba_location, dba_name, dba_username, dba_password);
 
 			$response = array();

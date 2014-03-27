@@ -40,7 +40,7 @@ if(isset($_POST['submit'])){
 }
 
 try{
-	$response = $cda->select(array("name","email"),"userlist",array("id"=>$usr_ID));
+	$response = $cda->select(array("name","email","verified"),"userlist",array("id"=>$usr_ID));
 } catch (Exception $e) {
 	die($e);
 }

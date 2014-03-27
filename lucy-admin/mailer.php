@@ -8,21 +8,13 @@
 		'X-Mailer: PHP/'.phpversion();
 		$result = mail($email,'Thread Created',"<p>Hey there, " . $name . "!</p><p>This email is just to let you know that your thread has been created. You can access your thread using <a href=\"" . $url . "\">this link</a></p>" . $GLOBALS['config']['Email']['Footer'], $headers);
 	}
-	function mailer_threadUpdate($name, $email, $id){
-		require("../cda.php");
-		// Creating the CDA class.
-		$cda = new cda;
-		// Initializing the CDA class.
-		$cda->init($GLOBALS['config']['Database']['Type']);
-		$response = $cda->select(array('Name','Email'),$id,array('UpdateID'=>1));
-		$user = $response['data'];
-
+	function mailer_threadUpdate($name, $email, $url){
 		$headers = 'From: lucy@ecnepsnai.com'."\r\n".
 		'Reply-To: lucy@ecnepsnai.com'."\r\n".
 		'MIME-Version: 1.0'."\r\n".
 		'Content-type: text/html; charset=iso-8859-1'."\r\n".
 		'X-Mailer: PHP/'.phpversion();
-		$result = mail($user['Email'],'New Reply on Thread',"<p>Hey there, " . $user['Name'] . "!</p><p>There is a new reply on your thread on Lucy. <a href=\"" . $GLOBALS['config']['siteURL'] . "thread.php?id=" . $thread . "\">Read it here</a></p>" . $GLOBALS['config']['Email']['Footer'], $headers);
+		$result = mail($email,'New Reply',"<p>Hey there, " . $name . "!</p><p>Somebody replied to one of your threads.  You should go check it out. <a href=\"" . $url . "\">View Reply</a></p>" . $GLOBALS['config']['Email']['Footer'], $headers);
 	}
 	function mailer_passwordReset($name, $email, $url){
 		$headers = 'From: lucy@ecnepsnai.com'."\r\n".

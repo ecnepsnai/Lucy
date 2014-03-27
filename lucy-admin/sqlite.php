@@ -18,12 +18,16 @@ class sql{
 	/* NOTE: For consistency with other database types, we include this unused parameters.*/
 	/* They are not required and can be null (except $name) */
 	function connect($location, $name, $username, $password){
-		$file = dirname(__FILE__) . '\\..\\lucy-config\\' . $name . '.sql';
-		$GLOBALS['connection'] = new SQLite3($file); 
+		$GLOBALS['connection'] = new SQLite3($name); 
 		if(!$GLOBALS['connection']){
-			throw new Exception("Error connecting to database: " . $location, 1);
+			throw new Exception("Error connecting to database: " . $name, 1);
 		}
 		return True;
+	}
+
+	/* Tests database connectivity */
+	function testConnection($location, $username, $password, $name){
+		return true;
 	}
 
 	/* Selects row(s) from the database */
@@ -58,9 +62,9 @@ class sql{
 			array_push($data, $row);
 		}
 		if(count($data) == 1){			
-			$response = array("status" => "OK", "data" => $data[0]);
+			$response = array("status" => true, "data" => $data[0]);
 		} else {			
-			$response = array("status" => "OK", "data" => $data);
+			$response = array("status" => true, "data" => $data);
 		}
 		$GLOBALS['connection']->close();
 
@@ -97,9 +101,9 @@ class sql{
 			array_push($data, $row);
 		}
 		if(count($data) == 1){			
-			$response = array("status" => "OK", "data" => $data[0]);
+			$response = array("status" => true, "data" => $data[0]);
 		} else {			
-			$response = array("status" => "OK", "data" => $data);
+			$response = array("status" => true, "data" => $data);
 		}
 		$GLOBALS['connection']->close();
 

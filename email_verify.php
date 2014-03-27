@@ -21,7 +21,7 @@ if(isset($_GET['t'])){
 	try{
 		$response = $cda->select(array('email','salt'),'userlist',array('id'=>$usr_ID));
 	} catch (Exception $e){
-		die($e);
+		lucy_error('Database Error',$e, true);
 	}
 
 	$true_token = md5($response['data']['email'] . $response['data']['salt']);
@@ -29,7 +29,7 @@ if(isset($_GET['t'])){
 		try{
 			$cda->update("userlist",array("verified"=>1),array('id'=>$usr_ID));
 		} catch (Exception $e){
-			die($e);
+			lucy_error('Database Error',$e, true);
 		}
 		header('location: index.php?verify=confirmed');
 	}
@@ -40,11 +40,11 @@ if(isset($_GET['t'])){
 	try{
 		$response = $cda->select(array('email','salt'),'userlist',array('id'=>$usr_ID));
 	} catch (Exception $e){
-		die($e);
+		lucy_error('Database Error',$e, true);
 	}
 
 	$token = md5($response['data']['email'] . $response['data']['salt']);
-	$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . '?t=' . $token;
+	$url = $GLOBALS['config']['Paths']['Remote'] . 'email_verify.php?t=' . $token;
 	mailer_emailVerify($usr_Name, $usr_Email, $url);
 	header('location: index.php?verify=sent');
 }

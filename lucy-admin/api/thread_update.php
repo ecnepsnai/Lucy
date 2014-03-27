@@ -86,6 +86,16 @@
 		goto writeDoc;
 	}
 
+	// Sending out Reply Email Notice
+	if($usr_Type == "Admin"){
+		$owner_name = $json->messages[0]->from->name;
+		$owner_email = $json->messages[0]->from->email;
+
+		$url = 'http://' . $_SERVER['SERVER_NAME'] . str_replace('/lucy-admin/api/thread_update.php','/thread',$_SERVER['PHP_SELF']) . '?id=' . $id;
+
+		mailer_threadUpdate($owner_name, $owner_email, $url);
+	}
+
 writeDoc:
 // There was an error
 if($error['code'] != 0 && !empty($error['message'])){ ?>

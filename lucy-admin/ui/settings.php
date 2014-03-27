@@ -153,8 +153,7 @@
 							<div class="col-sm-7">
 								<select class="form-control" name="db_type" id="db_type">
 									<option value="MYSQL" <?php if($GLOBALS['config']['Database']['Type'] == "MYSQL"){echo('selected="selected"');} ?>>MySQL</option>
-									<option value="MYSQLI" <?php if($GLOBALS['config']['Database']['Type'] == "MYSQLI"){echo('selected="selected"');} ?> disabled>MySQLi</option>
-									<option value="MSSQL" <?php if($GLOBALS['config']['Database']['Type'] == "MSSQL"){echo('selected="selected"');} ?> disabled>Microsoft SQL Server</option>
+									<option value="MYSQLI" <?php if($GLOBALS['config']['Database']['Type'] == "MYSQLI"){echo('selected="selected"');} ?>>MySQLi</option>
 									<option value="SQLITE" <?php if($GLOBALS['config']['Database']['Type'] == "SQLITE"){echo('selected="selected"');} ?>>SQLite</option>
 								</select>
 							</div>

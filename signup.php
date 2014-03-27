@@ -31,12 +31,6 @@ if(isset($_POST['submit'])){
 		goto writeDoc;
 	}
 
-	require("lucy-admin/validemail.php");
-	if(!validEmail($raw_email)){
-		$signup_error = "The email address you provided was not valid.";
-		goto writeDoc;
-	}
-
 	// Generating a random salt used for encryption.
 	$salt = mt_rand(10, 99);
 

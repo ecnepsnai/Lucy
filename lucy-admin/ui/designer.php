@@ -53,6 +53,7 @@
 			<ul class="dropdown-menu">
 				<li><a href="#" id="textLink">Text Box</a></li>
 				<li><a href="#" id="numberLink">Number Box</a></li>
+				<li><a href="#" id="rangeLink">Range Box</a></li>
 				<li><a href="#" id="selectLink">Dropdown Box</a></li>
 				<li><a href="#" id="textareaLink">Text Area</a></li>
 				<li><a href="#" id="checkboxLink">Check Box</a></li>
@@ -298,6 +299,9 @@ $("#textLink").bind("click", function() {
 $("#numberLink").bind("click", function() {
 	$("#numberModal").modal("show");
 });
+$("#rangeLink").bind("click", function() {
+	$("#rangeModal").modal("show");
+});
 $("#selectLink").bind("click", function() {
 	$("#addDropbownItem").bind("click", function(){
 		var option = prompt("Enter dropdown selection:");
@@ -431,6 +435,37 @@ function addInput(inputType){
 			postRequest = $.post("../api/admin_designer_add.php", {
 				name: name,
 				type: 'number',
+				title: title,
+				helptext: helptext,
+				required: required,
+				length_min: length_min,
+				length_max: length_max,
+				acpt_num: acpt_num,
+				acpt_sym: acpt_sym
+			});
+			postRequest.done(function(data){
+				var obj = jQuery.parseJSON(data);
+				if(obj.response.code != 200){
+					alert(obj.response.message);
+				} else {
+					window.location.reload();
+				}
+			});
+		break;
+
+		case 'range':
+			var name = $("#rangeModal #name").val();
+			var title = $("#rangeModal #title").val();
+			var helptext = $("#rangeModal #help").val();
+			var required = false;
+			if($("#rangeModal #req").is(':checked')){
+				required = true;
+			}
+			var length_min = $("#rangeModal #length_min").val();
+			var length_max = $("#rangeModal #length_max").val();
+			postRequest = $.post("../api/admin_designer_add.php", {
+				name: name,
+				type: 'range',
 				title: title,
 				helptext: helptext,
 				required: required,

@@ -2,21 +2,7 @@
 set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/',dirname(__FILE__))));
 include('default.php');
 
-getHeader('Login'); getNav(999);
-		if($_GET['notice'] == "login"){
-			?>
-			<div class="alert">
-				<strong>You need to be signed in to do that.</strong> Don't have an account? <a href="signup.php">Create one here</a>.
-			</div>
-			<?php
-		} elseif($_GET['notice'] == "welcome"){
-			?>
-			<div class="alert alert-success">
-				<strong>Welcome to Lucy!</strong> All of the required settings are configured.  Log in and go to settings to fine-tune Lucy to your liking!</a>.
-			</div>
-			<?php
-		}
-	?>
+getHeader('Login'); getNav(999); ?>
 <h1>Login to <?php echo($GLOBALS['config']['Strings']['Main']); ?></h1>
 <?php if($login_error) { ?>
 <div class="alert alert-danger">

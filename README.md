@@ -7,6 +7,17 @@
 
 Lucy is a conversation based online support system built in PHP that's easy to use, set-up, theme, and edit.  Lucy is the foundation for a really powerful CMS system that focuses more on theme developers rather than plugins, letting you make themes however you want.
 
+## Release Candidate 1
+
+Lots of bug fixes and feature improvements.
+
+- **NEW** - MySQLi support (selected by default)
+- **NEW** - Added Range input
+- **IMPROVED** - Universal error handling and reporting through the `lucy_error()` function
+- **IMPROVED** - Setup script is now a lot nicer (and prettier).  It also checks for missing required files.
+- **IMPROVED** - Two-Step Authentication now provides a backup code which can be used if a generator is not present
+- **FIXED** - Issue where SQLite wouldn't work at all
+
 ## Beta 4
 
 **Lucy now is a completely customizable online form platform, allowing you to configure what you want from your users**

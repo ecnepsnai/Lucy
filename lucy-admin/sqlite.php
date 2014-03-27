@@ -20,7 +20,7 @@ class sql{
 	function connect($location, $name, $username, $password){
 		$GLOBALS['connection'] = new SQLite3($name); 
 		if(!$GLOBALS['connection']){
-			throw new Exception("Error connecting to database: " . $location, 1);
+			throw new Exception("Error connecting to database: " . $name, 1);
 		}
 		return True;
 	}

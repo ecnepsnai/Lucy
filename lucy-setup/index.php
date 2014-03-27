@@ -24,6 +24,13 @@
 		$db_username = $_POST['db_username'];
 		$db_password = $_POST['db_password'];
 
+		// Getting the local and remote paths.  Local = absolute path of the operating system of the host.  Remote = URI that the setup script is hosted on.
+		$path_local = str_replace('lucy-setup', '', __DIR__);
+		$path_remote  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+		$path_remote .= ( $_SERVER["SERVER_PORT"] !== "80" ) ? ":".$_SERVER["SERVER_PORT"] : "";
+		$path_remote .= $_SERVER["REQUEST_URI"];
+		$path_remote = str_replace('lucy-setup/', '', $path_remote);
+
 		if($db_type != "SQLITE"){
 			// Testing for missing information.
 			if($user_name == null || $user_email == null || $user_password == null){
@@ -40,6 +47,8 @@
 			if($db_name == null){
 				$error = "Please include all of the database information...";
 				goto docWrite;
+			} else {
+				$db_name = $path_local . 'lucy-config/' . $db_name;
 			}
 		}
 
@@ -68,6 +77,10 @@
 		$GLOBALS['config']['Email']['Name'] = $_POST['email_name'];
 		$GLOBALS['config']['Email']['Address'] = $_POST['email_email'];
 		$GLOBALS['config']['Email']['Footer'] = $_POST['email_footer'];
+
+		// Paths
+		$GLOBALS['config']['Paths']['Local'] = $path_local;
+		$GLOBALS['config']['Paths']['Remote'] = $path_remote;
 
 		// Creating the default value for the input order setting
 		$GLOBALS['config']['Support']['Order'] = array('name','email','password','message','image');

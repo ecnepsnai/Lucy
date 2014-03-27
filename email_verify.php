@@ -44,7 +44,7 @@ if(isset($_GET['t'])){
 	}
 
 	$token = md5($response['data']['email'] . $response['data']['salt']);
-	$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . '?t=' . $token;
+	$url = $GLOBALS['config']['Paths']['Remote'] . 'email_verify.php?t=' . $token;
 	mailer_emailVerify($usr_Name, $usr_Email, $url);
 	header('location: index.php?verify=sent');
 }

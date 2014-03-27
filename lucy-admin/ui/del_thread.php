@@ -24,7 +24,7 @@
 		}
 		
 		// Dies when complete.
-		header("Location: allthreads.php");
+		header("Location: allthreads.php?notice=del");
 	}
 
 	// User chose not to delete the thread
@@ -35,12 +35,10 @@
 	getNav(2);
 ?>
 <form name="usrsetngs" method="post">
-	<div class="alert alert-block alert-error fade in">
-		<h4 class="alert-heading">Are you sure you want to delete this thread?</h4>
-		<p>Deleting this thread will remove it completely from the database.  Are you sure you don't want to just <a href="view_thread.php?id=<?php echo($_GET['id']); ?>">close</a> it instead?</p>
-		<p>
-			<input type="submit" name="submit" value="Delete Forever" class="btn btn-danger"/> <input type="submit" name="reset" value="Maybe Later" class="btn"/>
-		</p>
-	</div>
+	<h4 class="alert-heading">Are you sure you want to delete this thread?</h4>
+	<p>Deleting this thread will remove it completely from the database.  Are you sure you don't want to just <a href="view_thread.php?id=<?php echo($_GET['id']); ?>">close</a> it instead?</p>
+	<p>
+		<input type="submit" name="submit" value="Delete Forever" class="btn btn-danger"/> <input type="submit" name="reset" value="Maybe Later" class="btn"/>
+	</p>
 </form>
 <?php getFooter(); ?>

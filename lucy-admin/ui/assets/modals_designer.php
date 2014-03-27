@@ -98,6 +98,39 @@
 	</div>
 </div>
 
+<!-- Range Modal -->
+<div class="modal fade" id="rangeModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Add Range Box</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal" role="form">
+					<?php input_general_items(); ?>
+					<div class="form-group">
+						<label class="col-sm-5 control-label">Min Length</label>
+						<div class="col-sm-7">
+							<input type="number" class="form-control" id="length_min" value="1" min="1"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-5 control-label">Max Length</label>
+						<div class="col-sm-7">
+							<input type="number" class="form-control" id="length_max" value="65535" max="65535"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-dismiss="modal" class="btn">Cancel</button>
+				<button type="button" data-dismiss="modal" class="btn btn-primary" onClick="addInput('range')">Add</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- Select Modal -->
 <div class="modal fade" id="selectModal" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
@@ -294,6 +327,39 @@
 									<span class="input-group-addon">characters</span>
 								</div>
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-dismiss="modal" class="btn">Cancel</button>
+				<button type="button" data-dismiss="modal" class="btn btn-primary" id="editSaveBtn">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Edit Range Modal -->
+<div class="modal fade" id="editrangeModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Edit Range Box</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal" role="form">
+					<?php input_general_items(false); ?>
+					<div class="form-group">
+						<label class="col-sm-5 control-label">Min Length</label>
+						<div class="col-sm-7">
+							<input type="number" class="form-control" id="length_min" value="1" min="1"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-5 control-label">Max Length</label>
+						<div class="col-sm-7">
+							<input type="number" class="form-control" id="length_max" value="65535" max="65535"/>
 						</div>
 					</div>
 				</div>

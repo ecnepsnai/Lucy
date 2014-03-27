@@ -81,6 +81,10 @@ foreach($GLOBALS['config']['Support']['Order'] as $input_name){
 							?><input type="number" id="<?php echo($input_name); ?>" name="<?php echo($input_name); ?>" min="<?php echo($input['length_min']); ?>" max="<?php echo($input['length_max']); ?>" class="form-control" <?php if($input['required'] === true){ ?>required<?php } ?>/><?php
 						break;
 
+						case 'range':
+							?><input type="range" id="<?php echo($input_name); ?>" name="<?php echo($input_name); ?>" min="<?php echo($input['length_min']); ?>" max="<?php echo($input['length_max']); ?>" class="form-control" <?php if($input['required'] === true){ ?>required<?php } ?>/><?php
+						break;
+
 						case 'select':
 							?><select id="<?php echo($input_name); ?>" name="<?php echo($input_name); ?>" class="form-control" <?php if($input['required'] === true){ ?>required<?php } ?>><?php foreach (explode(",", $input['options']) as $key) { echo('<option value="' . $key . '">' . $key . '</option>'); } ?></select><?php
 						break;

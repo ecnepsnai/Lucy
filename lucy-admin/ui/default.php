@@ -71,10 +71,8 @@
 
 		switch ($reason) {
 			case 0: ?>
-<div class="alert alert-block alert-error fade in">
-	<h4 class="alert-heading">Access Denied</h4>
-	<p>Only approved administrators may access this page.</p>
-</div>
+<h4 class="alert-heading">Access Denied</h4>
+<p>Only approved administrators may access this page.</p>
 			<?php
 			break;
 		}

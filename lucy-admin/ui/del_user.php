@@ -26,7 +26,7 @@
 			die($e);
 		}
 		// Dies when complete.
-		header("Location: users.php");
+		header("Location: users.php?notice=del");
 	}
 
 	// User chose not to delete the user
@@ -37,12 +37,10 @@
 	getNav(4);
 ?>
 <form name="usrsetngs" method="post">
-	<div class="alert alert-block alert-error fade in">
-		<h4 class="alert-heading">Are you sure you want to delete this user?</h4>
-		<p>Deleting this user will not delete any threads they created, they will not be able to login anymore.</p>
-		<p>
-			<input type="submit" name="submit" value="Delete Forever" class="btn btn-danger"/> <input type="submit" name="reset" value="Maybe Later" class="btn"/>
-		</p>
-	</div>
+	<h4 class="alert-heading">Are you sure you want to delete this user?</h4>
+	<p>Deleting this user will not delete any threads they created, they will not be able to login anymore.</p>
+	<p>
+		<input type="submit" name="submit" value="Delete Forever" class="btn btn-danger"/> <input type="submit" name="reset" value="Maybe Later" class="btn"/>
+	</p>
 </form>
 <?php getFooter(); ?>

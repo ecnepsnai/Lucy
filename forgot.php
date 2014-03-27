@@ -43,7 +43,7 @@ if(isset($_POST['submit'])){
 			goto writeDOC;
 		}
 
-		$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . '?a=' . $salt1 . '&b=' . $salt2;
+		$url = $GLOBALS['config']['Paths']['Remote'] . 'forgot.php?a=' . $salt1 . '&b=' . $salt2;
 
 		// Emails password reset link.
 		mailer_passwordReset($user['name'], $user['email'], $url);

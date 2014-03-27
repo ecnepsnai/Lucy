@@ -31,48 +31,48 @@
 			$signup_error = $e;
 			goto writeDoc;
 		}
-		$changes_Saved = True;
+		header("location: users.php?notice=create");
 	}
 
 writeDoc:
 	getHeader("New User");
 	getNav(3);
 ?>
-<?php if($changes_Saved) { ?>
-<div id="notice">
-	Values Saved
-</div>
-<?php } ?>
-<form class="form-horizontal" method="post">
-	<h2>Create a New User</h2>
-	<div class="control-group">
-		<label class="control-label">User Name:</label>
-		<div class="controls">
-			<input type="text" name="name" size="45" title="The name of the user."/>
+<h1>Create New User</h1>
+<form class="form-horizontal" role="form" method="post">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Name:</label>
+		<div class="col-sm-3">
+			<input type="text" class="form-control" name="name" required/>
 		</div>
 	</div>
-	<div class="control-group">
-		<label class="control-label">User Email:</label>
-		<div class="controls">
-			<input type="email" name="email" size="45" title="The email of the user."/>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Email:</label>
+		<div class="col-sm-3">
+			<input type="email" class="form-control" name="email" required/>
 		</div>
 	</div>
-	<div class="control-group">
-		<label class="control-label">User Password:</label>
-		<div class="controls">
-			<input type="password" name="password" size="45" title="The password of the user."/>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Password:</label>
+		<div class="col-sm-3">
+			<input type="password" class="form-control" name="password" required/>
 		</div>
 	</div>
-	<div class="control-group">
-		<label class="control-label">User Type:</label>
-		<div class="controls">
-			<select name="type">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Type:</label>
+		<div class="col-sm-3">
+			<select name="type" class="form-control">
 				<option value="Admin">Admin</option>
 				<option value="Agent">Agent</option>
 				<option value="Client">Client</option>
 			</select>
 		</div>
 	</div>
-	<input type="submit" name="submit" class="btn btn-primary" value="Create User" />
+	<div class="form-group">
+		<label class="col-sm-2 control-label"></label>
+		<div class="col-sm-3">
+			<input type="submit" name="submit" value="Create User" class="btn btn-primary"/>
+		</div>
+	</div>
 </form>
 <?php getFooter(); ?>

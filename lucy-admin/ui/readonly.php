@@ -48,11 +48,11 @@ endTest3:
 		if($testResults["1"] === true){
 			$response = array();
 			try{
-				$response = $cda->select(array("verified"),"userlist",array("id"=>"2"));
+				$response = $cda->select(array("verified"),"userlist",array("id"=>"1"));
 			} catch(Exception $e){
 				goto endTest4;
 			}
-			if($response['data']['verified'] === '1'){
+			if($response['data']['verified'] === '1' || $response['data']['verified'] === 1){
 				$testResults["4"] = true;
 			}
 		}

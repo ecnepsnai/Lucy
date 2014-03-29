@@ -246,7 +246,7 @@
 				"null"=>false
 			),
 			array(
-				"name"=>"tf_enable",
+				"name"=>"tf_backup",
 				"type"=>"varchar",
 				"length"=>32,
 				"null"=>false

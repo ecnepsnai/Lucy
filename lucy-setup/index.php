@@ -258,6 +258,12 @@
 				"null"=>false
 			),
 			array(
+				"name"=>"reset",
+				"type"=>"tinyint",
+				"length"=>6,
+				"null"=>false
+			),
+			array(
 				"name"=>"date_registered",
 				"type"=>"date",
 				"length"=>null,
@@ -271,8 +277,14 @@
 			goto docWrite;
 		}
 
-		// Columns for table: pwd_reset
-		$pwd_cols = array(
+		$resetlist_cols = array(
+			array(
+				"name"=>"id",
+				"type"=>"int",
+				"length"=>11,
+				"null"=>false,
+				"ai"=>true
+			),
 			array(
 				"name"=>"email",
 				"type"=>"varchar",
@@ -280,34 +292,34 @@
 				"null"=>false
 			),
 			array(
-				"name"=>"salt1",
+				"name"=>"create_date",
 				"type"=>"varchar",
-				"length"=>32,
+				"length"=>20,
 				"null"=>false
 			),
 			array(
-				"name"=>"salt2",
+				"name"=>"expire_date",
 				"type"=>"varchar",
-				"length"=>32,
+				"length"=>20,
 				"null"=>false
 			),
 			array(
-				"name"=>"date_registered",
-				"type"=>"datetime",
-				"length"=>null,
+				"name"=>"ip",
+				"type"=>"varchar",
+				"length"=>128,
 				"null"=>false
 			),
 			array(
-				"name"=>"status",
-				"type"=>"varchar",
-				"length"=>10,
+				"name"=>"pin",
+				"type"=>"int",
+				"length"=>6,
 				"null"=>false
 			)
 		);
 		try{
-			$cda->createTable("pwd_reset",$pwd_cols,"email",null);
+			$cda->createTable("resetlist",$resetlist_cols,"id",array("email"));
 		} catch (Exception $e) {
-			$error = 'Could not create passwordreset Table: ' . $e;
+			$error = 'Could not create resetlist Table: ' . $e;
 			goto docWrite;
 		}
 

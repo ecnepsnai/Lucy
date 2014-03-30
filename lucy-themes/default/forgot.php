@@ -8,32 +8,94 @@ getHeader('Forgot Password');?>
 	padding-top: 1em;
 }
 </style>
-<?php getNav(999);
+<?php getNav(999); 
 
-if($status == 1){?>
-<div class="alert alert-success"><strong>Check your email</strong> - We just sent a password reset link your way!</div>
-<?php } else if($status == 2){?>
-<div class="alert alert-success"><strong>Check your email</strong> - S new password has been mailed to you.</div>
-<?php } else if($status == 3){?>
-<div class="alert alert-warning"><strong>Nothing found</strong> - No user was found with that email address.</div>
-<?php } else if($status == 4){?>
-<div class="alert alert-warning"><strong>Expired or Invalid Reset Tokens</strong></div>
-<?php }
-
+if($change_password == false){
 ?>
-<h1>Forgot your password?</h1>
-<form class="form-horizontal" role="form" method="post">
-	<div class="form-group">
-		<label class="col-sm-2 control-label">Email:</label>
-		<div class="col-sm-3">
-			<input type="email" class="form-control" name="email" required/>
+<div class="row">
+	<div class="col-md-6">
+		<h1>Forgot your password?</h1>
+		<p>Don't worry, it can happen to the best of us.  Start off by entering your email address and we'll go from there.</p>
+	</div>
+	<div class="col-md-6" id="emailVerify">
+		<div class="form-horizontal" role="form">
+			<div class="form-group">
+				<label>Email:</label>
+				<div>
+					<input type="email" class="form-control" id="email" required/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
+					<button id="email_submit" class="btn btn-default">Verify Identity</button>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="form-group">
-		<label class="col-sm-2 control-label"></label>
-		<div class="col-sm-3">
-			<input type="submit" name="submit" value="Request New Password" class="btn btn-primary"/>
-		</div>
+	<div class="col-md-6" id="pinVerify" style="display:none">
+		<div class="alert alert-info"><strong>Check your Email</strong> - Enter the 6-digit pin from the email here, and then you can reset your password</div>
+		<form class="form-horizontal" role="form" method="get">
+			<div class="form-group">
+				<label>Pin:</label>
+				<div>
+					<input type="text" maxlength="6" class="form-control" name="p" required/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
+					<button type="submit" class="btn btn-default">Verify Identity</button>
+				</div>
+			</div>
+		</form>
 	</div>
-</form>
+</div>
 <?php getFooter(); ?>
+<script type="text/javascript">
+$("#email_submit").bind('click',function(){
+	postRequest = $.post("lucy-admin/api/password_reset.php", {
+		email: $("#email").val()
+	});
+	postRequest.done(function(data){
+		var obj = jQuery.parseJSON(data);
+		if(obj.response.code != 200){
+			alert(obj.response.message);
+			$("#emailVerify .form-group").attr('class','form-group has-error');
+			$("#emailVerify #email").val('');
+			$("#emailVerify #email").focus();
+		} else {
+			$("#emailVerify").hide();
+			$("#pinVerify").show();
+		}
+	});
+});
+</script>
+<?php } else { ?>
+<div class="row">
+	<div class="col-md-6">
+		<h1>Change your password:</h1>
+		<p>Use a combination of lowercase and uppercase letters, numbers, and symbols.</p>
+	</div>
+	<div class="col-md-6">
+		<form class="form-horizontal" role="form" method="post">
+			<div class="form-group">
+				<label>Password:</label>
+				<div>
+					<input type="password" class="form-control" name="password" required/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Password (Again):</label>
+				<div>
+					<input type="password" class="form-control" name="password_2" required/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
+					<button type="submit" id="email_submit" class="btn btn-success">Change Password</button>
+				</div>
+			</div>
+			<input type="hidden" name="email" value="<?php echo($user_email); ?>" />
+		</form>
+	</div>
+</div>
+<?php getFooter(); }

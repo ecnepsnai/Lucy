@@ -1,44 +1,44 @@
 <?php
 
 	function mailer_threadCreated($name, $email, $url){
-		$headers = 'From: lucy@ecnepsnai.com'."\r\n".
-		'Reply-To: lucy@ecnepsnai.com'."\r\n".
+		$headers = 'From: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
+		'Reply-To: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
 		'MIME-Version: 1.0'."\r\n".
 		'Content-type: text/html; charset=iso-8859-1'."\r\n".
 		'X-Mailer: PHP/'.phpversion();
 		$result = mail($email,'Thread Created',"<p>Hey there, " . $name . "!</p><p>This email is just to let you know that your thread has been created. You can access your thread using <a href=\"" . $url . "\">this link</a></p>" . $GLOBALS['config']['Email']['Footer'], $headers);
 	}
 	function mailer_threadUpdate($name, $email, $url){
-		$headers = 'From: lucy@ecnepsnai.com'."\r\n".
-		'Reply-To: lucy@ecnepsnai.com'."\r\n".
+		$headers = 'From: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
+		'Reply-To: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
 		'MIME-Version: 1.0'."\r\n".
 		'Content-type: text/html; charset=iso-8859-1'."\r\n".
 		'X-Mailer: PHP/'.phpversion();
 		$result = mail($email,'New Reply',"<p>Hey there, " . $name . "!</p><p>Somebody replied to one of your threads.  You should go check it out. <a href=\"" . $url . "\">View Reply</a></p>" . $GLOBALS['config']['Email']['Footer'], $headers);
 	}
-	function mailer_passwordReset($name, $email, $url){
-		$headers = 'From: lucy@ecnepsnai.com'."\r\n".
-		'Reply-To: lucy@ecnepsnai.com'."\r\n".
+	function mailer_passwordReset($email, $pin){
+		$headers = 'From: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
+		'Reply-To: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
 		'MIME-Version: 1.0'."\r\n".
 		'Content-type: text/html; charset=iso-8859-1'."\r\n".
 		'X-Mailer: PHP/'.phpversion();
-		$result = mail($email,'Lucy Password Reset',"<p>Hey there, " . $name . "!</p><p>A little bird told me you're having trouble logging into Lucy.  No worries, it happens to the best of us.  <a href=\"$url\">Click this link</a> and you'll be back in action in a jiffy! (Don't wait too long though, that link will expire in 12hrs!)  If you didn't request a password reset, just ignore this email.</p>" . $GLOBALS['config']['Email']['Footer'], $headers);
+		$result = mail($email,'Password Reset',"<p>Hey there</p><p>You requested to reset your password.  To do this, you must enter this 6-digit PIN to verify your identity. <strong>This PIN will expire in one day, so don't delay.</strong></p><h1>" . $pin . "</h1><p><strong>If you did not request a password reset:</strong> you can safely ignore this email and let the PIN time out.</p>" . $GLOBALS['config']['Email']['Footer'], $headers);
 	}
-	function mailer_generatedPassword($name, $email, $password){
-		$headers = 'From: lucy@ecnepsnai.com'."\r\n".
-		'Reply-To: lucy@ecnepsnai.com'."\r\n".
+	function mailer_passwordResetNotice($email){
+		$headers = 'From: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
+		'Reply-To: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
 		'MIME-Version: 1.0'."\r\n".
 		'Content-type: text/html; charset=iso-8859-1'."\r\n".
 		'X-Mailer: PHP/'.phpversion();
-		$result = mail($email,'Lucy Password',"<p>Hey there!</p>You requested to have your password reset, so we went ahead and did that for you.  Your new password is:<p><pre>" . $password . "</pre><p>You should change it as soon as you log back in. Your old password will no longer work.</p>" . $GLOBALS['config']['Email']['Footer'], $headers);
+		$result = mail($email,'Password Reset',"<p>Hey there</p><p>Your password was changed, this is just a heads up</p>" . $GLOBALS['config']['Email']['Footer'], $headers);
 	}
 	function mailer_emailVerify($name, $email, $url){
-		$headers = 'From: lucy@ecnepsnai.com'."\r\n".
-		'Reply-To: lucy@ecnepsnai.com'."\r\n".
+		$headers = 'From: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
+		'Reply-To: ' . $GLOBALS['config']['Email']['Address'] ."\r\n".
 		'MIME-Version: 1.0'."\r\n".
 		'Content-type: text/html; charset=iso-8859-1'."\r\n".
 		'X-Mailer: PHP/'.phpversion();
-		$result = mail($email,'Lucy Email Verification',"<p>Hey there, " . $name . "!</p><p>We wanna make sure that this email is working, so if anything important is sent to it we know you'll see it.  <a href=\"$url\">Click this link</a> and your email address will be verified.  This link will only last for one day, however!  If you didn't request an email verification, just ignore this email.</p>" . $GLOBALS['config']['Email']['Footer'], $headers);
+		$result = mail($email,'Email Verification',"<p>Hey there, " . $name . "!</p><p>We wanna make sure that this email is working, so if anything important is sent to it we know you'll see it.  <a href=\"$url\">Click this link</a> and your email address will be verified.  This link will only last for one day, however!  If you didn't request an email verification, just ignore this email.</p>" . $GLOBALS['config']['Email']['Footer'], $headers);
 	}
 	function mailer_generalMessage($name, $email, $subject, $body){
 		

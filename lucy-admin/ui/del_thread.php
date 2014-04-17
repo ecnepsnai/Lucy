@@ -24,12 +24,12 @@
 		}
 		
 		// Dies when complete.
-		header("Location: allthreads.php?notice=del");
+		header("Location: threads.php?notice=del");
 	}
 
 	// User chose not to delete the thread
 	if(isset($_POST['reset'])){
-		header("Location: allthreads.php");
+		header("Location: threads.php");
 	}
 	getHeader("Delete thread");
 	getNav(2);

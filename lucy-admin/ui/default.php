@@ -27,8 +27,7 @@
 				<div class="collapse navbar-collapse" id="lucy-admin-navbar">
 					<ul class="nav navbar-nav">
 						<li <?php if($pageIndex == 0){ echo('class="active"'); } ?>><a href="index.php">Dashboard</a></li>
-						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="mythreads.php">My threads</a></li>
-						<li <?php if($pageIndex == 2){ echo('class="active"'); } ?>><a href="allthreads.php">All threads</a></li>
+						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="threads.php">Threads</a></li>
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 4){ echo('class="active"'); } echo('><a href="users.php">Users</a></li>'); } ?>
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 5){ echo('class="active"'); } echo('><a href="designer.php">Designer</a></li>'); } ?>
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 6){ echo('class="active"'); } echo('><a href="settings.php">Settings</a></li>'); } ?>

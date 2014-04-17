@@ -14,6 +14,14 @@ if(!$usr_IsSignedIn){
 	header("Location: login.php?notice=login");
 }
 
+try{
+	$response = $cda->select(array("name","email","verified"),"userlist",array("id"=>$usr_ID));
+} catch (Exception $e) {
+	die($e);
+}
+
+$user = $response['data'];
+
 if(isset($_POST['submit'])){
 	if(isset($_POST['cur_password'])){
 		$current_password = $_POST['cur_password'];
@@ -37,13 +45,20 @@ if(isset($_POST['submit'])){
 			die($e);
 		}
 	}
+	if($user['email'] != $_POST['email']){
+		try{
+			$response = $cda->update("userlist",array("name"=>$_POST['name'],"email"=>$_POST['email'],"verified"=>0),array("id"=>$usr_ID));
+		} catch (Exception $e) {
+			die($e);
+		}
+	} else {
+		try{
+			$response = $cda->update("userlist",array("name"=>$_POST['name']),array("id"=>$usr_ID));
+		} catch (Exception $e) {
+			die($e);
+		}
+	}
+	header("location: index.php");
+	die();
 }
-
-try{
-	$response = $cda->select(array("name","email","verified"),"userlist",array("id"=>$usr_ID));
-} catch (Exception $e) {
-	die($e);
-}
-
-$user = $response['data'];
 require('lucy-themes/' . $GLOBALS['config']['Theme'] . '/profile.php');

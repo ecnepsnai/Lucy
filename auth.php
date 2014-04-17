@@ -20,11 +20,12 @@ if(isset($_POST['submit'])){
 			// Initializing the CDA class.
 			$cda->init($GLOBALS['config']['Database']['Type']);
 			
-
+			// Creating the TFA class
 			$tf = new tfa;
 
 			$codeIsValid = False;
 
+			// Verifying the code
 			try{
 				$codeIsValid = $tf->verifyCode($_SESSION['tf_secret'], $_POST['pin'], 1);
 			} catch (Exception $e){
@@ -32,11 +33,13 @@ if(isset($_POST['submit'])){
 				goto writeDOC;
 			}
 
+			// Code was not valid
 			if(!$codeIsValid){
 				$auth_error = true;
 				goto writeDOC;
 			}
 
+			// Selecting the user information for the session
 			try {
 				$response = $cda->select(array("id","name","type","email"),"userlist",array("tf_secret"=>$_SESSION['tf_secret']));
 			} catch (Exception $e) {
@@ -83,6 +86,8 @@ if(isset($_POST['submit'])){
 				lucy_error('Database Error',$e, true);
 				goto writeDOC;
 			}
+
+			// Hashing the recovery code
 			$pw = $response['data'];
 			$pw_hash = md5($pw['salt'] . md5(trim($_POST['password'])));
 			$id = $response['data']['id'];
@@ -94,11 +99,15 @@ if(isset($_POST['submit'])){
 				lucy_error('Database Error',$e, true);
 				goto writeDOC;
 			}
+
+			// Verifying the recovery PIN
 			$user = $response['data'];
 			if(empty($user['id'])){
 				lucy_error('Invalid Code','Try again!');
 				goto writeDOC;
 			}
+
+			// Selecting the user information for the session
 			try{
 				$response = $cda->update("userlist", array("tf_backup"=>"","tf_secret"=>""),array("id"=>$id));
 			} catch (Exception $e) {

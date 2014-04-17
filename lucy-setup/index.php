@@ -6,10 +6,11 @@
 		header("Location: ../index.php");
 	}
 
-
+	// All errors and notices shown
 	error_reporting(E_ALL);
 	$error = null;
 
+	// Start the setup script
 	if(isset($_POST['submit'])){
 
 		// Gathering all of the User information
@@ -99,6 +100,7 @@
 			file_put_contents("../lucy-config/config.json", $json);
 		}
 
+		// Static designer settings
 		$designer = array();
 		$designer['static']['name']['title'] = "What is your Name?";
 		$designer['static']['name']['helptext'] = "A real name helps keep our emails out of your spam folder";
@@ -353,6 +355,7 @@
 
 	$disableForm = false;
 
+	// Required file paths
 	$files = array(
 		'lucy-admin/auth.php',
 		'lucy-admin/cda.php',
@@ -393,6 +396,7 @@
 		'lucy-admin/ui/view_thread.php'
 	);
 
+	// Verifying that the above files are present
 	foreach ($files as $file) {
 		if(!file_exists('../' . $file)){
 			echo('<span class="label label-danger">Error</span> The <code>' . $file . '</code> is missing or corrupt.  This may cause problems when running this setup script<br>');
@@ -400,6 +404,7 @@
 		}
 	}
 
+	// Verifying if lucy can write to the configuration directory
 	if(!is_writable('../lucy-config')){
 		echo('<span class="label label-danger">Error</span> Lucy does not have write permissions to the <code>lucy-config</code> directory and will not be able to save the settings.  This may cause problems when running this setup script');
 		$disableForm = true;

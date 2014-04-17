@@ -27,13 +27,13 @@ if($change_password == false){
 			</div>
 			<div class="form-group">
 				<div>
-					<button id="email_submit" class="btn btn-default">Verify Identity</button>
+					<button id="email_submit" class="btn btn-default">Verify Identity</button> <a id="entercode">I have a reset PIN</a>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-6" id="pinVerify" style="display:none">
-		<div class="alert alert-info"><strong>Check your Email</strong> - Enter the 6-digit pin from the email here, and then you can reset your password</div>
+		<div class="alert alert-info" id="checkemail"><strong>Check your Email</strong> - Enter the 6-digit pin from the email here, and then you can reset your password</div>
 		<form class="form-horizontal" role="form" method="get">
 			<div class="form-group">
 				<label>Pin:</label>
@@ -65,8 +65,14 @@ $("#email_submit").bind('click',function(){
 		} else {
 			$("#emailVerify").hide();
 			$("#pinVerify").show();
+			$("#checkemail").show();
 		}
 	});
+});
+$("#entercode").bind('click',function(){
+	$("#emailVerify").hide();
+	$("#checkemail").hide();
+	$("#pinVerify").show();
 });
 </script>
 <?php } else { ?>

@@ -9,6 +9,9 @@ getHeader('Login'); getNav(999); ?>
 	<strong>Incorrect Password</strong> - Try Again
 </div>
 <?php } ?>
+<?php if(isset($_GET['notice'])){ ?>
+<div class="alert alert-warning">You must login first</div>
+<?php } ?>
 <form class="form-horizontal" role="form" method="post">
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Email:</label>

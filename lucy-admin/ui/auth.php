@@ -26,15 +26,23 @@
 	</div>
 	<div class="col-md-7">
 	<?php if($response['data']['tf_secret'] !== "" && $response['data']['tf_secret'] !== null){ ?>
-		<div class="alert alert-success">
-			<strong>You're all set!</strong>
-			<p>Two-Factor Authentication is enabled for you account.  You are now two times more secure!</p>
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">You're all set!</h3>
+			</div>
+			<div class="panel-body">
+				Two-Factor Authentication is enabled for you account.  You are now two times more secure!
+			</div>
 		</div>
 		<p><a class="btn btn-default" role="button" id="disable" data-toggle="modal" href="#disableModal">Disable Two-Factor Authentication</a></p>
 		<?php } else { ?>
-		<div class="alert alert-info">
-			<strong>Get Started!</strong>
-			<p>All you need is a modern smartphone.  iOS, Android, Windows Phone, or Blackberry will do nicely!</p>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">Get Started!</h3>
+			</div>
+			<div class="panel-body">
+				All you need is a modern smartphone.  iOS, Android, Windows Phone, or Blackberry will do nicely!
+			</div>
 		</div>
 		<p><a class="btn btn-success" role="button" id="disable" data-toggle="modal" href="#startModal">Enable Two-Factor Authentication</a></p>
 	<?php } ?>

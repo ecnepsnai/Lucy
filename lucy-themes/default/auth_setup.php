@@ -1,24 +1,8 @@
 <?php
-	require("../session.php");
-	require("../cda.php");
-	require("default.php");
+set_include_path(implode(PATH_SEPARATOR, array(get_include_path(),'/lucy-themes/',dirname(__FILE__))));
+include('default.php');
 
-	// Creating the CDA class.
-	$cda = new cda;
-	// Initializing the CDA class.
-	$cda->init($GLOBALS['config']['Database']['Type']);
-
-
-	try {
-		$response = $cda->select(array("tf_secret"),"userlist",array("id"=>$usr_ID));
-	} catch (Exception $e) {
-		die($e);
-	}
-
-	getHeader("Dashboard");
-	getNav(0);
-?>
-
+getHeader('Two-Factor Authentication'); getNav(2); ?>
 <div class="row">
 	<div class="col-md-5">
 		<h1>Two-Factor Authentication</h1>
@@ -52,7 +36,7 @@
 <?php include('assets/modals_auth.php'); ?>
 <script type="text/javascript">
 $("#startModal #next").bind('click',function(){
-	postRequest = $.post("../api/admin_auth_setup.php?s=1", {
+	postRequest = $.post("lucy-admin/api/auth_setup.php?s=1", {
 		password: $("#startModal #password").val()
 	});
 	postRequest.done(function(data){
@@ -68,7 +52,7 @@ $("#startModal #next").bind('click',function(){
 	});
 });
 $("#secretModal #enableTFA").bind('click',function(){
-	postRequest = $.post("../api/admin_auth_setup.php?s=2");
+	postRequest = $.post("lucy-admin/api/auth_setup.php?s=2");
 	postRequest.done(function(data){
 		var obj = jQuery.parseJSON(data);
 		if(obj.response.code != 200){
@@ -86,7 +70,7 @@ $("#secretModal #next").bind('click',function(){
 	$("#testModal").modal("show");
 });
 $("#testModal #cancel").bind('click',function(){
-	postRequest = $.post("../api/admin_auth_setup.php?s=4");
+	postRequest = $.post("lucy-admin/api/auth_setup.php?s=4");
 	postRequest.done(function(data){
 		var obj = jQuery.parseJSON(data);
 		if(obj.response.code != 200){
@@ -97,7 +81,7 @@ $("#testModal #cancel").bind('click',function(){
 	});
 });
 $("#testModal #next").bind('click',function(){
-	postRequest = $.post("../api/admin_auth_setup.php?s=3", {
+	postRequest = $.post("lucy-admin/api/auth_setup.php?s=3", {
 		code: $("#testModal #token").val()
 	});
 	postRequest.done(function(data){
@@ -117,7 +101,7 @@ $("#backupModal #next").bind('click', function(){
 	window.location.reload();
 });
 $("#disableModal #next").bind('click',function(){
-	postRequest = $.post("../api/admin_auth_setup.php?s=4", {
+	postRequest = $.post("lucy-admin/api/auth_setup.php?s=4", {
 		password: $("#disableModal #password").val()
 	});
 	postRequest.done(function(data){

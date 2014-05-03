@@ -14,18 +14,6 @@
 		die();
 	}
 
-	// Only the owner of the ticked or Admins may alter it.
-	if($usr_Type != "Admin") {
-		$error = array("code"=>403,"message"=>"Authentication failed");
-		?>{
-			"response": {
-				"code":<?php echo($error['code']); ?>,
-				"message":"<?php echo($error['message']); ?>"
-			}
-		}<?php
-		die();
-	}
-
 	if(!isset($_GET['s'])){
 		$error = array("code"=>400,"message"=>"Missing stage number");
 		?>{

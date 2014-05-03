@@ -101,6 +101,7 @@ $("#entercode").bind('click',function(){
 				</div>
 			</div>
 			<input type="hidden" name="email" value="<?php echo($user_email); ?>" />
+			<input type="hidden" name="token" value="<?php echo($_GET['p']); ?>" />
 		</form>
 	</div>
 </div>

@@ -43,6 +43,6 @@ getHeader('Profile'); getNav(2); ?>
 			</div>
 		</div>
 	</div>
-	<input type="submit" name="submit" value="Save Changes" class="btn btn-primary"/> <a href="account_close.php" class="btn btn-danger">Delete Account</a>
+	<input type="submit" name="submit" value="Save Changes" class="btn btn-primary"/> <a href="account_close.php" class="btn btn-danger">Delete Account</a> <a href="auth_setup.php" class="btn btn-default">Two-Factor Authentication</a>
 </form>
 <?php getFooter(); ?>

@@ -37,7 +37,6 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img style="display:inline;border-radius:2px;" src="http://www.gravatar.com/avatar/<?php echo(md5($GLOBALS['usr_Email'])); ?>?s=18&d=mm"> Hey, <?php echo($GLOBALS['usr_Name']); ?> <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="../../profile.php">My Profile</a></li>
-								<li><a href="auth.php">Two-Factor Config</a></li>
 								<li class="divider"></li>
 								<li><a href="../../logout.php">Log out</a></li>
 							</ul>

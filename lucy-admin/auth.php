@@ -1,7 +1,5 @@
 <?php
 
-error_reporting(0);
-
 /**
  * PHP Class for handling Google Authenticator 2-factor authentication
  *

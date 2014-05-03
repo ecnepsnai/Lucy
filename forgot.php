@@ -1,6 +1,14 @@
 <?php
 require("lucy-admin/session.php");
 
+// Requiring the CDA library.
+require("lucy-admin/cda.php");
+
+// Creating the CDA class.
+	$cda = new cda;
+	// Initializing the CDA class.
+	$cda->init($GLOBALS['config']['Database']['Type']);
+
 // Obviously if the user is already signed in, we don't let them reset their own password.
 if($usr_IsSignedIn){
 	header("Location: dash.php");
@@ -8,16 +16,14 @@ if($usr_IsSignedIn){
 
 $change_password = false;
 
-
 // User entered a PIN number
 if(isset($_GET['p'])){
-	// Requiring the CDA library.
-	require("lucy-admin/cda.php");
-
-	// Creating the CDA class.
-	$cda = new cda;
-	// Initializing the CDA class.
-	$cda->init($GLOBALS['config']['Database']['Type']);
+	try{
+		$response = $cda->select(array('expire_date','email'),'resetlist',array('pin'=>$_GET['p'],'ip'=>$_SERVER['REMOTE_ADDR']));
+	} catch (Exception $e) {
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
+	}
 
 	// Verifying the PIN entered and the IP address used
 	try{
@@ -47,11 +53,23 @@ if(isset($_GET['p'])){
 }
 
 // User entered a new password
-if(isset($_POST['password']) && isset($_POST['password_2']) && isset($_POST['email'])){
+if(isset($_POST['password']) && isset($_POST['password_2']) && isset($_POST['email']) && isset($_POST['token'])){
 
 	// Matching the passwords
 	if($_POST['password'] !== $_POST['password']){
 		lucy_error('Passwords do not match','Try again');
+		goto writeDOC;
+	}
+	
+	// Verifying the PIN entered and the IP address used
+	try{
+		$response = $cda->select(array('expire_date','email'),'resetlist',array('pin'=>$_GET['p'],'ip'=>$_SERVER['REMOTE_ADDR']));
+	} catch (Exception $e) {
+		lucy_error('Database Error',$e, true);
+		goto writeDOC;
+	}
+	if(!isset($response['data']['expire_date'])){
+		lucy_error('Invalid PIN','The PIN provided was not valid or you are trying to complete a reset from a different computer from where you started it.');
 		goto writeDOC;
 	}
 

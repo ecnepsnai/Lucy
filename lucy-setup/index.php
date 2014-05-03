@@ -389,7 +389,6 @@
 		'lucy-admin/ui/edit_user.php',
 		'lucy-admin/ui/index.php',
 		'lucy-admin/ui/new_user.php',
-		'lucy-admin/ui/purge.php',
 		'lucy-admin/ui/readonly.php',
 		'lucy-admin/ui/settings.php',
 		'lucy-admin/ui/users.php',

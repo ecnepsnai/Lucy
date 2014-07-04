@@ -92,7 +92,7 @@ if(isset($_POST['submit'])){
 		$img_hash = null;
 	} elseif ($GLOBALS['config']['Images']['Enable'] && $_FILES['screenshot']['error'] == UPLOAD_ERR_OK) {
 		// Screenshots Enabled and file upload was successful.
-		$hash = uniqid("", true);;
+		$hash = uniqid("", true);
 		move_uploaded_file($filename,'lucy-content/uploads/' . $hash) or die("could not move file");
 		$img_hash = $hash;
 		echo($hash);

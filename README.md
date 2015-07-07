@@ -1,3 +1,9 @@
+# Project Abandoned
+
+Lucy has been abandoned.  If you wish to continue work on the project please feel free.  I have no interest in continuing work on this project.
+
+---
+
 <p align="center">
   <img src="https://raw.github.com/ecnepsnai/Lucy/master/lucy-themes/default/preview.jpg"/>
 </p>

@@ -6,10 +6,11 @@
 		header("Location: ../index.php");
 	}
 
-
+	// All errors and notices shown
 	error_reporting(E_ALL);
 	$error = null;
 
+	// Start the setup script
 	if(isset($_POST['submit'])){
 
 		// Gathering all of the User information
@@ -99,6 +100,7 @@
 			file_put_contents("../lucy-config/config.json", $json);
 		}
 
+		// Static designer settings
 		$designer = array();
 		$designer['static']['name']['title'] = "What is your Name?";
 		$designer['static']['name']['helptext'] = "A real name helps keep our emails out of your spam folder";
@@ -258,6 +260,12 @@
 				"null"=>false
 			),
 			array(
+				"name"=>"reset",
+				"type"=>"tinyint",
+				"length"=>6,
+				"null"=>false
+			),
+			array(
 				"name"=>"date_registered",
 				"type"=>"date",
 				"length"=>null,
@@ -271,8 +279,14 @@
 			goto docWrite;
 		}
 
-		// Columns for table: pwd_reset
-		$pwd_cols = array(
+		$resetlist_cols = array(
+			array(
+				"name"=>"id",
+				"type"=>"int",
+				"length"=>11,
+				"null"=>false,
+				"ai"=>true
+			),
 			array(
 				"name"=>"email",
 				"type"=>"varchar",
@@ -280,34 +294,34 @@
 				"null"=>false
 			),
 			array(
-				"name"=>"salt1",
+				"name"=>"create_date",
 				"type"=>"varchar",
-				"length"=>32,
+				"length"=>20,
 				"null"=>false
 			),
 			array(
-				"name"=>"salt2",
+				"name"=>"expire_date",
 				"type"=>"varchar",
-				"length"=>32,
+				"length"=>20,
 				"null"=>false
 			),
 			array(
-				"name"=>"date_registered",
-				"type"=>"datetime",
-				"length"=>null,
+				"name"=>"ip",
+				"type"=>"varchar",
+				"length"=>128,
 				"null"=>false
 			),
 			array(
-				"name"=>"status",
-				"type"=>"varchar",
-				"length"=>10,
+				"name"=>"pin",
+				"type"=>"int",
+				"length"=>6,
 				"null"=>false
 			)
 		);
 		try{
-			$cda->createTable("pwd_reset",$pwd_cols,"email",null);
+			$cda->createTable("resetlist",$resetlist_cols,"id",array("email"));
 		} catch (Exception $e) {
-			$error = 'Could not create passwordreset Table: ' . $e;
+			$error = 'Could not create resetlist Table: ' . $e;
 			goto docWrite;
 		}
 
@@ -341,6 +355,7 @@
 
 	$disableForm = false;
 
+	// Required file paths
 	$files = array(
 		'lucy-admin/auth.php',
 		'lucy-admin/cda.php',
@@ -350,7 +365,7 @@
 		'lucy-admin/mysql.php',
 		'lucy-admin/session.php',
 		'lucy-admin/sqlite.php',
-		'lucy-admin/api/admin_auth_setup.php',
+		'lucy-admin/api/auth_setup.php',
 		'lucy-admin/api/admin_del_message.php',
 		'lucy-admin/api/admin_designer_add.php',
 		'lucy-admin/api/admin_designer_change_order.php',
@@ -364,8 +379,7 @@
 		'lucy-admin/api/thread_close.php',
 		'lucy-admin/api/thread_reopen.php',
 		'lucy-admin/api/thread_update.php',
-		'lucy-admin/ui/allthreads.php',
-		'lucy-admin/ui/auth.php',
+		'lucy-admin/ui/threads.php',
 		'lucy-admin/ui/default.php',
 		'lucy-admin/ui/del_thread.php',
 		'lucy-admin/ui/del_user.php',
@@ -373,7 +387,6 @@
 		'lucy-admin/ui/designer_preview.php',
 		'lucy-admin/ui/edit_user.php',
 		'lucy-admin/ui/index.php',
-		'lucy-admin/ui/mythreads.php',
 		'lucy-admin/ui/new_user.php',
 		'lucy-admin/ui/readonly.php',
 		'lucy-admin/ui/settings.php',
@@ -381,6 +394,7 @@
 		'lucy-admin/ui/view_thread.php'
 	);
 
+	// Verifying that the above files are present
 	foreach ($files as $file) {
 		if(!file_exists('../' . $file)){
 			echo('<span class="label label-danger">Error</span> The <code>' . $file . '</code> is missing or corrupt.  This may cause problems when running this setup script<br>');
@@ -388,6 +402,7 @@
 		}
 	}
 
+	// Verifying if lucy can write to the configuration directory
 	if(!is_writable('../lucy-config')){
 		echo('<span class="label label-danger">Error</span> Lucy does not have write permissions to the <code>lucy-config</code> directory and will not be able to save the settings.  This may cause problems when running this setup script');
 		$disableForm = true;

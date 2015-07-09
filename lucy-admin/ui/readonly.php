@@ -99,44 +99,44 @@ endTest6:
 			switch ($test) {
 				case '1':
 					if($pass === true){ ?>
-<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Initial database configuration</td> <td><a href="//ianspence.com/support/docs/lucy/setup" target="_blank">Help</a></td> </tr>
+<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Initial database configuration</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#database-settings" target="_blank">Help</a></td> </tr>
 					<?php } else { ?>
-<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Initial database configuration</td> <td><a href="//ianspence.com/support/docs/lucy/setup" target="_blank">Help</a></td> </tr>
+<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Initial database configuration</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#database-settings" target="_blank">Help</a></td> </tr>
 					<?php }
 					break;
 				case '2':
 					if($pass === true){ ?>
-<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Initial user configuration</td> <td><a href="//ianspence.com/support/docs/lucy/setup" target="_blank">Help</a></td> </tr>
+<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Initial user configuration</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#the-basics" target="_blank">Help</a></td> </tr>
 					<?php } else { ?>
-<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Initial user configuration</td> <td><a href="//ianspence.com/support/docs/lucy/setup" target="_blank">Help</a></td> </tr>
+<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Initial user configuration</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#the-basics" target="_blank">Help</a></td> </tr>
 					<?php }
 					break;
 				case '3':
 					if($pass === true){ ?>
-<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Added additional fields</td> <td><a href="//ianspence.com/support/docs/lucy/designer" target="_blank">Help</a></td> </tr>
+<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Added additional fields</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Designer" target="_blank">Help</a></td> </tr>
 					<?php } else { ?>
-<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Added additional fields</td> <td><a href="designer.php">Configure</a> - <a href="//ianspence.com/support/docs/lucy/designer" target="_blank">Help</a></td> </tr>
+<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Added additional fields</td> <td><a href="designer.php">Configure</a> - <a href="https://github.com/ecnepsnai/Lucy/wiki/Designer" target="_blank">Help</a></td> </tr>
 					<?php }
 					break;
 				case '4':
 					if($pass === true){ ?>
-<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Verified administrator email address</td> <td><a href="//ianspence.com/support/docs/lucy/email" target="_blank">Help</a></td> </tr>
+<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Verified administrator email address</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#email-settings" target="_blank">Help</a></td> </tr>
 					<?php } else { ?>
-<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Verified administrator email address</td> <td><a href="../../email_verify.php">Configure</a> - <a href="//ianspence.com/support/docs/lucy/email" target="_blank">Help</a></td> </tr>
+<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Verified administrator email address</td> <td><a href="../../email_verify.php">Configure</a> - <a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#email-settings" target="_blank">Help</a></td> </tr>
 					<?php }
 					break;
 				case '5':
 					if($pass === true){ ?>
-<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Grant Lucy access to uploads folder</td> <td><a href="//ianspence.com/support/docs/lucy/uploads" target="_blank">Help</a></td> </tr>
+<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Grant Lucy access to uploads folder</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Designer#image-input" target="_blank">Help</a></td> </tr>
 					<?php } else { ?>
-<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Grant Lucy access to uploads folder</td> <td><a href="//ianspence.com/support/docs/lucy/uploads" target="_blank">Help</a></td> </tr>
+<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Grant Lucy access to uploads folder</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Designer#image-input" target="_blank">Help</a></td> </tr>
 					<?php }
 					break;
 				case '6':
 					if($pass === true){ ?>
-<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Configured Lucy email bot</td> <td><a href="//ianspence.com/support/docs/lucy/email" target="_blank">Help</a></td> </tr>
+<tr class="success"> <td><span class="glyphicon glyphicon-ok"></span></td> <td>Configured Lucy email bot</td> <td><a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#the-basics" target="_blank">Help</a></td> </tr>
 					<?php } else { ?>
-<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Configured Lucy email bot</td> <td><a href="settings.php">Configure</a> - <a href="//ianspence.com/support/docs/lucy/email" target="_blank">Help</a></td> </tr>
+<tr class="error"> <td><span class="glyphicon glyphicon-remove"></span></td> <td>Configured Lucy email bot</td> <td><a href="settings.php">Configure</a> - <a href="https://github.com/ecnepsnai/Lucy/wiki/Setup#the-basics" target="_blank">Help</a></td> </tr>
 					<?php }
 					break;
 			}

@@ -27,8 +27,7 @@
 				<div class="collapse navbar-collapse" id="lucy-admin-navbar">
 					<ul class="nav navbar-nav">
 						<li <?php if($pageIndex == 0){ echo('class="active"'); } ?>><a href="index.php">Dashboard</a></li>
-						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="mythreads.php">My threads</a></li>
-						<li <?php if($pageIndex == 2){ echo('class="active"'); } ?>><a href="allthreads.php">All threads</a></li>
+						<li <?php if($pageIndex == 1){ echo('class="active"'); } ?>><a href="threads.php">Threads</a></li>
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 4){ echo('class="active"'); } echo('><a href="users.php">Users</a></li>'); } ?>
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 5){ echo('class="active"'); } echo('><a href="designer.php">Designer</a></li>'); } ?>
 						<?php if($GLOBALS['usr_Type'] == "Admin") { echo('<li '); if($pageIndex == 6){ echo('class="active"'); } echo('><a href="settings.php">Settings</a></li>'); } ?>
@@ -38,7 +37,6 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img style="display:inline;border-radius:2px;" src="http://www.gravatar.com/avatar/<?php echo(md5($GLOBALS['usr_Email'])); ?>?s=18&d=mm"> Hey, <?php echo($GLOBALS['usr_Name']); ?> <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="../../profile.php">My Profile</a></li>
-								<li><a href="auth.php">Two-Factor Config</a></li>
 								<li class="divider"></li>
 								<li><a href="../../logout.php">Log out</a></li>
 							</ul>
@@ -56,9 +54,10 @@
 </footer>
 
 </div>
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<?php }
 
 	function lucy_die($reason) {

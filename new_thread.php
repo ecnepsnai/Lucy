@@ -2,6 +2,7 @@
 require('lucy-admin/session.php');
 $val_error = null;
 
+// If Lucy is in ReadOnly mode
 if($GLOBALS['config']['ReadOnly'] == true && $user['type'] != "Admin"){
 	header("location: index.php?notice=readonly");
 }
@@ -101,7 +102,7 @@ if(isset($_POST['submit'])){
 		die($_FILES['screenshot']['error']);
 	}
 
-
+	// Creating the message data array to later be encoded as JSON
 	$messageData = array();
 	foreach($GLOBALS['config']['Support']['Order'] as $input_name){
 		if($input_name !== "name" && $input_name !== "email" && $input_name !== "password" && $input_name !== "message")
@@ -115,16 +116,17 @@ if(isset($_POST['submit'])){
 	
 	
 	
-
+	// Ending the message data as JSON
 	$messageJson = json_encode($messageData);
 
+	// Inserting the data into the threads database
 	try{
 		$response = $cda->insert("threads",array('id','owner','status','subject','date','lastreply','data'),array($threadid,$_SESSION['id'],'Pending',substr($message, 0, 50),date("Y-m-d H:i:s"),$_SESSION['id'],$messageJson));
 	} catch (Exception $e){
 		die($e);
 	}
 
-
+	// Creating the URL to be emailed
 	$url = 'http://' . $_SERVER['SERVER_NAME'] . str_replace('new_thread','thread',$_SERVER['PHP_SELF']) . '?id=' . $threadid;
 
 	// Emails password reset link.
@@ -137,6 +139,7 @@ writeDOC:
 
 $inputs = array();
 
+// Setting up the designer array to be used in the theme file
 foreach($GLOBALS['config']['Support']['Order'] as $input_name){
 	if($input_name != "name" && $input_name != "email" && $input_name != "password" && $input_name != "message")
 	$inputs[$input_name] = $designer['config'][$input_name];

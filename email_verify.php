@@ -18,12 +18,14 @@ if(isset($_GET['t'])){
 	$test_token = $_GET['t'];
 	$response = null;
 
+	//  Grabbing the information to form the verification token
 	try{
 		$response = $cda->select(array('email','salt'),'userlist',array('id'=>$usr_ID));
 	} catch (Exception $e){
 		lucy_error('Database Error',$e, true);
 	}
 
+	// Matching the entered token with the actual token
 	$true_token = md5($response['data']['email'] . $response['data']['salt']);
 	if($test_token == $true_token){
 		try{
@@ -37,12 +39,14 @@ if(isset($_GET['t'])){
 	$token = "";
 	$response = null;
 
+	//  Grabbing the information to form the verification token
 	try{
 		$response = $cda->select(array('email','salt'),'userlist',array('id'=>$usr_ID));
 	} catch (Exception $e){
 		lucy_error('Database Error',$e, true);
 	}
 
+	// Mailing out the token
 	$token = md5($response['data']['email'] . $response['data']['salt']);
 	$url = $GLOBALS['config']['Paths']['Remote'] . 'email_verify.php?t=' . $token;
 	mailer_emailVerify($usr_Name, $usr_Email, $url);

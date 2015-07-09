@@ -38,11 +38,11 @@ getHeader('Profile'); getNav(2); ?>
 				<label class="col-sm-5 control-label">Email:</label>
 				<div class="col-sm-7">
 					<input type="email" class="form-control" name="email" value="<?php echo($user['email']); ?>" required/>
-					<?php if($user['verified'] == 1){ ?><p class="help-block"><span class="label label-success">Verified</span></p><?php } else { ?><p class="help-block"><span class="label label-warning">Not Verified</span> <a href="email_erify.php">Verify Email</a></p><?php } ?>
+					<?php if($user['verified'] == 1){ ?><p class="help-block"><span class="label label-success">Verified</span></p><?php } else { ?><p class="help-block"><span class="label label-warning">Not Verified</span> <a href="email_verify.php">Verify Email</a></p><?php } ?>
 				</div>
 			</div>
 		</div>
 	</div>
-	<input type="submit" name="submit" value="Save Changes" class="btn btn-primary"/> <input type="reset" name="reset" value="Delete Account" class="btn btn-danger"/>
+	<input type="submit" name="submit" value="Save Changes" class="btn btn-primary"/> <a href="account_close.php" class="btn btn-danger">Delete Account</a> <a href="auth_setup.php" class="btn btn-default">Two-Factor Authentication</a>
 </form>
 <?php getFooter(); ?>

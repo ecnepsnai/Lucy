@@ -148,6 +148,14 @@
 					</div>
 					<div id="database" class="tab-pane">
 						<h2>Database Settings:</h2>
+						<div class="panel panel-warning">
+							<div class="panel-heading">
+								<h3 class="panel-title">Warning</h3>
+							</div>
+							<div class="panel-body">
+								Improper setting of the Database commands can prevent Lucy from contacting your SQL server, which will disrupt service.
+							</div>
+						</div>
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Database Type:</label>
 							<div class="col-sm-7">

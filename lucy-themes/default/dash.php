@@ -22,6 +22,10 @@ if($_GET['notice'] == 'nothread'){ ?>
 <div class="alert alert-error">
 	<strong>Whoops</strong> You're not allowed to see that.
 </div>
+<?php } else if($_GET['notice'] == 'readonly'){ ?>
+<div class="alert alert-danger">
+	<strong>Unable to Create Thread - </strong> Lucy is in Read-Only Mode, only approved administrators may log in.
+</div>
 <?php } ?>
 <h1>Your threads</h1>
 <table class="table table-hover">
